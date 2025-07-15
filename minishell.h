@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/05/27 16:12:18 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/15 19:47:52 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,79 +14,64 @@
 # define MINISHELL_H
 
 #include "libft/libft.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <ctype.h>
 
-/* Temel Veri Yapıları */
-typedef struct s_dlist {
-    void        *data;
-    struct s_dlist *next;
-    struct s_dlist *prev;
-} t_dlist;
+typedef enum {
+    TOKEN_WORD,           // Regular words like "ls", "file.txt"
+    TOKEN_PIPE,           // |
+    TOKEN_REDIRECT_IN,    // <
+    TOKEN_REDIRECT_OUT,   // >
+    TOKEN_REDIRECT_APPEND,// >>
+    TOKEN_HEREDOC,        // <<
+    TOKEN_AND,            // &&
+    TOKEN_OR,             // ||
+    TOKEN_SEMICOLON,      // ;
+    TOKEN_LPAREN,         // (
+    TOKEN_RPAREN,         // )
+    TOKEN_EOF,            // End of input
+    TOKEN_ERROR           // Parsing error
+} token_type_t;
 
-/* Dosya Yönlendirme Yapısı */
-typedef struct s_redirect {
-    int     std_in_backup;
-    int     std_out_backup;
-    int     redirect_active;
-    int     heredoc_count;
-    int     *heredoc_fds;
-} t_redirect;
+//token struct
+typedef struct token {
+    token_type_t type;    // What kind of token this is
+    char *value;          // The actual text content
+    struct token *next;   // Pointer to next token (linked list)
+} token_t;
+//command struct
+typedef struct command {
+    char **args;              // Array of command arguments ["ls", "-la", NULL]
+    int argc;                 // Number of arguments
+    char *input_file;         // File for input redirection (< file)
+    char *output_file;        // File for output redirection (> file)
+    int append_mode;          // 1 if >>, 0 if >
+    char *heredoc_delimiter;  // Delimiter for heredoc (<<)
+    struct command *next;     // Next command in pipeline
+} command_t;
+//pipeline struct
+typedef struct pipeline {
+    command_t *commands;   // Linked list of commands (cmd1 | cmd2 | cmd3)
+    int background;        // Whether to run in background (&)
+    struct pipeline *next; // Next pipeline (for &&, ||, ;)
+    char opertr;           // Operator connecting pipelines
+} pipeline_t;
+//parser state
+typedef struct parser {
+    token_t *tokens;
+    token_t *current;
+    char *inp;
+    int pos;
+    int error;
+    char *error_msg;
+} parser_t;
 
-/* Sinyal Yönetimi */
-typedef struct s_signals {
-    int     sigint;
-    int     sigquit;
-    int     in_heredoc;
-} t_signals;
-
-/* Ortam Değişkenleri */
-typedef struct s_env {
-    t_dlist     *vars;          // Linked list olarak ortam değişkenleri
-    char        **env_array;    // execve için düz array
-    char        *oldpwd;
-    char        *path;
-    char        *pwd;
-} t_env;
-
-/* Parse İşlemleri */
-typedef struct s_parser {
-    char        *line;          // Ham input
-    t_dlist     *tokens;        // Tokenize edilmiş liste
-    char        ***commands;    // Pipe'a göre ayrılmış komutlar
-    char        ***args;        // Argümanlar (execve formatında)
-    char        ***expanded;    // Genişletilmiş argümanlar
-    int         cmd_count;      // Komut sayısı
-} t_parser;
-
-/* Komut Yürütme */
-typedef struct s_executor {
-    int         pipe_count;
-    int         *pipe_fds;      // Pipe file descriptor'ları
-    int         *pids;          // Çocuk proses PID'leri
-    int         last_status;    // Son çıkış durumu
-    int         is_parent;      // Ana proses mi kontrolü
-    int         exit_requested; // Çıkış isteği flag'i
-} t_executor;
-
-/* Tarihçe ve Oturum Yönetimi */
-typedef struct s_session {
-    t_dlist     *history;       // Komut geçmişi
-    int         hist_fd;        // History dosya tanımlayıcı
-    char        *hist_path;     // History dosya yolu
-} t_session;
-
-/* Ana Minishell Yapısı */
-typedef struct s_minishell {
-    t_env       env;
-    t_parser    parser;
-    t_executor  executor;
-    t_redirect redirect;
-    t_signals  signals;
-    t_session  session;
-    
-    /* Global Ayarlar */
-    int         interactive;    // Etkileşimli modda mı
-    int         debug_mode;     // Debug çıktıları aktif mi
-    char        *name;         // Shell adı (örn: "minishell")
-} t_minishell;
+//func prototypes
+token_t *new_token(token_type_t type, char *value);
+void    token_lst(token_t **head, token_t *token);
+void skip_whitespace(parser_t *parser);
 
 #endif

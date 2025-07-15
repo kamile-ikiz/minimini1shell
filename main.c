@@ -6,14 +6,13 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 16:06:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/15 14:28:19 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/15 18:35:18 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <termios.h>
-#include <unistd.h>
+#include "minishell.h"
 
-int main() {
+int main()
+{
 
 }
