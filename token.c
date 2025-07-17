@@ -59,6 +59,52 @@ char *parse_quotes(parser_t *parser, char quote)
 	parser->pos++;
 	return(res);
 }
+
+// Parse quoted string
+char *parse_quoted_string(parser_t *parser, char quote) {
+    int start = ++parser->pos; // Skip opening quote
+    int len = 0;
+    
+    while (parser->inp[parser->pos] && parser->inp[parser->pos] != quote) {
+        if (parser->inp[parser->pos] == '\\' && parser->inp[parser->pos + 1]) {
+            parser->pos++; // Skip escape character
+        }
+        parser->pos++;
+        len++;
+    }
+    
+    if (!parser->inp[parser->pos]) {
+        parser->error = 1;
+        parser->error_msg = "Unclosed quote";
+        return NULL;
+    }
+    
+    char *result = ft_substr(parser->inp, start, parser->pos - start);
+    parser->pos++; // Skip closing quote
+    return result;
+}
+
+char *parse_word(parser_t *parser) {
+    int start = parser->pos;
+    
+    while (parser->inp[parser->pos] && 
+           !isspace(parser->inp[parser->pos]) &&
+           parser->inp[parser->pos] != '|' &&
+           parser->inp[parser->pos] != '<' &&
+           parser->inp[parser->pos] != '>' &&
+           parser->inp[parser->pos] != '&' &&
+           parser->inp[parser->pos] != ';' &&
+           parser->inp[parser->pos] != '(' &&
+           parser->inp[parser->pos] != ')' &&
+           parser->inp[parser->pos] != '"' &&
+           parser->inp[parser->pos] != '\'') {
+        parser->pos++;
+    }
+    
+    if (parser->pos == start) return NULL;
+    return ft_substr(parser->inp, start, parser->pos - start);
+}
+
 //tokenize input string
 token_t	*tokenize(char *input)
 {
@@ -74,9 +120,80 @@ token_t	*tokenize(char *input)
 			break;
 		char c = parser.inp[parser.pos];
 		token_t *token = NULL;
-		if(c == '|' && parser.inp[parser.pos] == '|')
+		if(c == '|' && parser.inp[parser.pos] != '|')
 		{
-			
+			token = new_token(TOKEN_PIPE, "|");
+			parser.pos ++;
+		}
+		else if (c == '<')
+		{
+			if(parser.inp[parser.pos + 1] == '<')
+			{
+				token = new_token(TOKEN_HEREDOC, "<<");
+				parser.pos += 2;
+			}
+			else
+			{
+				token = new_token(TOKEN_REDIRECT_IN, "<");
+				parser.pos ++;
+			}
+		}
+		else if (c == '>')
+		{
+			if(parser.inp[parser.pos + 1] == '>')
+			{
+				token = new_token(TOKEN_REDIRECT_APPEND, ">>");
+				parser.pos += 2;
+			}
+			else
+			{
+				token = new_token(TOKEN_REDIRECT_OUT, ">");
+				parser.pos++;
+			}
+		}
+		else if(c == ';')
+		{
+			token = new_token(TOKEN_SEMICOLON, ";");
+			parser.pos ++;
+		}
+		else if(c == '(')
+		{
+			token = new_token(TOKEN_LPAREN, "(");
+			parser.pos ++;
+		}
+		else if(c == ')')
+		{
+			token = new_token(TOKEN_RPAREN, ")");
+			parser.pos ++;
+		}
+		else if(c == '\'')
+		{
+			char *quoted = parse_quoted_string(&parser, c);
+			if(quoted)
+			{
+				token = new_token(TOKEN_WORD, quoted);
+				free(quoted);
+			}
+			else
+				token = new_token(TOKEN_ERROR, "quote_error");
+		}
+		else
+		{
+			char *word = parse_word(&parser);
+			if(word)
+			{
+				token = new_token(TOKEN_WORD, word);
+				free(word);
+			}
+			else
+				parser.pos++;
+		}
+		if (token)
+			token_lst(&tokens, token);
+		if(parser.error)
+		{
+			free_tokens(tokens);
+			return (NULL);
 		}
 	}
 		

@@ -27,8 +27,6 @@ typedef enum {
     TOKEN_REDIRECT_OUT,   // >
     TOKEN_REDIRECT_APPEND,// >>
     TOKEN_HEREDOC,        // <<
-    TOKEN_AND,            // &&
-    TOKEN_OR,             // ||
     TOKEN_SEMICOLON,      // ;
     TOKEN_LPAREN,         // (
     TOKEN_RPAREN,         // )
@@ -73,5 +71,8 @@ typedef struct parser {
 token_t *new_token(token_type_t type, char *value);
 void    token_lst(token_t **head, token_t *token);
 void skip_whitespace(parser_t *parser);
+void free_tokens(token_t *tokens);
+void free_command(command_t *cmd);
+void free_pipeline(pipeline_t *pipeline);
 
 #endif
