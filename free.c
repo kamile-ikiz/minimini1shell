@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 00:09:15 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/18 00:09:15 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/18 16:48:14 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,14 @@ void free_tokens(token_t *tokens) {
         tokens = next;
     }
 }
-
 void free_command(command_t *cmd) {
-    if (!cmd) return;
-    
-    for (int i = 0; i < cmd->argc; i++) {
+    if (!cmd)
+        return;
+
+    int i = 0;
+    while (i < cmd->argc) {
         free(cmd->args[i]);
+        i++;
     }
     free(cmd->args);
     free(cmd->input_file);
@@ -33,7 +35,6 @@ void free_command(command_t *cmd) {
     free(cmd->heredoc_delimiter);
     free(cmd);
 }
-
 void free_pipeline(pipeline_t *pipeline) {
     while (pipeline) {
         pipeline_t *next_pipeline = pipeline->next;

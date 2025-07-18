@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/15 19:53:45 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/18 16:15:04 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,6 +196,6 @@ token_t	*tokenize(char *input)
 			return (NULL);
 		}
 	}
-		
-
+	token_lst(&tokens, new_token(TOKEN_EOF, NULL));
+    	return (tokens);
 }
