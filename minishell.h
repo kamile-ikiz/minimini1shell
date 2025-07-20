@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/15 19:47:52 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/20 18:45:32 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,20 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
+// ANSI Color Codes for token display
+#define RESET_COLOR     "\033[0m"
+#define RED             "\033[1;31m"
+#define GREEN           "\033[1;32m"
+#define YELLOW          "\033[1;33m"
+#define BLUE            "\033[1;34m"
+#define MAGENTA         "\033[1;35m"
+#define CYAN            "\033[1;36m"
+#define WHITE           "\033[1;37m"
+#define GRAY            "\033[0;37m"
+#define BOLD            "\033[1m"
 
 typedef enum {
     TOKEN_WORD,           // Regular words like "ls", "file.txt"
@@ -27,7 +41,6 @@ typedef enum {
     TOKEN_REDIRECT_OUT,   // >
     TOKEN_REDIRECT_APPEND,// >>
     TOKEN_HEREDOC,        // <<
-    TOKEN_SEMICOLON,      // ;
     TOKEN_LPAREN,         // (
     TOKEN_RPAREN,         // )
     TOKEN_EOF,            // End of input
@@ -40,6 +53,7 @@ typedef struct token {
     char *value;          // The actual text content
     struct token *next;   // Pointer to next token (linked list)
 } token_t;
+
 //command struct
 typedef struct command {
     char **args;              // Array of command arguments ["ls", "-la", NULL]
@@ -50,13 +64,15 @@ typedef struct command {
     char *heredoc_delimiter;  // Delimiter for heredoc (<<)
     struct command *next;     // Next command in pipeline
 } command_t;
+
 //pipeline struct
 typedef struct pipeline {
     command_t *commands;   // Linked list of commands (cmd1 | cmd2 | cmd3)
     int background;        // Whether to run in background (&)
-    struct pipeline *next; // Next pipeline (for &&, ||, ;)
+    struct pipeline *next; // Next pipeline in case of multiple pipelines
     char opertr;           // Operator connecting pipelines
 } pipeline_t;
+
 //parser state
 typedef struct parser {
     token_t *tokens;
@@ -74,5 +90,10 @@ void skip_whitespace(parser_t *parser);
 void free_tokens(token_t *tokens);
 void free_command(command_t *cmd);
 void free_pipeline(pipeline_t *pipeline);
+void print_tokens_fancy(token_t *tokens);
+void print_tokens_simple(token_t *tokens);
+char *parse_quoted_string(parser_t *parser, char quote);
+char *parse_word(parser_t *parser);
+token_t *tokenize(char *input);
 
 #endif
