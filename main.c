@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 16:06:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/20 21:28:59 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/21 19:38:38 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,33 +40,25 @@ int main(int argc, char **argv, char **env)
     printf("\n%s🎯 MINISHELL TOKEN ANALYZER - Interactive Mode%s\n", BOLD, RESET_COLOR);
     printf("%sEnter commands to see token analysis (type 'exit' to quit)%s\n\n", GRAY, RESET_COLOR);
     
+    input = malloc(1024); // Simple buffer for demo
     while (1)
     {
-        input = readline(GREEN "minishell> " RESET_COLOR);
-        
-        // Handle EOF (Ctrl+D)
-        if (!input)
-        {
-            printf("\n%sGoodbye! 👋%s\n", YELLOW, RESET_COLOR);
+        printf("%sminishell> %s", GREEN, RESET_COLOR);
+        if (!fgets(input, 1024, stdin))
             break;
-        }
+            
+        // Remove newline
+        int len = strlen(input);
+        if (len > 0 && input[len-1] == '\n')
+            input[len-1] = '\0';
             
         // Exit command
         if (strcmp(input, "exit") == 0)
-        {
-            free(input);
             break;
-        }
             
         // Skip empty input
         if (strlen(input) == 0)
-        {
-            free(input);
             continue;
-        }
-        
-        // Add to history
-        add_history(input);
             
         // Tokenize and display
         tokens = tokenize(input);
@@ -78,10 +70,9 @@ int main(int argc, char **argv, char **env)
             free_tokens(tokens);
         }
         printf("\n");
-        
-        free(input);
     }
     
+    free(input);
     printf("\n%sGoodbye! 👋%s\n", YELLOW, RESET_COLOR);
     return (0);
 }

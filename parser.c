@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 16:16:14 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/20 21:29:04 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/21 19:39:59 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,85 +110,100 @@ void add_argmnt(command_t *cmd, char *arg)
     cmd->argc++;
 }
 
-command_t *parse_command(parser_t *parser)
+static void	handle_word(parser_t *parser, command_t *cmd)
 {
-    command_t *cmd = new_command();
-    if (!cmd)
-        return (NULL);
-    while(parser->current &&
-    parser->current->type != TOKEN_PIPE &&
-    parser->current->type != TOKEN_EOF)
-    {
-        token_t *token = parser->current;
-        if (token->type == TOKEN_WORD)
-        {
-            add_argmnt(cmd, token->value);
-            parser->current = parser->current->next;
-        }
-        else if (token->type == TOKEN_REDIRECT_IN)
-        {
-            parser->current = parser->current->next;
-            if (parser->current && parser->current->type == TOKEN_WORD)
-            {
-                cmd->input_file = ft_strdup(parser->current->value);
-                parser->current = parser->current->next;
-            }
-            else
-            {
-                cmd->input_file = NULL;
-                parser->error = 1;
-                parser->error_msg = "Missing input file for <";
-            }
-        }
-        else if (token->type == TOKEN_REDIRECT_OUT)
-        {
-            cmd->append_mode = 0;
-            parser->current = parser->current->next;
-            if (parser->current && parser->current->type == TOKEN_WORD)
-            {
-                cmd->output_file = ft_strdup(parser->current->value);
-                parser->current = parser->current->next;
-            }
-            else
-            {
-                cmd->output_file = NULL;
-                parser->error = 1;
-                parser->error_msg = "Missing output file for >";
-            }
-        }
-        else if (token->type == TOKEN_REDIRECT_APPEND)
-        {
-            cmd->append_mode = 1;
-            parser->current = parser->current->next;
-            if (parser->current && parser->current->type == TOKEN_WORD)
-            {
-                cmd->output_file = ft_strdup(parser->current->value);
-                parser->current = parser->current->next;
-            }
-            else
-            {
-                cmd->output_file = NULL;
-                parser->error = 1;
-                parser->error_msg = "Missing output file for >>";
-            }
-        }
-        else if (token->type == TOKEN_HEREDOC)
-        {
-            parser->current = parser->current->next;
-            if (parser->current && parser->current->type == TOKEN_WORD)
-            {
-                cmd->heredoc_delimiter = ft_strdup(parser->current->value);
-                // Here you would handle the heredoc logic
-                // For now, we just store the delimiter
-                parser->current = parser->current->next;
-            }
-            else
-            {
-                cmd->heredoc_delimiter = NULL;
-                parser->error = 1;
-            }
-        }
-    }
+	add_argmnt(cmd, parser->current->value);
+	parser->current = parser->current->next;
+}
 
-    return cmd;
+static void	handle_redirect_in(parser_t *parser, command_t *cmd)
+{
+	parser->current = parser->current->next;
+	if (parser->current && parser->current->type == TOKEN_WORD)
+	{
+		cmd->input_file = ft_strdup(parser->current->value);
+		parser->current = parser->current->next;
+	}
+	else
+	{
+		cmd->input_file = NULL;
+		parser->error = 1;
+		parser->error_msg = "Missing input file for <";
+	}
+}
+
+static void	handle_redirect_out(parser_t *parser, command_t *cmd)
+{
+	cmd->append_mode = 0;
+	parser->current = parser->current->next;
+	if (parser->current && parser->current->type == TOKEN_WORD)
+	{
+		cmd->output_file = ft_strdup(parser->current->value);
+		parser->current = parser->current->next;
+	}
+	else
+	{
+		cmd->output_file = NULL;
+		parser->error = 1;
+		parser->error_msg = "Missing output file for >";
+	}
+}
+
+static void	handle_redirect_append(parser_t *parser, command_t *cmd)
+{
+	cmd->append_mode = 1;
+	parser->current = parser->current->next;
+	if (parser->current && parser->current->type == TOKEN_WORD)
+	{
+		cmd->output_file = ft_strdup(parser->current->value);
+		parser->current = parser->current->next;
+	}
+	else
+	{
+		cmd->output_file = NULL;
+		parser->error = 1;
+		parser->error_msg = "Missing output file for >>";
+	}
+}
+
+static void	handle_heredoc(parser_t *parser, command_t *cmd)
+{
+	parser->current = parser->current->next;
+	if (parser->current && parser->current->type == TOKEN_WORD)
+	{
+		cmd->heredoc_delimiter = ft_strdup(parser->current->value);
+		parser->current = parser->current->next;
+	}
+	else
+	{
+		cmd->heredoc_delimiter = NULL;
+		parser->error = 1;
+	}
+}
+
+command_t	*parse_command(parser_t *parser)
+{
+	command_t	*cmd;
+	token_t		*token;
+
+	cmd = new_command();
+	if (!cmd)
+		return (NULL);
+	while (parser->current &&
+		parser->current->type != TOKEN_PIPE &&
+		parser->current->type != TOKEN_EOF)
+	{
+		token = parser->current;
+		if (token->type == TOKEN_WORD)
+			handle_word(parser, cmd);
+		else if (token->type == TOKEN_REDIRECT_IN)
+			handle_redirect_in(parser, cmd);
+		else if (token->type == TOKEN_REDIRECT_OUT)
+			handle_redirect_out(parser, cmd);
+		else if (token->type == TOKEN_REDIRECT_APPEND)
+			handle_redirect_append(parser, cmd);
+		else if (token->type == TOKEN_HEREDOC)
+			handle_heredoc(parser, cmd);
+	}
+	return (cmd);
 }

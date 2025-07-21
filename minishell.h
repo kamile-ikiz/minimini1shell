@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/20 18:45:32 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/21 19:40:17 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 // ANSI Color Codes for token display
 #define RESET_COLOR     "\033[0m"

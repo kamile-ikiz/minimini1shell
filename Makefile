@@ -6,7 +6,7 @@
 #    By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 00:10:17 by kikiz             #+#    #+#              #
-#    Updated: 2025/07/20 21:29:01 by kikiz            ###   ########.fr        #
+#    Updated: 2025/07/21 19:42:40 by kikiz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,6 @@ NAME = minishell
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 INCLUDES = -I. -Ilibft
-LDFLAGS = -lreadline
 
 # Directories
 SRCDIR = .
@@ -32,7 +31,8 @@ SRCS = main.c \
        builtins.c \
        signals.c \
        utils.c \
-       free.c
+       free.c \
+	   print_tokens.c
 
 # Object files
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
@@ -52,7 +52,7 @@ all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
 	@echo "$(BOLD)$(GREEN)🔗 Linking $(NAME)...$(NC)"
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
 	@echo "$(BOLD)$(GREEN)✅ $(NAME) compiled successfully!$(NC)"
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
