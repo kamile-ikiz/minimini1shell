@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/21 19:40:17 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/23 20:03:07 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ typedef enum {
     TOKEN_REDIRECT_OUT,   // >
     TOKEN_REDIRECT_APPEND,// >>
     TOKEN_HEREDOC,        // <<
-    TOKEN_LPAREN,         // (
-    TOKEN_RPAREN,         // )
     TOKEN_EOF,            // End of input
     TOKEN_ERROR           // Parsing error
 } token_type_t;
@@ -93,5 +91,5 @@ void print_tokens_simple(token_t *tokens);
 char *parse_quoted_string(parser_t *parser, char quote);
 char *parse_word(parser_t *parser);
 token_t *tokenize(char *input);
-
+int is_space(char c);
 #endif

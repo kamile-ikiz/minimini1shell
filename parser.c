@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 16:16:14 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/21 19:39:59 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/23 19:42:40 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,12 @@ char *parse_quotes(parser_t *parser, char quote)
 // Parse quoted string
 char *parse_quoted_string(parser_t *parser, char quote)
 {
-    int start = ++parser->pos; // Skip opening quote
-    int len = 0;
+    int start;
+	int len;
+	char *result;
+
+	start = ++parser->pos;// Skip opening quote
+    len = 0;
     
     while (parser->inp[parser->pos] && parser->inp[parser->pos] != quote)
 	{
@@ -51,35 +55,38 @@ char *parse_quoted_string(parser_t *parser, char quote)
     if (!parser->inp[parser->pos]) {
         parser->error = 1;
         parser->error_msg = "Unclosed quote";
-        return NULL;
+        return (NULL);
     }
     
-    char *result = ft_substr(parser->inp, start, parser->pos - start);
+    result = ft_substr(parser->inp, start, parser->pos - start);
     parser->pos++; // Skip closing quote
-    return result;
+    return (result);
 }
 
 char *parse_word(parser_t *parser)
 {
-    int start;
-    start = parser->pos;
-    
-    while (parser->inp[parser->pos] &&
-           !isspace(parser->inp[parser->pos]) &&
-           parser->inp[parser->pos] != '|' &&
-           parser->inp[parser->pos] != '<' &&
-           parser->inp[parser->pos] != '>' &&
-           parser->inp[parser->pos] != '&' &&
-           parser->inp[parser->pos] != ';' &&
-           parser->inp[parser->pos] != '(' &&
-           parser->inp[parser->pos] != ')' &&
-           parser->inp[parser->pos] != '"' &&
-           parser->inp[parser->pos] != '\'') {
-        parser->pos++;
-    }
-    
-    if (parser->pos == start) return NULL;
-    return ft_substr(parser->inp, start, parser->pos - start);
+    int		start;
+	char	*a;
+
+	start = parser->pos;
+	while (parser->inp[parser->pos]
+		&& !is_space(parser->inp[parser->pos])
+		&& parser->inp[parser->pos] != '|'
+		&& parser->inp[parser->pos] != '<'
+		&& parser->inp[parser->pos] != '>'
+		&& parser->inp[parser->pos] != '&'
+		&& parser->inp[parser->pos] != ';'
+		&& parser->inp[parser->pos] != '('
+		&& parser->inp[parser->pos] != ')'
+		&& parser->inp[parser->pos] != '"'
+		&& parser->inp[parser->pos] != '\'')
+	{
+		parser->pos++;
+	}
+    if (parser->pos == start)
+		return (NULL);
+    a = ft_substr(parser->inp, start, parser->pos - start);
+	return (a);
 }
 
 //new command
