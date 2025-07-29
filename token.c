@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/23 13:05:17 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/27 22:05:16 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,12 @@ void	token_lst(token_t **head, token_t *token)
 
 static void	init_parser(parser_t *parser, char *input)
 {
+	parser->tokens = NULL;
+	parser->current = NULL;
 	parser->inp = input;
 	parser->pos = 0;
 	parser->error = 0;
+	parser->error_msg = NULL;
 }
 
 static token_t	*handle_operator_tokens(parser_t *parser)
@@ -52,7 +55,7 @@ static token_t	*handle_operator_tokens(parser_t *parser)
 	char	c;
 	c = parser->inp[parser->pos];
 
-	if (c == '|' && parser->inp[parser->pos + 1] != '|')
+	if (c == '|')
 		return (parser->pos++, new_token(TOKEN_PIPE, "|"));
 	if (c == '<')
 	{
@@ -68,15 +71,29 @@ static token_t	*handle_operator_tokens(parser_t *parser)
 	}
 	return (NULL);
 }
+// char *expand_or_not(parser_t *parser, char status)
+// {
+// 	if (!parser)
+// 		return(0);
+// 	if (status == "\"" || status == '\0')
+// 	{
+// 		while(parser->inp[parser->pos])
+// 		{
+			
+// 		}
+// 	}
+// }
 
 static token_t	*handle_quoted_or_word(parser_t *parser)
 {
 	char	*val;
 	token_t	*token;
+	char c;
 
-	if (parser->inp[parser->pos] == '\'')
+	c = parser->inp[parser->pos];
+	if (c == '\'' || c == '"')
 	{
-		val = parse_quoted_string(parser, '\'');
+		val = parse_quotes(parser, c);
 		if (!val)
 			return (new_token(TOKEN_ERROR, "quote_error"));
 		token = new_token(TOKEN_WORD, val);
@@ -103,7 +120,7 @@ static int	process_token(parser_t *parser, token_t **tokens)
 		token = handle_quoted_or_word(parser);
 	if (token)
 		token_lst(tokens, token);
-	if (parser->error)
+	if (parser->error || !token)
 	{
 		free_tokens(*tokens);
 		return (-1);
@@ -113,11 +130,11 @@ static int	process_token(parser_t *parser, token_t **tokens)
 
 token_t	*tokenize(char *input)
 {
-	parser_t	parser = {0};
+	parser_t	parser;
 	token_t		*tokens;
-	tokens = NULL;
-	
 	int			status;
+
+	tokens = (NULL);
 
 	init_parser(&parser, input);
 	while (parser.inp[parser.pos])

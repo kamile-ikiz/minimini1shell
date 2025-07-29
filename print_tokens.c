@@ -127,7 +127,7 @@ void print_tokens_simple(token_t *tokens)
 		printf("%s[%s]%s", color, 
 			current->value ? current->value : get_token_type_name(current->type), 
 			RESET_COLOR);
-		
+
 		current = current->next;
 		i++;
 	}

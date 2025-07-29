@@ -6,66 +6,35 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 16:16:14 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/23 19:42:40 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/25 23:17:27 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+//parse quoted string
 char *parse_quotes(parser_t *parser, char quote)
 {
-	int	start = ++parser->pos;
-	int	len = 0;
+	int	start;
+	char *res;
+
+	start = ++parser->pos; //skip quote
 	while(parser->inp[parser->pos] && parser->inp[parser->pos] != quote)
-	{
-		if(parser->inp[parser->pos] == '\\' && parser->inp[parser->pos + 1])
-			parser->pos++;
 		parser->pos++;
-		len ++;
-	}
 	if(!parser->inp[parser->pos])
 	{
 		parser->error = 1;
 		parser->error_msg = "Unclosed quote";
-		return NULL;
+		return (NULL);
 	}
-	char *res = ft_substr(parser->inp, start, parser->pos - start);
-	parser->pos++;
+	res = ft_substr(parser->inp, start, parser->pos - start);
+	parser->pos++; //skip quote
 	return(res);
 }
 
-// Parse quoted string
-char *parse_quoted_string(parser_t *parser, char quote)
+char	*parse_word(parser_t *parser)
 {
-    int start;
-	int len;
-	char *result;
-
-	start = ++parser->pos;// Skip opening quote
-    len = 0;
-    
-    while (parser->inp[parser->pos] && parser->inp[parser->pos] != quote)
-	{
-        if (parser->inp[parser->pos] == '\\' && parser->inp[parser->pos + 1])
-            parser->pos++; // Skip escape character
-        parser->pos++;
-        len++;
-    }
-    
-    if (!parser->inp[parser->pos]) {
-        parser->error = 1;
-        parser->error_msg = "Unclosed quote";
-        return (NULL);
-    }
-    
-    result = ft_substr(parser->inp, start, parser->pos - start);
-    parser->pos++; // Skip closing quote
-    return (result);
-}
-
-char *parse_word(parser_t *parser)
-{
-    int		start;
+	int		start;
 	char	*a;
 
 	start = parser->pos;
@@ -74,47 +43,41 @@ char *parse_word(parser_t *parser)
 		&& parser->inp[parser->pos] != '|'
 		&& parser->inp[parser->pos] != '<'
 		&& parser->inp[parser->pos] != '>'
-		&& parser->inp[parser->pos] != '&'
-		&& parser->inp[parser->pos] != ';'
-		&& parser->inp[parser->pos] != '('
-		&& parser->inp[parser->pos] != ')'
 		&& parser->inp[parser->pos] != '"'
 		&& parser->inp[parser->pos] != '\'')
-	{
 		parser->pos++;
-	}
-    if (parser->pos == start)
+	if (parser->pos == start)
 		return (NULL);
-    a = ft_substr(parser->inp, start, parser->pos - start);
+	a = ft_substr(parser->inp, start, parser->pos - start);
 	return (a);
 }
 
 //new command
-command_t *new_command(void)
+command_t	*new_command(void)
 {
-    command_t *cmd = malloc(sizeof(command_t));
-    if (!cmd)
-        return NULL;
-    cmd->args = NULL;
-    cmd->argc = 0;
-    cmd->input_file = NULL;
-    cmd->output_file = NULL;
-    cmd->append_mode = 0;
-    cmd->heredoc_delimiter = NULL;
-    cmd->next = NULL;
-    return cmd;
+	command_t *cmd = malloc(sizeof(command_t));
+	if (!cmd)
+		return (NULL);
+	cmd->args = NULL;
+	cmd->argc = 0;
+	cmd->input_file = NULL;
+	cmd->output_file = NULL;
+	cmd->append_mode = 0;
+	cmd->heredoc_delimiter = NULL;
+	cmd->next = NULL;
+	return (cmd);
 }
 
 void add_argmnt(command_t *cmd, char *arg)
 {
-    if (!cmd || !arg)
-        return;
-    cmd->args = realloc(cmd->args, sizeof(char*) * (cmd->argc + 2));
-    if (!cmd->args)
-        return;
-    cmd->args[cmd->argc] = ft_strdup(arg);
-    cmd->args[cmd->argc + 1] = NULL;
-    cmd->argc++;
+	if (!cmd || !arg)
+		return;
+	cmd->args = realloc(cmd->args, sizeof(char*) * (cmd->argc + 2));
+	if (!cmd->args)
+		return;
+	cmd->args[cmd->argc] = ft_strdup(arg);
+	cmd->args[cmd->argc + 1] = NULL;
+	cmd->argc++;
 }
 
 static void	handle_word(parser_t *parser, command_t *cmd)

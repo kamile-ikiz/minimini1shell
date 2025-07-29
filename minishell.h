@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/23 20:03:07 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/27 19:19:31 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <termios.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
 
 // ANSI Color Codes for token display
 #define RESET_COLOR     "\033[0m"
@@ -31,6 +35,7 @@
 #define WHITE           "\033[1;37m"
 #define GRAY            "\033[0;37m"
 #define BOLD            "\033[1m"
+#define PROMPT          "\001\033[38;5;205m\002minimini1shell$ \001\033[0m\002"
 
 typedef enum {
     TOKEN_WORD,           // Regular words like "ls", "file.txt"
@@ -42,13 +47,6 @@ typedef enum {
     TOKEN_EOF,            // End of input
     TOKEN_ERROR           // Parsing error
 } token_type_t;
-
-//token struct
-typedef struct token {
-    token_type_t type;    // What kind of token this is
-    char *value;          // The actual text content
-    struct token *next;   // Pointer to next token (linked list)
-} token_t;
 
 //command struct
 typedef struct command {
@@ -69,6 +67,13 @@ typedef struct pipeline {
     char opertr;           // Operator connecting pipelines
 } pipeline_t;
 
+//token struct
+typedef struct token {
+    token_type_t type;    // What kind of token this is
+    char *value;          // The actual text content
+    struct token *next;   // Pointer to next token (linked list)
+} token_t;
+
 //parser state
 typedef struct parser {
     token_t *tokens;
@@ -88,8 +93,9 @@ void free_command(command_t *cmd);
 void free_pipeline(pipeline_t *pipeline);
 void print_tokens_fancy(token_t *tokens);
 void print_tokens_simple(token_t *tokens);
-char *parse_quoted_string(parser_t *parser, char quote);
+char *parse_quotes(parser_t *parser, char quote);
 char *parse_word(parser_t *parser);
 token_t *tokenize(char *input);
 int is_space(char c);
-#endif
+int check_all_syntax(token_t *head);
+#endif 

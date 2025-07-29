@@ -6,7 +6,7 @@
 #    By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 00:10:17 by kikiz             #+#    #+#              #
-#    Updated: 2025/07/21 19:42:40 by kikiz            ###   ########.fr        #
+#    Updated: 2025/07/29 15:25:12 by kikiz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,9 +14,10 @@
 NAME = minishell
 
 # Compiler and flags
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 INCLUDES = -I. -Ilibft
+LDFLAGS = -lreadline
 
 # Directories
 SRCDIR = .
@@ -28,10 +29,10 @@ SRCS = main.c \
        token.c \
        parser.c \
        executor.c \
-       builtins.c \
-       signals.c \
        utils.c \
        free.c \
+	   start.c\
+	   check_syntax.c\
 	   print_tokens.c
 
 # Object files
@@ -52,7 +53,7 @@ all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
 	@echo "$(BOLD)$(GREEN)🔗 Linking $(NAME)...$(NC)"
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) $(LDFLAGS)
 	@echo "$(BOLD)$(GREEN)✅ $(NAME) compiled successfully!$(NC)"
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
@@ -110,5 +111,15 @@ help:
 	@echo "  $(GREEN)norm$(NC)    - Check norm compliance"
 	@echo "  $(GREEN)help$(NC)    - Show this help"
 
-.PHONY: all clean fclean re test debug norm git-add git-status help
+leaks:
+	@echo "Running Walgring..."
+	@valgrind --leak-check=full  \
+			--show-leak-kinds=all \
+			--track-origins=yes   \
+			--track-fds=yes       \
+			--verbose               \
+			--suppressions=valgrind.supp   \
+			./$(NAME)
+
+.PHONY: all clean fclean re test debug norm git-add git-status help leaks
 
