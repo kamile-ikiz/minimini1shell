@@ -6,7 +6,7 @@
 #    By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 00:10:17 by kikiz             #+#    #+#              #
-#    Updated: 2025/07/29 15:25:12 by kikiz            ###   ########.fr        #
+#    Updated: 2025/07/29 18:33:04 by kikiz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ SRCS = main.c \
        free.c \
 	   start.c\
 	   check_syntax.c\
+	   expansion.c\
 	   print_tokens.c
 
 # Object files

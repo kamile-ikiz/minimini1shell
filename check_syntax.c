@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:03:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/27 19:22:00 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/29 15:54:27 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,13 +90,14 @@ int check_consecutive_pipes(token_t *tokens, int token_count)
 
 int	check_pipe_syntax(token_t *tokens, int token_count)
 {
-	int	i;
-
-	if (!check_pipe_start_end(tokens, token_count))
-		return (0);
-	if (!check_consecutive_pipes(tokens, token_count))
-		return (0);
-	i = 0;
+	while (tokens)
+	{
+		if (!check_pipe_start_end(tokens, token_count))
+			return (0);
+		if (!check_consecutive_pipes(tokens, token_count))
+			return (0);
+		tokens = tokens->next;
+	}
 	return (1);
 }
 

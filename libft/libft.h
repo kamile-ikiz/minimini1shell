@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 16:58:27 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/26 13:15:30 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/29 18:16:37 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void				ft_putendl_fd(char *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
 int					ft_strcmp(const char *s1, const char *s2);
 size_t				ft_strspn(const char *str1, const char *str2);
+char				*ft_strjoin_three(char *s1, char *s2, char *s3);
 
 typedef struct s_list
 {

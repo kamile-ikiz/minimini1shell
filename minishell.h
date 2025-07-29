@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/27 19:19:31 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/29 18:34:52 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define MINISHELL_H
 
 #include "libft/libft.h"
+#include "builtins/builtins.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +23,7 @@
 #include <termios.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-
+#include <stdbool.h>
 
 // ANSI Color Codes for token display
 #define RESET_COLOR     "\033[0m"
@@ -98,4 +99,5 @@ char *parse_word(parser_t *parser);
 token_t *tokenize(char *input);
 int is_space(char c);
 int check_all_syntax(token_t *head);
+char *expand_or_not(parser_t *parser, char status);
 #endif 

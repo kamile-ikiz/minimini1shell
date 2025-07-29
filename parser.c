@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 16:16:14 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/25 23:17:27 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/29 18:44:11 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char *parse_quotes(parser_t *parser, char quote)
 		parser->error_msg = "Unclosed quote";
 		return (NULL);
 	}
-	res = ft_substr(parser->inp, start, parser->pos - start);
+	res = (ft_substr(parser->inp, start, parser->pos - start));
 	parser->pos++; //skip quote
 	return(res);
 }

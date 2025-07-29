@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/27 22:05:16 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/29 16:19:02 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,18 +71,6 @@ static token_t	*handle_operator_tokens(parser_t *parser)
 	}
 	return (NULL);
 }
-// char *expand_or_not(parser_t *parser, char status)
-// {
-// 	if (!parser)
-// 		return(0);
-// 	if (status == "\"" || status == '\0')
-// 	{
-// 		while(parser->inp[parser->pos])
-// 		{
-			
-// 		}
-// 	}
-// }
 
 static token_t	*handle_quoted_or_word(parser_t *parser)
 {
