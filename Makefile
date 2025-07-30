@@ -6,50 +6,50 @@
 #    By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 00:10:17 by kikiz             #+#    #+#              #
-#    Updated: 2025/07/29 18:33:04 by kikiz            ###   ########.fr        #
+#    Updated: 2025/07/30 16:32:17 by kikiz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# Program name
 NAME = minishell
 
-# Compiler and flags
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 INCLUDES = -I. -Ilibft
-LDFLAGS = -lreadline
+LDFLAGS = -lreadline -no-pie
 
-# Directories
 SRCDIR = .
 OBJDIR = obj
 LIBFTDIR = libft
+BUILTINSDIR = builtins
 
-# Source files
+# Ana kaynak dosyalar
 SRCS = main.c \
        token.c \
        parser.c \
        executor.c \
        utils.c \
        free.c \
-	   start.c\
-	   check_syntax.c\
-	   expansion.c\
-	   print_tokens.c
+       start.c \
+       check_syntax.c \
+       expansion.c \
+       print_tokens.c
 
-# Object files
-OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
+# builtins klasöründeki tüm .c dosyalarını ekle
+BUILTINS_SRCS = $(wildcard $(BUILTINSDIR)/*.c)
 
-# Libft
+ALL_SRCS = $(SRCS) $(BUILTINS_SRCS)
+OBJS = $(ALL_SRCS:%.c=$(OBJDIR)/%.o)
+
 LIBFT = $(LIBFTDIR)/libft.a
 
-# Colors for pretty output
 GREEN = \033[0;32m
 YELLOW = \033[0;33m
 RED = \033[0;31m
-NC = \033[0m # No Color
+NC = \033[0m
 BOLD = \033[1m
 
-# Rules
+# ...existing code...
+
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
@@ -57,8 +57,13 @@ $(NAME): $(LIBFT) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) $(LDFLAGS)
 	@echo "$(BOLD)$(GREEN)✅ $(NAME) compiled successfully!$(NC)"
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@mkdir -p $(OBJDIR)
+$(OBJDIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	@echo "$(YELLOW)🔨 Compiling $<...$(NC)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+$(OBJDIR)/%.o: $(BUILTINSDIR)/%.c
+	@mkdir -p $(dir $@)
 	@echo "$(YELLOW)🔨 Compiling $<...$(NC)"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
@@ -78,49 +83,4 @@ fclean: clean
 
 re: fclean all
 
-# Test targets
-test: $(NAME)
-	@echo "$(BOLD)$(GREEN)🧪 Testing tokenizer...$(NC)"
-	@./$(NAME) "ls -la | grep test > output.txt"
-	@./$(NAME) "echo hello | cat << EOF"
-	@./$(NAME) "(cd /tmp && ls) | wc -l"
-
-debug: CFLAGS += -DDEBUG -fsanitize=address
-debug: $(NAME)
-
-# Development helpers
-norm:
-	@echo "$(BOLD)$(YELLOW)📝 Running norminette...$(NC)"
-	@norminette $(SRCS) minishell.h
-
-git-add:
-	@git add .
-	@echo "$(GREEN)✅ All files added to git$(NC)"
-
-git-status:
-	@git status --short
-
-# Help
-help:
-	@echo "$(BOLD)Available targets:$(NC)"
-	@echo "  $(GREEN)all$(NC)     - Build the project"
-	@echo "  $(GREEN)clean$(NC)   - Remove object files"
-	@echo "  $(GREEN)fclean$(NC)  - Remove object files and executable"
-	@echo "  $(GREEN)re$(NC)      - Rebuild everything"
-	@echo "  $(GREEN)test$(NC)    - Run basic tests"
-	@echo "  $(GREEN)debug$(NC)   - Build with debug flags"
-	@echo "  $(GREEN)norm$(NC)    - Check norm compliance"
-	@echo "  $(GREEN)help$(NC)    - Show this help"
-
-leaks:
-	@echo "Running Walgring..."
-	@valgrind --leak-check=full  \
-			--show-leak-kinds=all \
-			--track-origins=yes   \
-			--track-fds=yes       \
-			--verbose               \
-			--suppressions=valgrind.supp   \
-			./$(NAME)
-
-.PHONY: all clean fclean re test debug norm git-add git-status help leaks
-
+.PHONY: all clean fclean re

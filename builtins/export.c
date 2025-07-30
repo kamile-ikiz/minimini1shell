@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 01:40:35 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/29 16:17:33 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/30 17:59:47 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static int	print_exported_vars(t_env *list)
 	}
 	return (0);
 }
-
+//EKLENEN KEY DOĞRU GÖRÜNMÜUOR BAAAKKK
 int	builtin_export(t_command *cmd)
 {
 	t_env	**list_ptr;

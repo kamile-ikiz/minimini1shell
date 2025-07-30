@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beyzasonmez565@gmail.com>        +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:46:37 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/26 20:13:24 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/07/30 16:33:22 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	is_builtin(char *cmd)
 {
-	char	**builtins;
+	char	*builtins[8];
 	int		i;
 
 	builtins[0] = "echo";

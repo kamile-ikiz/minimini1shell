@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 16:19:04 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/29 18:19:16 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/30 18:26:13 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,10 @@ static char *expand_variable(char *arg, t_env **env_list_ptr)
 	before = ft_substr(arg, 0, dollar_pos);
 	after = ft_strdup(&arg[var_end]);
 	if (!env_value)
-		result = ft_strjoin(before, after);
+	{
+		var_name = ft_strjoin("$", var_name);
+		result = ft_strjoin_three(before, var_name, after);
+	}
 	else
 		result = ft_strjoin_three(before, env_value, after);
 	free(var_name);
