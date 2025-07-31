@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/29 18:34:52 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/31 15:43:21 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdbool.h>
+#include <fcntl.h>
 
 // ANSI Color Codes for token display
 #define RESET_COLOR     "\033[0m"
@@ -37,6 +38,7 @@
 #define GRAY            "\033[0;37m"
 #define BOLD            "\033[1m"
 #define PROMPT          "\001\033[38;5;205m\002minimini1shell$ \001\033[0m\002"
+#define BUFFER_SIZE     1024
 
 typedef enum {
     TOKEN_WORD,           // Regular words like "ls", "file.txt"
@@ -100,4 +102,14 @@ token_t *tokenize(char *input);
 int is_space(char c);
 int check_all_syntax(token_t *head);
 char *expand_or_not(parser_t *parser, char status);
+char    *ft_strjoin_free(char *s1, char *s2);
+char    *get_env_value(char *var_name, t_env **env_list_ptr);
+//--------------------heredoc------------------------------------
+char	*append_variable(char *line, int *i, char *result);
+char	*append_normal_char(char *line, int i, char *result);
+int     setup_heredoc_redirect(command_t *cmd, char *delimiter);
+char	*handle_heredoc_delimiter(char *delimiter);
+char	*get_next_line(int fd);
+int     execute_normal_command(command_t *cmd); 
+
 #endif 

@@ -6,7 +6,7 @@
 #    By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 00:10:17 by kikiz             #+#    #+#              #
-#    Updated: 2025/07/30 16:32:17 by kikiz            ###   ########.fr        #
+#    Updated: 2025/07/31 15:36:18 by kikiz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,9 @@ SRCS = main.c \
        start.c \
        check_syntax.c \
        expansion.c \
+	   heredoc.c \
+	   heredoc_utils.c \
+	   heredoc_init.c \
        print_tokens.c
 
 # builtins klasöründeki tüm .c dosyalarını ekle

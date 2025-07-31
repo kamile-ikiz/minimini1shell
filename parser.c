@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 16:16:14 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/29 18:44:11 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/31 15:17:25 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ static void	handle_heredoc(parser_t *parser, command_t *cmd)
 	{
 		cmd->heredoc_delimiter = NULL;
 		parser->error = 1;
+		parser->error_msg = "syntax error: expected delimiter after '<<'";
 	}
 }
 

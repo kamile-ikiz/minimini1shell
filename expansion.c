@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 16:19:04 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/30 18:26:13 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/31 18:11:29 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static char *extract_var_name(char *str, int start, int *end)
 
 }
 
-static char *get_env_value(char *var_name, t_env **env_list_ptr)
+char *get_env_value(char *var_name, t_env **env_list_ptr)
 {
 	t_env *current;
 
@@ -51,37 +51,69 @@ static char *get_env_value(char *var_name, t_env **env_list_ptr)
 	return (NULL);
 }
 
-static char *expand_variable(char *arg, t_env **env_list_ptr)
+static char	*expand_variable_parts(
+	char *arg, char *env_value, int dollar_pos, int var_end, int *new_i)
+{
+	char	*before;
+	char	*after;
+	char	*result;
+	int		env_len;
+
+	before = ft_substr(arg, 0, dollar_pos);
+	after = ft_strdup(&arg[var_end]);
+	if (!env_value)
+		result = ft_strjoin(before, after);
+	else
+		result = ft_strjoin_three(before, env_value, after);
+	env_len = env_value ? ft_strlen(env_value) : 0;
+	*new_i = ft_strlen(before) + env_len;
+	free(before);
+	free(after);
+	return (result);
+}
+
+static char	*expand_single_variable(
+	char *arg, int dollar_pos, t_env **env_list_ptr, int *new_i)
 {
 	char	*var_name;
 	char	*env_value;
 	char	*result;
-	char	*before;
-	char	*after;
-	int		dollar_pos;
 	int		var_end;
 
-	dollar_pos = 0;
-	while (arg[dollar_pos] && arg[dollar_pos] != '$')
-		dollar_pos++;
-	if(!arg[dollar_pos])
-		return (ft_strdup(arg));
 	var_name = extract_var_name(arg, dollar_pos, &var_end);
 	if (!var_name)
 		return (ft_strdup(arg));
 	env_value = get_env_value(var_name, env_list_ptr);
-	before = ft_substr(arg, 0, dollar_pos);
-	after = ft_strdup(&arg[var_end]);
-	if (!env_value)
-	{
-		var_name = ft_strjoin("$", var_name);
-		result = ft_strjoin_three(before, var_name, after);
-	}
-	else
-		result = ft_strjoin_three(before, env_value, after);
+	result = expand_variable_parts(arg, env_value, dollar_pos, var_end, new_i);
 	free(var_name);
-	free(before);
-	free(after);
+	return (result);
+}
+
+static char	*expand_all_variables(char *arg, t_env **env_list_ptr)
+{
+	char	*result;
+	char	*temp;
+	int		i;
+	int new_i;
+
+	if (!arg || !ft_strchr(arg, '$'))
+		return (ft_strdup(arg));
+	result = ft_strdup(arg);
+	if (!result)
+		return (NULL);
+	i = 0;
+	while (result[i])
+	{
+		if (result[i] == '$' && (ft_isalnum(result[i + 1]) || result[i + 1] == '_'))
+		{
+			temp = expand_single_variable(result, i, env_list_ptr, &new_i);
+			free(result);
+			result = temp;
+			i = new_i;
+			continue;
+		}
+		i++;
+	}
 	return (result);
 }
 
@@ -99,7 +131,7 @@ char *expand_or_not(parser_t *parser, char status)
         return (current_arg);
     if (!env_list_ptr)
         return (ft_strdup(current_arg));
-    expanded = expand_variable(current_arg, env_list_ptr);
+    expanded = expand_all_variables(current_arg, env_list_ptr);
     if (!expanded)
         return (ft_strdup(current_arg));
     return (expanded);

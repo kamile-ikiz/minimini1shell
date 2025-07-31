@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 17:39:33 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/30 18:27:02 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/07/31 18:12:05 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int main(int ac, char **av, char **env)
 	parser_t *parser;
 	parser = malloc(sizeof(parser_t));
 	parser->current = malloc(sizeof(token_t));
-	parser->current->value = "gjfhg$USER rdtfyguhjk";
+	parser->current->value = "gjfhg$USER\'$HOME\' rdtfyguhjk";
 	init_env(env);
 	// t_command *cmd;
 	// cmd = malloc(sizeof(t_command));  // bellekte yer ayır
@@ -60,7 +60,7 @@ int main(int ac, char **av, char **env)
 	// if (!cmd1)
     // 	return (0);  // veya hata yönetimi
 	// char *env_args1[] = {"export", "AAA=bbb", NULL};
-	// cmd1->args = env_args1;
+	// cmd1->args = env_args1;/*  */
 	// builtin_export(cmd1);
 	// 		t_command *cmd2;
 	// cmd2 = malloc(sizeof(t_command));  // bellekte yer ayır
