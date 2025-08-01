@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beyzasonmez565@gmail.com>        +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 19:19:41 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/26 20:14:26 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/01 16:11:22 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	builtin_pwd(t_command *cmd)
+int	builtin_pwd(command_t *cmd)
 {
 	char	*cwd;
 

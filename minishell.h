@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/31 15:43:21 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/01 16:05:00 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,18 @@ typedef enum {
     TOKEN_ERROR           // Parsing error
 } token_type_t;
 
+//redirect struct
+typedef struct redirect
+{
+	token_type_t		type;
+	char				*filename;
+	struct redirect	*next;
+}	redirect_t;
+
 //command struct
 typedef struct command {
     char **args;              // Array of command arguments ["ls", "-la", NULL]
     int argc;                 // Number of arguments
-    char *input_file;         // File for input redirection (< file)
-    char *output_file;        // File for output redirection (> file)
-    int append_mode;          // 1 if >>, 0 if >
-    char *heredoc_delimiter;  // Delimiter for heredoc (<<)
     struct command *next;     // Next command in pipeline
 } command_t;
 
@@ -87,6 +91,15 @@ typedef struct parser {
     char *error_msg;
 } parser_t;
 
+//data expand edilecekse kullanılıyor
+typedef struct s_expand_data
+{
+	char	*before;
+	char	*after;
+	char	*result;
+	int		new_pos;
+}	t_expand_data;
+
 //func prototypes
 token_t *new_token(token_type_t type, char *value);
 void    token_lst(token_t **head, token_t *token);
@@ -110,6 +123,5 @@ char	*append_normal_char(char *line, int i, char *result);
 int     setup_heredoc_redirect(command_t *cmd, char *delimiter);
 char	*handle_heredoc_delimiter(char *delimiter);
 char	*get_next_line(int fd);
-int     execute_normal_command(command_t *cmd); 
 
 #endif 

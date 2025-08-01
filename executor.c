@@ -6,15 +6,9 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/31 16:31:29 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/01 13:21:35 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int execute_normal_command(command_t *cmd)
-{
-	(void) cmd;
-	int a = 1;
-	return (a);
-}

@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 13:55:09 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/30 17:27:41 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/01 16:11:08 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ t_env	**init_env(char **env)
 	return (&list);
 }
 
-int	builtin_env(t_command *cmd)
+int	builtin_env(command_t *cmd)
 {
 	t_env	**env;
 	t_env	*current;

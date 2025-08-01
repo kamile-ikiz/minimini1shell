@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 14:28:47 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/31 15:39:27 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/01 13:16:10 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ static char	*create_temp_filename(void)
 	char	*filename;
 	char	*num_str;
 	int		temp_num;
-	static int	counter = 0;
+	static int	counter;
+
+	counter = 0;
 
 	temp_num = getpid() + counter++;
 	num_str = ft_itoa(temp_num);

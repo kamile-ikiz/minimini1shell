@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beyzasonmez565@gmail.com>        +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:50:58 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/26 20:05:19 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/01 16:10:36 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,6 @@
 # define BUILTINS_H
 
 # include <stdbool.h>
-
-typedef struct s_command
-{
-	char	**args;
-}	t_command;
 
 typedef struct s_env
 {
@@ -29,16 +24,16 @@ typedef struct s_env
 	bool			is_printed;
 }	t_env;
 
-int		builtin_cd(t_command *cmd);
-int		builtin_echo(t_command *cmd);
-int		builtin_pwd(t_command *cmd);
-int		builtin_env(t_command *cmd);
-int		builtin_export(t_command *cmd);
-int		builtin_exit(t_command *cmd);
-int		builtin_unset(t_command *cmd);
+int		builtin_cd (command_t *cmd);
+int		builtin_echo(command_t *cmd);
+int		builtin_pwd(command_t *cmd);
+int		builtin_env(command_t *cmd);
+int		builtin_export(command_t *cmd);
+int		builtin_exit(command_t *cmd);
+int		builtin_unset(command_t *cmd);
 
 int		is_builtin(char *cmd);
-int		execute_builtin(t_command *cmd);
+int		execute_builtin(command_t *cmd);
 
 int		is_valid_identifier(char *str);
 int		env_list_size(t_env *list);

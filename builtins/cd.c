@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beyzasonmez565@gmail.com>        +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:44:51 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/26 20:06:45 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/01 16:10:48 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	print_error(char *msg, char *to_free)
 	return (1);
 }
 
-static char	*get_path(t_command *cmd, char *cwd)
+static char	*get_path(command_t *cmd, char *cwd)
 {
 	char	*path;
 
@@ -37,7 +37,7 @@ static char	*get_path(t_command *cmd, char *cwd)
 	return (path);
 }
 
-int	builtin_cd(t_command *cmd)
+int	builtin_cd(command_t *cmd)
 {
 	char	*path;
 	char	*cwd;

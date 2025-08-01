@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:46:37 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/30 16:33:22 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/01 16:11:17 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-int	execute_builtin(t_command *cmd)
+int	execute_builtin(command_t *cmd)
 {
 	if (ft_strcmp(cmd->args[0], "echo") == 0)
 		return (builtin_echo(cmd));

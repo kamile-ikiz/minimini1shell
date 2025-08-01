@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beyzasonmez565@gmail.com>        +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:16:42 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/26 20:07:38 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/01 16:11:02 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	is_n_option(const char *arg)
 	return (1);
 }
 
-int	builtin_echo(t_command *cmd)
+int	builtin_echo(command_t *cmd)
 {
 	int	i;
 	int	newline;

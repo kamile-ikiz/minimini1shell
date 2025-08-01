@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:03:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/29 15:54:27 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/01 13:19:17 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 void print_syntax_error(const char *token)
 {
-    fprintf(stderr, "minishell: syntax error near unexpected token `%s'\n", token);
+	ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
+	ft_putendl_fd(token, 2);
 }
 
 token_t	*get_token_at_index(token_t *head, int index)
