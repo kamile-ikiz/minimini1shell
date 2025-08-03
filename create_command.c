@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 14:13:48 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/01 16:42:37 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/02 17:03:57 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,30 +24,6 @@ command_t	*create_command(void)
 	cmd->redirects = NULL;
 	cmd->next = NULL;
 	return (cmd);
-}
-
-static void	free_args(char **args, int argc)
-{
-	int	i;
-
-	if (!args)
-		return ;
-	i = 0;
-	while (i < argc)
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args);
-}
-
-void	free_command(command_t *cmd)
-{
-	if (!cmd)
-		return ;
-	free_args(cmd->args, cmd->argc);
-	free_redirects(cmd->redirects);
-	free(cmd);
 }
 
 static char	**realloc_args(char **args, int new_size)
@@ -70,7 +46,7 @@ static char	**realloc_args(char **args, int new_size)
 	return (new_args);
 }
 
-int	add_word_to_command(command_t *cmd, const char *word)
+int	handle_command_pair(token_t *word, command_t *cmd)
 {
 	char	**new_args;
 
@@ -79,7 +55,7 @@ int	add_word_to_command(command_t *cmd, const char *word)
 	new_args = realloc_args(cmd->args, cmd->argc + 1);
 	if (!new_args)
 		return (-1);
-	new_args[cmd->argc] = strdup(word);
+	new_args[cmd->argc] = strdup(word->value);
 	if (!new_args[cmd->argc])
 		return (-1);
 	cmd->args = new_args;

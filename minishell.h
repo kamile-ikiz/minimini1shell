@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/01 16:05:00 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/03 15:47:33 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,17 @@ typedef enum {
     TOKEN_ERROR           // Parsing error
 } token_type_t;
 
+typedef struct minishell
+{
+    command_t   *commands;
+    char        **envp;
+    int         exit_code;
+    int         should_exit;
+    pid_t       *pids;
+    int         *pipes;
+    int         pipe_count;
+}   minishell_t;
+
 //redirect struct
 typedef struct redirect
 {
@@ -63,6 +74,7 @@ typedef struct redirect
 typedef struct command {
     char **args;              // Array of command arguments ["ls", "-la", NULL]
     int argc;                 // Number of arguments
+    redirect_t *redirects;    //redirect list
     struct command *next;     // Next command in pipeline
 } command_t;
 
@@ -117,11 +129,19 @@ int check_all_syntax(token_t *head);
 char *expand_or_not(parser_t *parser, char status);
 char    *ft_strjoin_free(char *s1, char *s2);
 char    *get_env_value(char *var_name, t_env **env_list_ptr);
+int	get_token_count(token_t *head);
 //--------------------heredoc------------------------------------
 char	*append_variable(char *line, int *i, char *result);
 char	*append_normal_char(char *line, int i, char *result);
 int     setup_heredoc_redirect(command_t *cmd, char *delimiter);
 char	*handle_heredoc_delimiter(char *delimiter);
 char	*get_next_line(int fd);
+//-------------------redirect list or word list-------------------------------------
+redirect_t	*create_redirect(token_type_t type, char *filename);
+void	add_redirect(redirect_t **head, redirect_t *new_redirect);
+int     handle_redirect_pair(token_t *redirect_token, token_t *filename,
+	command_t *cmd);
+int handle_command_pair(token_t *word, command_t *cmd);
+int	is_redirect_token(token_t token);
 
 #endif 

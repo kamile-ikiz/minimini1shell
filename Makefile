@@ -6,7 +6,7 @@
 #    By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 00:10:17 by kikiz             #+#    #+#              #
-#    Updated: 2025/07/31 15:36:18 by kikiz            ###   ########.fr        #
+#    Updated: 2025/08/02 16:38:34 by kikiz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ SRCDIR = .
 OBJDIR = obj
 LIBFTDIR = libft
 BUILTINSDIR = builtins
+HEREDOCDIR = heredoc
 
 # Ana kaynak dosyalar
 SRCS = main.c \
@@ -32,15 +33,16 @@ SRCS = main.c \
        start.c \
        check_syntax.c \
        expansion.c \
-	   heredoc.c \
-	   heredoc_utils.c \
-	   heredoc_init.c \
+	   create_command.c\
+	   create_redirect.c\
+	   segment.c\
        print_tokens.c
 
 # builtins klasöründeki tüm .c dosyalarını ekle
 BUILTINS_SRCS = $(wildcard $(BUILTINSDIR)/*.c)
+HEREDOC_SRCS = $(wildcard $(HEREDOCDIR)/*.c)
 
-ALL_SRCS = $(SRCS) $(BUILTINS_SRCS)
+ALL_SRCS = $(SRCS) $(BUILTINS_SRCS) $(HEREDOC_SRCS)
 OBJS = $(ALL_SRCS:%.c=$(OBJDIR)/%.o)
 
 LIBFT = $(LIBFTDIR)/libft.a

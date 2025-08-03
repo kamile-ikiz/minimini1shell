@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 00:09:15 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/18 16:48:14 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/02 17:02:44 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,42 @@ void free_tokens(token_t *tokens) {
         tokens = next;
     }
 }
-void free_command(command_t *cmd) {
-    if (!cmd)
-        return;
 
-    int i = 0;
-    while (i < cmd->argc) {
-        free(cmd->args[i]);
-        i++;
-    }
-    free(cmd->args);
-    free(cmd->input_file);
-    free(cmd->output_file);
-    free(cmd->heredoc_delimiter);
-    free(cmd);
+static void	free_args(char **args, int argc)
+{
+	int	i;
+
+	if (!args)
+		return ;
+	i = 0;
+	while (i < argc)
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+}
+
+static void	free_redirects(redirect_t *redirects)
+{
+	redirect_t	*temp;
+
+	while (redirects)
+	{
+		temp = redirects;
+		redirects = redirects->next;
+		free(temp->filename);
+		free(temp);
+	}
+}
+
+void	free_command(command_t *cmd)
+{
+	if (!cmd)
+		return ;
+	free_args(cmd->args, cmd->argc);
+	free_redirects(cmd->redirects);
+	free(cmd);
 }
 void free_pipeline(pipeline_t *pipeline) {
     while (pipeline) {

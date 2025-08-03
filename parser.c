@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 16:16:14 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/31 15:17:25 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/02 16:59:49 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,6 @@ command_t	*new_command(void)
 		return (NULL);
 	cmd->args = NULL;
 	cmd->argc = 0;
-	cmd->input_file = NULL;
-	cmd->output_file = NULL;
-	cmd->append_mode = 0;
-	cmd->heredoc_delimiter = NULL;
 	cmd->next = NULL;
 	return (cmd);
 }
@@ -86,67 +82,57 @@ static void	handle_word(parser_t *parser, command_t *cmd)
 	parser->current = parser->current->next;
 }
 
-static void	handle_redirect_in(parser_t *parser, command_t *cmd)
+static void	handle_redirect_in(parser_t *parser)
 {
 	parser->current = parser->current->next;
 	if (parser->current && parser->current->type == TOKEN_WORD)
 	{
-		cmd->input_file = ft_strdup(parser->current->value);
 		parser->current = parser->current->next;
 	}
 	else
 	{
-		cmd->input_file = NULL;
 		parser->error = 1;
 		parser->error_msg = "Missing input file for <";
 	}
 }
 
-static void	handle_redirect_out(parser_t *parser, command_t *cmd)
+static void	handle_redirect_out(parser_t *parser)
 {
-	cmd->append_mode = 0;
 	parser->current = parser->current->next;
 	if (parser->current && parser->current->type == TOKEN_WORD)
 	{
-		cmd->output_file = ft_strdup(parser->current->value);
 		parser->current = parser->current->next;
 	}
 	else
 	{
-		cmd->output_file = NULL;
 		parser->error = 1;
 		parser->error_msg = "Missing output file for >";
 	}
 }
 
-static void	handle_redirect_append(parser_t *parser, command_t *cmd)
+static void	handle_redirect_append(parser_t *parser)
 {
-	cmd->append_mode = 1;
 	parser->current = parser->current->next;
 	if (parser->current && parser->current->type == TOKEN_WORD)
 	{
-		cmd->output_file = ft_strdup(parser->current->value);
 		parser->current = parser->current->next;
 	}
 	else
 	{
-		cmd->output_file = NULL;
 		parser->error = 1;
 		parser->error_msg = "Missing output file for >>";
 	}
 }
 
-static void	handle_heredoc(parser_t *parser, command_t *cmd)
+static void	handle_heredoc(parser_t *parser)
 {
 	parser->current = parser->current->next;
 	if (parser->current && parser->current->type == TOKEN_WORD)
 	{
-		cmd->heredoc_delimiter = ft_strdup(parser->current->value);
-		parser->current = parser->current->next;
+				parser->current = parser->current->next;
 	}
 	else
 	{
-		cmd->heredoc_delimiter = NULL;
 		parser->error = 1;
 		parser->error_msg = "syntax error: expected delimiter after '<<'";
 	}
@@ -168,13 +154,13 @@ command_t	*parse_command(parser_t *parser)
 		if (token->type == TOKEN_WORD)
 			handle_word(parser, cmd);
 		else if (token->type == TOKEN_REDIRECT_IN)
-			handle_redirect_in(parser, cmd);
+			handle_redirect_in(parser);
 		else if (token->type == TOKEN_REDIRECT_OUT)
-			handle_redirect_out(parser, cmd);
+			handle_redirect_out(parser);
 		else if (token->type == TOKEN_REDIRECT_APPEND)
-			handle_redirect_append(parser, cmd);
+			handle_redirect_append(parser);
 		else if (token->type == TOKEN_HEREDOC)
-			handle_heredoc(parser, cmd);
+			handle_heredoc(parser);
 	}
 	return (cmd);
 }

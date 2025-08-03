@@ -6,13 +6,13 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:03:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/01 13:19:17 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/02 16:33:56 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void print_syntax_error(const char *token)
+void print_syntax_error(char *token)
 {
 	ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
 	ft_putendl_fd(token, 2);

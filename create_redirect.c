@@ -1,18 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirect.c                                         :+:      :+:    :+:   */
+/*   create_redirect.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:05:03 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/01 16:43:34 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/02 17:02:11 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-redirect_t	*create_redirect(token_type_t type, const char *filename)
+int	is_redirect_token(token_t token)
+{
+	token_type_t type;
+	type = token.type;
+	if (type == TOKEN_REDIRECT_IN || type == TOKEN_REDIRECT_OUT
+		|| type == TOKEN_REDIRECT_APPEND || type == TOKEN_HEREDOC)
+		return(1);
+	else
+		return(0);
+}
+
+redirect_t	*create_redirect(token_type_t type, char *filename)
 {
 	redirect_t	*redirect;
 
@@ -42,15 +53,16 @@ void	add_redirect(redirect_t **head, redirect_t *new_redirect)
 	current->next = new_redirect;
 }
 
-void	free_redirects(redirect_t *redirects)
+int	handle_redirect_pair(token_t *redirect_token, token_t *filename,
+	command_t *cmd)
 {
-	redirect_t	*temp;
+	redirect_t	*new_redirect;
+	char *file_name;
 
-	while (redirects)
-	{
-		temp = redirects;
-		redirects = redirects->next;
-		free(temp->filename);
-		free(temp);
-	}
+	file_name = filename->value;
+	new_redirect = create_redirect(redirect_token->type, file_name);
+	if (!new_redirect)
+		return (-1);
+	add_redirect(&cmd->redirects, new_redirect);
+	return (0);
 }

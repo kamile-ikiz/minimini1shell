@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:50:58 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/01 16:10:36 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/02 16:30:46 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ typedef struct s_env
 	bool			is_exported;
 	bool			is_printed;
 }	t_env;
+
+typedef struct command command_t;
 
 int		builtin_cd (command_t *cmd);
 int		builtin_echo(command_t *cmd);
