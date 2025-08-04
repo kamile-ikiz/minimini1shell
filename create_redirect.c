@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:05:03 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/02 17:02:11 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/04 20:10:07 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,12 @@ redirect_t	*create_redirect(token_type_t type, char *filename)
 	if (!redirect)
 		return (NULL);
 	redirect->type = type;
-	redirect->filename = NULL;
-	if (filename)
-		redirect->filename = strdup(filename);
+	redirect->filename = ft_strdup(filename);
+	if (!redirect->filename)
+	{
+		free(redirect);
+		return (NULL);
+	}
 	redirect->next = NULL;
 	return (redirect);
 }
@@ -64,5 +67,6 @@ int	handle_redirect_pair(token_t *redirect_token, token_t *filename,
 	if (!new_redirect)
 		return (-1);
 	add_redirect(&cmd->redirects, new_redirect);
+
 	return (0);
 }

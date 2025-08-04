@@ -6,7 +6,7 @@
 #    By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 00:10:17 by kikiz             #+#    #+#              #
-#    Updated: 2025/08/02 16:38:34 by kikiz            ###   ########.fr        #
+#    Updated: 2025/08/03 21:45:25 by kikiz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,6 @@ SRCS = main.c \
        executor.c \
        utils.c \
        free.c \
-       start.c \
        check_syntax.c \
        expansion.c \
 	   create_command.c\

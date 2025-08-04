@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:03:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/02 16:33:56 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/04 18:40:02 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	check_pipe_start_end(token_t *head, int token_count)
 		print_syntax_error("|");
 		return (0);
 	}
-	last = get_token_at_index(head, token_count - 2);
+	last = get_token_at_index(head, token_count - 1);
 	if (last && last->type == TOKEN_PIPE)
 	{
 		print_syntax_error("|");
@@ -72,33 +72,29 @@ int	check_pipe_start_end(token_t *head, int token_count)
 	return (1);
 }
 
-int check_consecutive_pipes(token_t *tokens, int token_count)
+int check_consecutive_pipes(token_t *tokens)
 {
-	int	i;
-
-	i = 0;
-	while (i < token_count - 1)
+	while (tokens)
 	{
-		if (tokens[i].type == TOKEN_PIPE && tokens[i + 1].type == TOKEN_PIPE)
+		if (tokens->type == TOKEN_PIPE && tokens->next->type == TOKEN_PIPE)
 		{
 			print_syntax_error("|");
 			return (0);
 		}
-		i++;
+		tokens = tokens->next;
 	}
 	return (1);
 }
 
 int	check_pipe_syntax(token_t *tokens, int token_count)
 {
-	while (tokens)
-	{
 		if (!check_pipe_start_end(tokens, token_count))
+		{
 			return (0);
-		if (!check_consecutive_pipes(tokens, token_count))
+		}
+		if (!check_consecutive_pipes(tokens))
 			return (0);
 		tokens = tokens->next;
-	}
 	return (1);
 }
 

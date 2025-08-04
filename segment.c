@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:39:33 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/02 16:55:50 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/04 20:03:07 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,31 +16,174 @@
 ** Example parsing function
 ** Usage: parse tokens, handle redirects first, then add remaining words to cmd
 */
-int	parse_command_or_redirect(token_t **tokens, command_t *cmd)
-{
-	int	i;
-	int token_count;
 
-	token_count = get_token_count(*tokens);
-	i = 0;
-	while (i < token_count)
+int count_tokens_until_pipe(token_t *token_list)
+{
+	int count;
+	token_t *current;
+
+	count = 0;
+	current = token_list;
+	while(current && current->type != TOKEN_PIPE)
 	{
-		if (is_redirect_token(*tokens[i]))
-		{
-			if (i + 1 >= token_count || tokens[i + 1] != TOKEN_WORD)
-				return (-1);
-			if (handle_redirect_pair(tokens[i], tokens[i + 1], cmd) != 0)
-				return (-1);
-			i += 2;
-		}
-		else if (tokens[i] == TOKEN_WORD)
-		{
-			if (handle_command_pair(tokens[i], cmd) != 0)
-				return (-1);
-			i++;
-		}
+		count++;
+		current = current->next;
+	}
+	return (count);
+}
+
+segment_t *create_segment(void)
+{
+	segment_t	*segment;
+
+	segment = malloc(sizeof(segment_t));
+	if (!segment)
+		return (NULL);
+	segment->tokens = NULL;
+	segment->token_count = 0;
+	segment->next = NULL;
+	return (segment);
+}
+
+token_t *copy_tokens_until_pipe(token_t *start_token, int count)
+{
+	token_t *new_list;
+	token_t *new_token;
+	token_t *current;
+	token_t *last;
+	int i;
+
+	new_list = NULL;
+	last = NULL;
+	current = start_token;
+	i = 0;
+	while(i < count && current)
+	{
+		new_token = malloc(sizeof(token_t));
+		if(!new_token)
+			return (NULL);
+		new_token->type = current->type;
+		new_token->value = ft_strdup(current->value);
+		new_token->next = NULL;
+		if(!new_list)
+			new_list = new_token;
 		else
-			i++;
+			last->next =new_token;
+		last = new_token;
+		current = current->next;
+		i++;
+	}
+	return (new_list);
+}
+
+segment_t	*create_single_segment(token_t *start_token, int count)
+{
+	segment_t *segment;
+
+	segment = create_segment();
+	if(!segment)
+		return(NULL);
+	segment->token_count = count;
+	segment->tokens = copy_tokens_until_pipe(start_token, count);
+	if(!segment->tokens && count > 0)
+	{
+		free(segment);
+		return (NULL);
+	}
+	return (segment);
+}
+
+token_t *skip_to_next_segment(token_t *current)
+{
+	while(current && current->type != TOKEN_PIPE)
+		current = current->next;
+	if(current && current->type == TOKEN_PIPE)
+		current = current->next;
+	return(current);
+}
+
+void	add_segment(segment_t **head, segment_t *new_segment)
+{
+	segment_t *current;
+
+	if(!*head)
+	{
+		*head = new_segment;
+		return;
+	}
+	current = *head;
+	while(current->next)
+		current = current->next;
+	current->next = new_segment;
+}
+
+segment_t	*split_tokens_by_pipe(token_t *token_list)
+{
+	segment_t	*segments;
+	segment_t	*new_segment;
+	token_t		*current;
+	int			seg_token_count;
+
+	segments = NULL;
+	current = token_list;
+	while(current)
+	{
+		seg_token_count = count_tokens_until_pipe(current);
+		if(seg_token_count == 0)
+		{
+			current = current->next;
+			continue;
+		}
+		new_segment = create_single_segment(current, seg_token_count);
+		if(!new_segment)
+		{
+			free_segments(segments);
+			return(NULL);
+		}
+		add_segment(&segments, new_segment);
+		current = skip_to_next_segment(current);
+	}
+	return(segments);
+	
+}
+
+// void baglama()
+// {
+// 	command_t *cmd;
+// 	segment_t *segment;
+// 	token_t *token_list;
+
+// 	segment = split_tokens_by_pipe(token_list);
+// 	if(parse_command_or_redirect(segment, cmd))
+// 	{
+// 		//segmentteki redirect ve komut listesi oluştu
+// 		//bundan sonraki işlemler yapılabilir artık.
+// 	}
+// }
+
+
+int	parse_command_or_redirect(segment_t *segment, command_t *cmd)
+{
+	token_t *current;
+
+	if(!segment || !cmd)
+		return (-1);
+	current = segment->tokens;
+	while(current)
+	{
+		if (is_redirect_token(*current))
+		{
+			if (!current->next || current->next->type != TOKEN_WORD)
+				return (-1);
+			if (handle_redirect_pair(current, current->next, cmd) != 0)
+				return (-1);
+		}
+		else if (current->type == TOKEN_WORD)
+		{
+			if (handle_command_pair(current, cmd) != 0)
+				return (-1);
+		}
+		current = current->next;
 	}
 	return (0);
 }

@@ -32,7 +32,6 @@ static const char *get_token_color(token_type_t type)
 		case TOKEN_REDIRECT_OUT:   return CYAN;
 		case TOKEN_REDIRECT_APPEND: return MAGENTA;
 		case TOKEN_HEREDOC:        return BLUE;
-		case TOKEN_EOF:            return GRAY;
 		case TOKEN_ERROR:          return RED;
 		default:                   return RESET_COLOR;
 	}
@@ -48,7 +47,6 @@ static const char *get_token_symbol(token_type_t type)
 		case TOKEN_REDIRECT_OUT:   return ARROW_RIGHT;
 		case TOKEN_REDIRECT_APPEND: return DOUBLE_ARROW;
 		case TOKEN_HEREDOC:        return "⟪";
-		case TOKEN_EOF:            return EOF_SYMBOL;
 		case TOKEN_ERROR:          return ERROR_SYMBOL;
 		default:                   return "❓";
 	}
@@ -64,7 +62,6 @@ static const char *get_token_type_name(token_type_t type)
 		case TOKEN_REDIRECT_OUT:   return "REDIR_OUT";
 		case TOKEN_REDIRECT_APPEND: return "REDIR_APPEND";
 		case TOKEN_HEREDOC:        return "HEREDOC";
-		case TOKEN_EOF:            return "EOF";
 		case TOKEN_ERROR:          return "ERROR";
 		default:                   return "UNKNOWN";
 	}
@@ -90,7 +87,7 @@ void print_tokens_fancy(token_t *tokens)
 			CYAN, RESET_COLOR, color, symbol, RESET_COLOR, 
 			color, type_name, RESET_COLOR);
 		
-		if (current->value && current->type != TOKEN_EOF)
+		if (current->value && current->next != NULL)
 		{
 			printf(" %s→%s %s\"%s\"%s", 
 				GRAY, RESET_COLOR, color, current->value, RESET_COLOR);

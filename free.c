@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 00:09:15 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/02 17:02:44 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/04 20:06:14 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	free_args(char **args, int argc)
 	free(args);
 }
 
-static void	free_redirects(redirect_t *redirects)
+void	free_redirects(redirect_t *redirects)
 {
 	redirect_t	*temp;
 
@@ -57,7 +57,31 @@ void	free_command(command_t *cmd)
 	free_redirects(cmd->redirects);
 	free(cmd);
 }
-void free_pipeline(pipeline_t *pipeline) {
+
+void free_segments(segment_t *segments)
+{
+	segment_t	*temp;
+	token_t		*token_temp;
+	token_t		*token_next;
+
+	while(segments)
+	{
+		temp = segments;
+		segments = segments->next;
+		while(temp->tokens)
+		{
+			token_temp = temp->tokens;
+			token_next = temp->tokens->next;
+			free(token_temp->value);
+			free(token_temp);
+			temp->tokens = token_next;
+		}
+		free(temp);
+	}
+}
+
+void free_pipeline(pipeline_t *pipeline)
+{
     while (pipeline) {
         pipeline_t *next_pipeline = pipeline->next;
         
@@ -72,3 +96,4 @@ void free_pipeline(pipeline_t *pipeline) {
         pipeline = next_pipeline;
     }
 }
+

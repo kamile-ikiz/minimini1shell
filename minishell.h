@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/03 15:47:33 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/04 20:06:20 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,20 +47,35 @@ typedef enum {
     TOKEN_REDIRECT_OUT,   // >
     TOKEN_REDIRECT_APPEND,// >>
     TOKEN_HEREDOC,        // <<
-    TOKEN_EOF,            // End of input
     TOKEN_ERROR           // Parsing error
 } token_type_t;
 
-typedef struct minishell
+// typedef struct minishell
+// {
+//     command_t   *commands;
+//     char        **envp;
+//     int         exit_code;
+//     int         should_exit;
+//     pid_t       *pids;
+//     int         *pipes;
+//     int         pipe_count;
+// }   minishell_t;
+
+//token struct
+typedef struct token {
+    token_type_t type;    // What kind of token this is
+    char *value;          // The actual text content
+    struct token *next;   // Pointer to next token (linked list)
+} token_t;
+
+//segment struct
+typedef struct segment
 {
-    command_t   *commands;
-    char        **envp;
-    int         exit_code;
-    int         should_exit;
-    pid_t       *pids;
-    int         *pipes;
-    int         pipe_count;
-}   minishell_t;
+	token_t	            *tokens;
+	int                 token_count;
+	struct segment      *next;
+}	segment_t;
+
 
 //redirect struct
 typedef struct redirect
@@ -86,13 +101,6 @@ typedef struct pipeline {
     char opertr;           // Operator connecting pipelines
 } pipeline_t;
 
-//token struct
-typedef struct token {
-    token_type_t type;    // What kind of token this is
-    char *value;          // The actual text content
-    struct token *next;   // Pointer to next token (linked list)
-} token_t;
-
 //parser state
 typedef struct parser {
     token_t *tokens;
@@ -113,12 +121,18 @@ typedef struct s_expand_data
 }	t_expand_data;
 
 //func prototypes
-token_t *new_token(token_type_t type, char *value);
-void    token_lst(token_t **head, token_t *token);
-void skip_whitespace(parser_t *parser);
+//-----------------free_functions---------------
+
 void free_tokens(token_t *tokens);
 void free_command(command_t *cmd);
 void free_pipeline(pipeline_t *pipeline);
+void free_segments(segment_t *segments);
+void	free_redirects(redirect_t *redirects);
+//---------------------------------------------------------
+command_t	*new_command(void);
+token_t *new_token(token_type_t type, char *value);
+void    token_lst(token_t **head, token_t *token);
+void skip_whitespace(parser_t *parser);
 void print_tokens_fancy(token_t *tokens);
 void print_tokens_simple(token_t *tokens);
 char *parse_quotes(parser_t *parser, char quote);
@@ -143,5 +157,7 @@ int     handle_redirect_pair(token_t *redirect_token, token_t *filename,
 	command_t *cmd);
 int handle_command_pair(token_t *word, command_t *cmd);
 int	is_redirect_token(token_t token);
+segment_t	*split_tokens_by_pipe(token_t *token_list);
+int	parse_command_or_redirect(segment_t *segment, command_t *cmd);
 
 #endif 
