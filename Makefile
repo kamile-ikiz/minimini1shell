@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+         #
+#    By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 00:10:17 by kikiz             #+#    #+#              #
-#    Updated: 2025/08/03 21:45:25 by kikiz            ###   ########.fr        #
+#    Updated: 2025/08/06 16:01:59 by beysonme         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ HEREDOCDIR = heredoc
 # Ana kaynak dosyalar
 SRCS = main.c \
        token.c \
-       parser.c \
+	   parser.c \
        executor.c \
        utils.c \
        free.c \
@@ -35,7 +35,8 @@ SRCS = main.c \
 	   create_command.c\
 	   create_redirect.c\
 	   segment.c\
-       print_tokens.c
+       print_tokens.c\
+       signal.c
 
 # builtins klasöründeki tüm .c dosyalarını ekle
 BUILTINS_SRCS = $(wildcard $(BUILTINSDIR)/*.c)
@@ -67,6 +68,11 @@ $(OBJDIR)/%.o: %.c
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(OBJDIR)/%.o: $(BUILTINSDIR)/%.c
+	@mkdir -p $(dir $@)
+	@echo "$(YELLOW)🔨 Compiling $<...$(NC)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+$(OBJDIR)/%.o: $(HEREDOCDIR)/%.c
 	@mkdir -p $(dir $@)
 	@echo "$(YELLOW)🔨 Compiling $<...$(NC)"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@

@@ -147,19 +147,6 @@ segment_t	*split_tokens_by_pipe(token_t *token_list)
 	
 }
 
-// void baglama()
-// {
-// 	command_t *cmd;
-// 	segment_t *segment;
-// 	token_t *token_list;
-
-// 	segment = split_tokens_by_pipe(token_list);
-// 	if(parse_command_or_redirect(segment, cmd))
-// 	{
-// 		//segmentteki redirect ve komut listesi oluştu
-// 		//bundan sonraki işlemler yapılabilir artık.
-// 	}
-// }
 
 
 int	parse_command_or_redirect(segment_t *segment, command_t *cmd)

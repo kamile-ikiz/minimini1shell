@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 16:16:14 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/04 18:39:04 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/06 16:01:38 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ command_t	*parse_command(parser_t *parser)
 		return (NULL);
 	while (parser->current &&
 		parser->current->type != TOKEN_PIPE &&
-		parser->current->next != NULL)
+		parser->current->type != TOKEN_EOF)
 	{
 		token = parser->current;
 		if (token->type == TOKEN_WORD)

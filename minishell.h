@@ -25,6 +25,8 @@
 #include <readline/history.h>
 #include <stdbool.h>
 #include <fcntl.h>
+#include <signal.h>
+#include <sys/wait.h>
 
 // ANSI Color Codes for token display
 #define RESET_COLOR     "\033[0m"
@@ -47,19 +49,21 @@ typedef enum {
     TOKEN_REDIRECT_OUT,   // >
     TOKEN_REDIRECT_APPEND,// >>
     TOKEN_HEREDOC,        // <<
+    TOKEN_EOF,            // End of file/input
     TOKEN_ERROR           // Parsing error
 } token_type_t;
 
-// typedef struct minishell
-// {
-//     command_t   *commands;
-//     char        **envp;
-//     int         exit_code;
-//     int         should_exit;
-//     pid_t       *pids;
-//     int         *pipes;
-//     int         pipe_count;
-// }   minishell_t;
+typedef struct minishell
+{
+    command_t   *commands;
+    char        **envp;
+    char        *line;
+    int         exit_code;
+    int         should_exit;
+    pid_t       *pids;
+    int         *pipes;
+    int         pipe_count;
+}   minishell_t;
 
 //token struct
 typedef struct token {
@@ -129,6 +133,22 @@ void free_pipeline(pipeline_t *pipeline);
 void free_segments(segment_t *segments);
 void	free_redirects(redirect_t *redirects);
 //---------------------------------------------------------
+// Signal functions
+void    configure_prompt_signals(void);
+void    configure_execution_signals(void);
+void    configure_heredoc_signals(void);
+void    assign_signal_handler(int signal_type, void (*callback)(int));
+void    interrupt_callback_prompt(int signal_num);
+void    interrupt_callback_execution(int signal_num);
+void    quit_callback_execution(int signal_num);
+void    interrupt_callback_heredoc(int signal_num);
+void    validate_signal_state(minishell_t *shell_ctx);
+void    process_interrupt_during_input(minishell_t *shell_ctx, char **user_input);
+void    process_interrupt_after_input(minishell_t *shell_ctx, char *user_input);
+void    process_interrupt_during_parse(minishell_t *shell_ctx);
+void    restore_default_signals(void);
+extern volatile sig_atomic_t g_signal_flag;
+//---------------------------------------------------------
 command_t	*new_command(void);
 token_t *new_token(token_type_t type, char *value);
 void    token_lst(token_t **head, token_t *token);
@@ -159,5 +179,20 @@ int handle_command_pair(token_t *word, command_t *cmd);
 int	is_redirect_token(token_t token);
 segment_t	*split_tokens_by_pipe(token_t *token_list);
 int	parse_command_or_redirect(segment_t *segment, command_t *cmd);
+//--------------------signal------------------------------------
+extern volatile sig_atomic_t g_signal_flag;
+void    assign_signal_handler(int signal_type, void (*callback)(int));
+void	interrupt_callback_prompt(int signal_num);
+void    configure_prompt_signals(void);
+void	interrupt_callback_execution(int signal_num);
+void	quit_callback_execution(int signal_num);
+void	configure_execution_signals(void);
+void	interrupt_callback_heredoc(int signal_num);
+void	configure_heredoc_signals(void);
+void	validate_signal_state(minishell_t *shell_ctx);
+void	process_interrupt_during_input(minishell_t *shell_ctx, char **user_input);
+void	process_interrupt_after_input(minishell_t *shell_ctx, char *user_input);
+void	process_interrupt_during_parse(minishell_t *shell_ctx);
+void	restore_default_signals(void);
 
 #endif 
