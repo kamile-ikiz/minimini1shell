@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 17:56:11 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/30 17:58:11 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/06 18:12:09 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,12 @@ void	add_new_var(t_env **list, char *key, char *value, bool is_exported)
 	new = malloc(sizeof(t_env));
 	if (!new)
 		return ;
-	new->key = key;
-	if (value)
-		new->value = ft_strdup(value);
-	else
-		new->value = NULL;
+	new->key = key ? ft_strdup(key) : NULL;
+	new->value = value ? ft_strdup(value) : NULL;
 	new->is_exported = is_exported;
 	new->is_printed = false;
 	new->next = NULL;
+
 	if (!*list)
 		*list = new;
 	else
@@ -36,6 +34,7 @@ void	add_new_var(t_env **list, char *key, char *value, bool is_exported)
 		last->next = new;
 	}
 }
+
 
 void	handle_var_only(t_env **list, char *key)
 {
@@ -65,9 +64,6 @@ void	handle_var_with_value(t_env **list, char *arg, char *eq_pos)
 		free(key);
 	}
 	else
-	{
 		add_new_var(list, key, value, true);
-		free(key);
-		free(value);
-	}
+		// key ve value zaten strdup'li, tekrar etmeye gerek yok
 }
