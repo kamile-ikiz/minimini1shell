@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/04 20:06:20 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/06 19:04:56 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@
 #include <readline/history.h>
 #include <stdbool.h>
 #include <fcntl.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 
 // ANSI Color Codes for token display
 #define RESET_COLOR     "\033[0m"
@@ -49,17 +53,6 @@ typedef enum {
     TOKEN_HEREDOC,        // <<
     TOKEN_ERROR           // Parsing error
 } token_type_t;
-
-// typedef struct minishell
-// {
-//     command_t   *commands;
-//     char        **envp;
-//     int         exit_code;
-//     int         should_exit;
-//     pid_t       *pids;
-//     int         *pipes;
-//     int         pipe_count;
-// }   minishell_t;
 
 //token struct
 typedef struct token {
@@ -86,11 +79,23 @@ typedef struct redirect
 }	redirect_t;
 
 //command struct
+
+typedef enum e_cmd_type
+{
+    CMD_NOT_FOUND,
+    CMD_BUILTIN,
+    CMD_EXTERNAL,
+    PERMISSON_DENIED,
+    NO_PATH,
+}   t_cmd_type;
+
+
 typedef struct command {
     char **args;              // Array of command arguments ["ls", "-la", NULL]
     int argc;                 // Number of arguments
     redirect_t *redirects;    //redirect list
     struct command *next;     // Next command in pipeline
+    t_cmd_type  type;
 } command_t;
 
 //pipeline struct
@@ -120,16 +125,28 @@ typedef struct s_expand_data
 	int		new_pos;
 }	t_expand_data;
 
+typedef struct minishell
+{
+    segment_t   *segment;
+    char        **envp;
+    int         exit_code;
+    int         should_exit;
+    pid_t       *pids;
+    int         *pipes;
+    int         pipe_count;
+}   minishell_t;
+
+
 //func prototypes
 //-----------------free_functions---------------
 
 void free_tokens(token_t *tokens);
 void free_command(command_t *cmd);
-void free_pipeline(pipeline_t *pipeline);
+void free_pipeline(command_t *pipeline);
 void free_segments(segment_t *segments);
 void	free_redirects(redirect_t *redirects);
 //---------------------------------------------------------
-command_t	*new_command(void);
+command_t	*create_command(void);
 token_t *new_token(token_type_t type, char *value);
 void    token_lst(token_t **head, token_t *token);
 void skip_whitespace(parser_t *parser);
@@ -158,6 +175,18 @@ int     handle_redirect_pair(token_t *redirect_token, token_t *filename,
 int handle_command_pair(token_t *word, command_t *cmd);
 int	is_redirect_token(token_t token);
 segment_t	*split_tokens_by_pipe(token_t *token_list);
-int	parse_command_or_redirect(segment_t *segment, command_t *cmd);
+int	parse_command_or_redirect(segment_t *segment, command_t **cmd_ptr);
+int	execute_redirects(command_t *cmd);
+int	handle_single_redirect(redirect_t *redirect);
+int	handle_append_redirect(char *filename);
+int	handle_output_redirect(char *filename);
+int	handle_input_redirect(char *filename);
+int	handle_heredoc_redirect(char *delimiter);
+int	heredoc_parent_process(int pipe_fd[2], pid_t pid);
+int	heredoc_child_process(int pipe_fd[2], char *delimiter);
+
+
+void	print_pipeline(command_t *pipeline_head);
+command_t	*parse_input(char *input);
 
 #endif 

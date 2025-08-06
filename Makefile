@@ -6,7 +6,7 @@
 #    By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 00:10:17 by kikiz             #+#    #+#              #
-#    Updated: 2025/08/03 21:45:25 by kikiz            ###   ########.fr        #
+#    Updated: 2025/08/06 19:04:24 by kikiz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,10 @@ SRCS = main.c \
 	   create_command.c\
 	   create_redirect.c\
 	   segment.c\
+	   redirect_operations.c\
+	   debug_print.c\
+	   signal.c\
+	   test.c\
        print_tokens.c
 
 # builtins klasöründeki tüm .c dosyalarını ekle

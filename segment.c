@@ -6,16 +6,21 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:39:33 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/04 20:03:07 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/06 19:03:54 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-** Example parsing function
-** Usage: parse tokens, handle redirects first, then add remaining words to cmd
-*/
+static int	parse_error(command_t **cmd_ptr)
+{
+	if (cmd_ptr && *cmd_ptr)
+	{
+		free_command(*cmd_ptr);
+		*cmd_ptr = NULL;
+	}
+	return (-1);
+}
 
 int count_tokens_until_pipe(token_t *token_list)
 {
@@ -45,6 +50,18 @@ segment_t *create_segment(void)
 	return (segment);
 }
 
+token_t	*create_token_copy(token_t *src)
+{
+	token_t	*new;
+	new = malloc(sizeof(token_t));
+	if(!new)
+		return (NULL);
+	new->type = src->type;
+	new->value = ft_strdup(src->value);
+	new->next = NULL;
+	return (new);
+}
+
 token_t *copy_tokens_until_pipe(token_t *start_token, int count)
 {
 	token_t *new_list;
@@ -59,12 +76,9 @@ token_t *copy_tokens_until_pipe(token_t *start_token, int count)
 	i = 0;
 	while(i < count && current)
 	{
-		new_token = malloc(sizeof(token_t));
+		new_token = create_token_copy(current);
 		if(!new_token)
 			return (NULL);
-		new_token->type = current->type;
-		new_token->value = ft_strdup(current->value);
-		new_token->next = NULL;
 		if(!new_list)
 			new_list = new_token;
 		else
@@ -143,30 +157,31 @@ segment_t	*split_tokens_by_pipe(token_t *token_list)
 		add_segment(&segments, new_segment);
 		current = skip_to_next_segment(current);
 	}
-	return(segments);
-	
+	return(segments);	
 }
 
-// void baglama()
-// {
-// 	command_t *cmd;
-// 	segment_t *segment;
-// 	token_t *token_list;
+static void advance_to_next_token(token_t **current)
+{
+	if (!current || !*current)
+		return;
+	if (is_redirect_token(**current))
+	{
+		*current = (*current)->next;
+		if (*current)
+			*current = (*current)->next;
+	}
+	else
+		*current = (*current)->next;
+}
 
-// 	segment = split_tokens_by_pipe(token_list);
-// 	if(parse_command_or_redirect(segment, cmd))
-// 	{
-// 		//segmentteki redirect ve komut listesi oluştu
-// 		//bundan sonraki işlemler yapılabilir artık.
-// 	}
-// }
-
-
-int	parse_command_or_redirect(segment_t *segment, command_t *cmd)
+int	parse_command_or_redirect(segment_t *segment, command_t **cmd_ptr)
 {
 	token_t *current;
 
-	if(!segment || !cmd)
+	if(!segment || !cmd_ptr)
+		return (-1);
+	*cmd_ptr = create_command();
+	if (!*cmd_ptr)
 		return (-1);
 	current = segment->tokens;
 	while(current)
@@ -174,16 +189,16 @@ int	parse_command_or_redirect(segment_t *segment, command_t *cmd)
 		if (is_redirect_token(*current))
 		{
 			if (!current->next || current->next->type != TOKEN_WORD)
-				return (-1);
-			if (handle_redirect_pair(current, current->next, cmd) != 0)
-				return (-1);
+				return (parse_error(cmd_ptr));
+			if (handle_redirect_pair(current, current->next, *cmd_ptr) != 0)
+				return (parse_error(cmd_ptr));
 		}
 		else if (current->type == TOKEN_WORD)
 		{
-			if (handle_command_pair(current, cmd) != 0)
-				return (-1);
+			if (handle_command_pair(current, *cmd_ptr) != 0)
+				return (parse_error(cmd_ptr));
 		}
-		current = current->next;
+		advance_to_next_token(&current);
 	}
 	return (0);
 }

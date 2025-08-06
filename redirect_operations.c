@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 19:00:57 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/04 20:20:11 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/06 16:29:54 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,10 +159,12 @@ int	handle_single_redirect(redirect_t *redirect)
 	return (-1);
 }
 
-int	execute_redirects(redirect_t *redirects)
+int	execute_redirects(command_t *cmd)
 {
+	redirect_t	*redirects;
 	redirect_t	*current;
 
+	redirects = cmd->redirects;
 	if (!redirects)
 		return (0);
 	current = redirects;

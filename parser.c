@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/18 16:16:14 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/04 18:39:04 by kikiz            ###   ########.fr       */
+/*   Created: 2025/08/06 15:52:51 by kikiz             #+#    #+#             */
+/*   Updated: 2025/08/06 21:53:23 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,115 +52,84 @@ char	*parse_word(parser_t *parser)
 	return (a);
 }
 
-//new command
-command_t	*new_command(void)
+// Pipeline'a yeni bir komut ekleyen yardımcı fonksiyon
+static void	add_command_to_pipeline(command_t **pipeline_head, command_t *new_cmd)
 {
-	command_t *cmd = malloc(sizeof(command_t));
-	if (!cmd)
+	command_t	*current;
+
+	if (!*pipeline_head)
+	{
+		*pipeline_head = new_cmd;
+		return ;
+	}
+	current = *pipeline_head;
+	while (current->next)
+		current = current->next;
+	current->next = new_cmd;
+}
+
+/*
+** create_pipeline_from_segments: Segment listesini alır ve bunu
+** command_t yapılarından oluşan bir pipeline'a dönüştürür.
+** Hata durumunda NULL döner ve o ana kadar oluşturulan pipeline'ı temizler.
+*/
+static command_t	*create_pipeline_from_segments(segment_t *segments)
+{
+	command_t	*pipeline_head;
+	command_t	*new_command;
+	segment_t	*current_segment;
+
+	pipeline_head = NULL;
+	current_segment = segments;
+	while (current_segment)
+	{
+		new_command = NULL;
+		if (parse_command_or_redirect(current_segment, &new_command) == -1)
+		{
+			// Bir segmentin ayrıştırılması başarısız olursa, tüm süreci iptal et.
+			free_pipeline(pipeline_head);
+			return (NULL);
+		}
+		add_command_to_pipeline(&pipeline_head, new_command);
+		current_segment = current_segment->next;
+	}
+	return (pipeline_head);
+}
+
+static token_t	*lex_and_validate(char *input)
+{
+	token_t	*tokens;
+
+	tokens = tokenize(input);
+	if (!tokens)
 		return (NULL);
-	cmd->args = NULL;
-	cmd->argc = 0;
-	cmd->next = NULL;
-	return (cmd);
-}
-
-void add_argmnt(command_t *cmd, char *arg)
-{
-	if (!cmd || !arg)
-		return;
-	cmd->args = realloc(cmd->args, sizeof(char*) * (cmd->argc + 2));
-	if (!cmd->args)
-		return;
-	cmd->args[cmd->argc] = ft_strdup(arg);
-	cmd->args[cmd->argc + 1] = NULL;
-	cmd->argc++;
-}
-
-static void	handle_word(parser_t *parser, command_t *cmd)
-{
-	add_argmnt(cmd, parser->current->value);
-	parser->current = parser->current->next;
-}
-
-static void	handle_redirect_in(parser_t *parser)
-{
-	parser->current = parser->current->next;
-	if (parser->current && parser->current->type == TOKEN_WORD)
+	if (!check_all_syntax(tokens))
 	{
-		parser->current = parser->current->next;
-	}
-	else
-	{
-		parser->error = 1;
-		parser->error_msg = "Missing input file for <";
-	}
-}
-
-static void	handle_redirect_out(parser_t *parser)
-{
-	parser->current = parser->current->next;
-	if (parser->current && parser->current->type == TOKEN_WORD)
-	{
-		parser->current = parser->current->next;
-	}
-	else
-	{
-		parser->error = 1;
-		parser->error_msg = "Missing output file for >";
-	}
-}
-
-static void	handle_redirect_append(parser_t *parser)
-{
-	parser->current = parser->current->next;
-	if (parser->current && parser->current->type == TOKEN_WORD)
-	{
-		parser->current = parser->current->next;
-	}
-	else
-	{
-		parser->error = 1;
-		parser->error_msg = "Missing output file for >>";
-	}
-}
-
-static void	handle_heredoc(parser_t *parser)
-{
-	parser->current = parser->current->next;
-	if (parser->current && parser->current->type == TOKEN_WORD)
-	{
-				parser->current = parser->current->next;
-	}
-	else
-	{
-		parser->error = 1;
-		parser->error_msg = "syntax error: expected delimiter after '<<'";
-	}
-}
-
-command_t	*parse_command(parser_t *parser)
-{
-	command_t	*cmd;
-	token_t		*token;
-
-	cmd = new_command();
-	if (!cmd)
+		free_tokens(tokens);
 		return (NULL);
-	while (parser->current &&
-		parser->current->type != TOKEN_PIPE &&
-		parser->current->next != NULL)
-	{
-		token = parser->current;
-		if (token->type == TOKEN_WORD)
-			handle_word(parser, cmd);
-		else if (token->type == TOKEN_REDIRECT_IN)
-			handle_redirect_in(parser);
-		else if (token->type == TOKEN_REDIRECT_OUT)
-			handle_redirect_out(parser);
-		else if (token->type == TOKEN_REDIRECT_APPEND)
-			handle_redirect_append(parser);
-		else if (token->type == TOKEN_HEREDOC)
-			handle_heredoc(parser);
 	}
-	return (cmd);
+	return (tokens);
+}
+
+/*
+** parse_input: Ana ayrıştırıcı fonksiyon.
+** Süreci yönetir: lexing, validation, segmentation ve pipeline oluşturma.
+** Sonuç olarak çalıştırılmaya hazır pipeline'ı veya hata durumunda NULL döndürür.
+*/
+command_t	*parse_input(char *input)
+{
+	token_t		*tokens;
+	segment_t	*segments;
+	command_t	*pipeline_head;
+
+	tokens = lex_and_validate(input);
+	if (!tokens)
+		return (NULL);
+	segments = split_tokens_by_pipe(tokens);
+	free_tokens(tokens);
+	if (!segments)
+		return (NULL);
+	pipeline_head = create_pipeline_from_segments(segments);
+	free_segments(segments); 
+	return (pipeline_head);
 }
