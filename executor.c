@@ -3,17 +3,91 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/07 13:18:52 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/08 14:47:39 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+char *ft_strcat(char *dest, const char *src)
+{
+	int i = 0;
+	int j = 0;
+	while (dest[i])
+		i++;
+	while (src[j])
+		dest[i++] = src[j++];
+	dest[i] = '\0';
+	return (dest);
+}
+char *ft_strcpy(char *dst, const char *src)
+{
+	int i = 0;
+	while (src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (dst);
+}
+
+char **env_list_to_envp(t_env **env_list_ptr)
+{
+	t_env	*temp;
+	char	**envp;
+	int		count = 0;
+	int		i = 0;
+
+	if (!env_list_ptr || !*env_list_ptr)
+		return (NULL);
+
+	temp = *env_list_ptr;
+
+	// Geçerli (key && value) çiftlerini say
+	while (temp)
+	{
+		if (temp->key && temp->value)
+			count++;
+		temp = temp->next;
+	}
+
+	envp = malloc(sizeof(char *) * (count + 1));
+	if (!envp)
+		return (NULL);
+
+	temp = *env_list_ptr;
+	while (temp)
+	{
+		if (temp->key && temp->value)
+		{
+			int key_len = ft_strlen(temp->key);
+			int value_len = ft_strlen(temp->value);
+			int total_len = key_len + value_len + 2; // '=' + '\0'
+
+			envp[i] = malloc(total_len);
+			if (!envp[i])
+			{
+				// Hata durumunda daha önce allocate edilenleri freelemeyi unutma
+				return (NULL);
+			}
+			ft_strcpy(envp[i], temp->key);
+			ft_strcat(envp[i], "=");
+			ft_strcat(envp[i], temp->value);
+			i++;
+		}
+		temp = temp->next;
+	}
+	envp[i] = NULL;
+	return (envp);
+}
+
+
 // Ana executor fonksiyonu
-int execute_command(command_t *cmd, char **envp)
+int execute_command(command_t *cmd)
 {
     if (!cmd)
         return (1);
@@ -29,7 +103,7 @@ int execute_simple_command(command_t *cmd)
 {
     pid_t pid;
     int status;
-    
+
     pid = fork();
     if (pid == -1)
     {
@@ -40,7 +114,7 @@ int execute_simple_command(command_t *cmd)
     if (pid == 0) // Child process
     {
         // Redirectionları ayarla
-        if (execute_redirects(cmd->redirects) == -1)
+        if (execute_redirects(cmd) == -1)
             exit(1);
         
         // Komutu çalıştır
@@ -61,7 +135,9 @@ int execute_simple_command(command_t *cmd)
 int execve_command(char **args)
 {
     char *cmd_path;
-    
+    char **envp;
+
+    envp = env_list_to_envp(init_env(NULL));
     if (!args || !args[0])
         return (-1);
     
@@ -69,7 +145,7 @@ int execve_command(char **args)
     if (ft_strchr(args[0], '/'))
     {
         if (access(args[0], X_OK) == 0)
-            execve(args[0], args, init_env(NULL));
+            execve(args[0], args, envp);
         else
         {
             ft_putstr_fd("minishell: ", 2);
@@ -89,7 +165,7 @@ int execve_command(char **args)
         return (-1);
     }
     
-    execve(cmd_path, args, init_env(NULL));
+    execve(cmd_path, args, envp);
     free(cmd_path);
     
     // Execve başarısız olursa
@@ -105,20 +181,15 @@ char *find_command_path(char *cmd)
     char *full_path;
     int i;
     
-    // PATH environment variable'ını al
     path_env = get_env_value("PATH", init_env(NULL));
     if (!path_env)
         return (NULL);
-    
-    // PATH'i ':' ile böl
     paths = ft_split(path_env, ':');
     if (!paths)
         return (NULL);
-    
     i = 0;
     while (paths[i])
     {
-        // Her path ile komut adını birleştir
         full_path = ft_strjoin_three(paths[i], "/", cmd);
         if (full_path && access(full_path, X_OK) == 0)
         {
@@ -128,7 +199,6 @@ char *find_command_path(char *cmd)
         free(full_path);
         i++;
     }
-    
     free_array(paths);
     return (NULL);
 }
@@ -167,17 +237,17 @@ int execute_pipeline(command_t *cmd)
         if (pids[i] == -1)
         {
             perror("fork");
-            cleanup_pipeline(pids, pipes, cmd_count, i);
+            cleanup_pipeline(pids, pipes, cmd_count);
             return (1);
         }
         
         if (pids[i] == 0) // Child process
         {
-            setup_pipe_redirections(cmd, pipes, i, cmd_count);
+            setup_pipe_redirections(pipes, i, cmd_count);
             close_all_pipes(pipes, cmd_count - 1);
             
             // Redirectionları ayarla
-            if (execute_redirects(cmd->redirects) == -1)
+            if (execute_redirects(cmd) == -1)
                 exit(1);
             
             // Builtin mı kontrol et
@@ -200,7 +270,7 @@ int execute_pipeline(command_t *cmd)
     status = wait_for_children(pids, cmd_count);
     
     // Cleanup
-    cleanup_pipeline(pids, pipes, cmd_count, cmd_count);
+    cleanup_pipeline(pids, pipes, cmd_count);
     
     return (status);
 }
@@ -242,19 +312,12 @@ int **create_pipes(int pipe_count)
 }
 
 // Pipe redirectionlarını ayarlama
-void setup_pipe_redirections(command_t *cmd, int **pipes, int cmd_index, int cmd_count)
+void setup_pipe_redirections(int **pipes, int cmd_index, int cmd_count)
 {
-    // İlk komut değilse, önceki pipe'dan oku
-    if (cmd_index > 0)
-    {
+      if (cmd_index > 0)
         dup2(pipes[cmd_index - 1][0], STDIN_FILENO);
-    }
-    
-    // Son komut değilse, sonraki pipe'a yaz
     if (cmd_index < cmd_count - 1)
-    {
         dup2(pipes[cmd_index][1], STDOUT_FILENO);
-    }
 }
 
 // Redirectionları ayarlama (< > << >>)
@@ -379,7 +442,7 @@ int wait_for_children(pid_t *pids, int cmd_count)
 }
 
 // Cleanup fonksiyonu
-void cleanup_pipeline(pid_t *pids, int **pipes, int cmd_count, int created_processes)
+void cleanup_pipeline(pid_t *pids, int **pipes, int cmd_count)
 {
     int i;
     
@@ -413,19 +476,4 @@ int count_commands(command_t *cmd)
     }
     
     return (count);
-}
-
-char *ft_strjoin_three(char *s1, char *s2, char *s3)
-{
-    char *temp;
-    char *result;
-    
-    temp = ft_strjoin(s1, s2);
-    if (!temp)
-        return (NULL);
-    
-    result = ft_strjoin(temp, s3);
-    free(temp);
-    
-    return (result);
 }

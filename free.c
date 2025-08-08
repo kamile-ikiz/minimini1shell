@@ -6,15 +6,19 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 00:09:15 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/04 20:06:14 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/07 15:03:48 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void free_tokens(token_t *tokens) {
-    while (tokens) {
-        token_t *next = tokens->next;
+void free_tokens(token_t *tokens)
+{
+	token_t	*next;
+
+    while (tokens)
+	{
+        next = tokens->next;
         free(tokens->value);
         free(tokens);
         tokens = next;
@@ -80,20 +84,32 @@ void free_segments(segment_t *segments)
 	}
 }
 
-void free_pipeline(pipeline_t *pipeline)
+void	free_pipeline(command_t *pipeline)
 {
-    while (pipeline) {
-        pipeline_t *next_pipeline = pipeline->next;
-        
-        command_t *cmd = pipeline->commands;
-        while (cmd) {
-            command_t *next_cmd = cmd->next;
-            free_command(cmd);
-            cmd = next_cmd;
-        }
-        
-        free(pipeline);
-        pipeline = next_pipeline;
-    }
+	command_t	*current;
+	command_t	*next;
+
+	current = pipeline;
+	while (current)
+	{
+		next = current->next;
+		free_command(current);
+		current = next;
+	}
+}
+
+void	free_array(char **array)
+{
+	int	i;
+
+	if (!array)
+		return;
+	i = 0;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
 }
 

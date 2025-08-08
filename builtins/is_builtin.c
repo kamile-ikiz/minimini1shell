@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:46:37 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/07 13:12:14 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/01 16:11:17 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	is_builtin(char *cmd)
 	builtins[6] = "exit";
 	builtins[7] = NULL;
 	if (!cmd)
-		return (1);
+		return (0);
 	i = 0;
 	while (builtins[i])
 	{
