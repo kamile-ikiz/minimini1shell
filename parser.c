@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 15:52:51 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/06 21:53:23 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/08 21:16:28 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,19 @@ char	*parse_word(parser_t *parser)
 {
 	int		start;
 	char	*a;
+	char	*b;
 
 	start = parser->pos;
 	while (parser->inp[parser->pos]
 		&& !is_space(parser->inp[parser->pos])
 		&& parser->inp[parser->pos] != '|'
 		&& parser->inp[parser->pos] != '<'
-		&& parser->inp[parser->pos] != '>'
-		&& parser->inp[parser->pos] != '"'
-		&& parser->inp[parser->pos] != '\'')
+		&& parser->inp[parser->pos] != '>')
 		parser->pos++;
 	if (parser->pos == start)
 		return (NULL);
-	a = ft_substr(parser->inp, start, parser->pos - start);
+	b = remove_quotes(parser->inp);
+	a = ft_substr(b, start, parser->pos - start);
 	return (a);
 }
 

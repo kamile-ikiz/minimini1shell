@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/08 14:47:39 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/08 17:22:51 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,14 +91,18 @@ int execute_command(command_t *cmd)
 {
     if (!cmd)
         return (1);
+
+    if (cmd->next) // pipeline varsa her komut child olarak çalışmalı
+        return execute_pipeline(cmd);
+
+    // pipeline yoksa builtin'i ana proseste çalıştır
     if (is_builtin(cmd->args[0]))
-        return (execute_builtin(cmd));
-    if (cmd->next)
-        return (execute_pipeline(cmd));
-    return (execute_simple_command(cmd));
+        return execute_builtin(cmd);
+
+    return execute_simple_command(cmd);
 }
 
-// Basit komut çalıştırma (pipe olmadan)
+//Basit komut çalıştırma (pipe olmadan)
 int execute_simple_command(command_t *cmd)
 {
     pid_t pid;
@@ -110,13 +114,14 @@ int execute_simple_command(command_t *cmd)
         perror("fork");
         return (1);
     }
+
+
     
     if (pid == 0) // Child process
     {
         // Redirectionları ayarla
         if (execute_redirects(cmd) == -1)
             exit(1);
-        
         // Komutu çalıştır
         if (execve_command(cmd->args) == -1)
             exit(127); // Command not found
@@ -319,93 +324,6 @@ void setup_pipe_redirections(int **pipes, int cmd_index, int cmd_count)
     if (cmd_index < cmd_count - 1)
         dup2(pipes[cmd_index][1], STDOUT_FILENO);
 }
-
-// Redirectionları ayarlama (< > << >>)
-// int setup_redirections(command_t *cmd)
-// {
-//     t_redirect *redirect;
-    
-//     redirect = cmd->redirects;
-//     while (redirect)
-//     {
-//         if (redirect->type == REDIRECT_INPUT) // <
-//         {
-//             int fd = open(redirect->file, O_RDONLY);
-//             if (fd == -1)
-//             {
-//                 perror(redirect->file);
-//                 return (-1);
-//             }
-//             dup2(fd, STDIN_FILENO);
-//             close(fd);
-//         }
-//         else if (redirect->type == REDIRECT_OUTPUT) // >
-//         {
-//             int fd = open(redirect->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-//             if (fd == -1)
-//             {
-//                 perror(redirect->file);
-//                 return (-1);
-//             }
-//             dup2(fd, STDOUT_FILENO);
-//             close(fd);
-//         }
-//         else if (redirect->type == REDIRECT_APPEND) // >>
-//         {
-//             int fd = open(redirect->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-//             if (fd == -1)
-//             {
-//                 perror(redirect->file);
-//                 return (-1);
-//             }
-//             dup2(fd, STDOUT_FILENO);
-//             close(fd);
-//         }
-//         else if (redirect->type == REDIRECT_HEREDOC) // <<
-//         {
-//             if (setup_heredoc(redirect->delimiter) == -1)
-//                 return (-1);
-//         }
-        
-//         redirect = redirect->next;
-//     }
-    
-//     return (0);
-// }
-
-// Heredoc ayarlama
-// int setup_heredoc(char *delimiter)
-// {
-//     int pipefd[2];
-//     char *line;
-    
-//     if (pipe(pipefd) == -1)
-//     {
-//         perror("pipe");
-//         return (-1);
-//     }
-    
-//     // Heredoc input'u oku ve pipe'a yaz
-//     while (1)
-//     {
-//         line = readline("> ");
-//         if (!line || ft_strcmp(line, delimiter) == 0)
-//         {
-//             free(line);
-//             break;
-//         }
-        
-//         write(pipefd[1], line, ft_strlen(line));
-//         write(pipefd[1], "\n", 1);
-//         free(line);
-//     }
-    
-//     close(pipefd[1]);
-//     dup2(pipefd[0], STDIN_FILENO);
-//     close(pipefd[0]);
-    
-//     return (0);
-// }
 
 // Tüm pipe'ları kapatma
 void close_all_pipes(int **pipes, int pipe_count)

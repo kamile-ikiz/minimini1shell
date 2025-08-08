@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beyzasonmez565@gmail.com>        +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 17:41:38 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/26 20:03:01 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/08 20:09:08 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	is_valid_identifier(char *str)
 {
+
 	int	i;
 
 	if (!str || !*str || ft_isdigit(*str))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/04 18:36:51 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/08 20:53:59 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,8 @@ static token_t	*handle_quoted_or_word(parser_t *parser)
 	char c;
 
 	c = parser->inp[parser->pos];
-	if (c == '\'' || c == '"')
+
+	if ((c == '\'' || c == '"'))
 	{
 		val = parse_quotes(parser, c);
 		if (!val)

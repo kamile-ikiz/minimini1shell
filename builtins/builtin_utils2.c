@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 17:56:11 by beysonme          #+#    #+#             */
-/*   Updated: 2025/07/30 17:58:11 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/08 16:20:48 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	add_new_var(t_env **list, char *key, char *value, bool is_exported)
 	new = malloc(sizeof(t_env));
 	if (!new)
 		return ;
-	new->key = key;
+	new->key = ft_strdup(key);
 	if (value)
 		new->value = ft_strdup(value);
 	else

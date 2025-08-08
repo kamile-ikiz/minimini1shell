@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/07 18:08:34 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/08 21:07:37 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,9 @@ typedef struct minishell
 
 //func prototypes
 //-----------------free_functions---------------
-
+char *remove_quotes(const char *input);
+void print_parser_error(parser_t *parser);
+void free_parser(parser_t *parser);
 void free_tokens(token_t *tokens);
 void free_command(command_t *cmd);
 void free_pipeline(command_t *pipeline);
