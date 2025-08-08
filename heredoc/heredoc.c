@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 14:28:47 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/02 17:30:24 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/07 17:06:06 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,8 @@ char	*handle_heredoc_delimiter(char *delimiter)
 	return (temp_file);
 }
 
-int	setup_heredoc_redirect(command_t *cmd, char *delimiter)
+int	setup_heredoc_redirect(char *delimiter)
 {
-	(void)cmd;
 	char	*temp_file;
 	int		fd;
 

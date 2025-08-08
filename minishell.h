@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/06 19:04:56 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/07 18:08:34 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-
-// ANSI Color Codes for token display
-#define RESET_COLOR     "\033[0m"
-#define RED             "\033[1;31m"
-#define GREEN           "\033[1;32m"
-#define YELLOW          "\033[1;33m"
-#define BLUE            "\033[1;34m"
-#define MAGENTA         "\033[1;35m"
-#define CYAN            "\033[1;36m"
-#define WHITE           "\033[1;37m"
-#define GRAY            "\033[0;37m"
-#define BOLD            "\033[1m"
 #define PROMPT          "\001\033[38;5;205m\002minimini1shell$ \001\033[0m\002"
 #define BUFFER_SIZE     1024
 
@@ -145,6 +133,7 @@ void free_command(command_t *cmd);
 void free_pipeline(command_t *pipeline);
 void free_segments(segment_t *segments);
 void	free_redirects(redirect_t *redirects);
+void	free_array(char **array);
 //---------------------------------------------------------
 command_t	*create_command(void);
 token_t *new_token(token_type_t type, char *value);
@@ -164,7 +153,7 @@ int	get_token_count(token_t *head);
 //--------------------heredoc------------------------------------
 char	*append_variable(char *line, int *i, char *result);
 char	*append_normal_char(char *line, int i, char *result);
-int     setup_heredoc_redirect(command_t *cmd, char *delimiter);
+int     setup_heredoc_redirect(char *delimiter);
 char	*handle_heredoc_delimiter(char *delimiter);
 char	*get_next_line(int fd);
 //-------------------redirect list or word list-------------------------------------
@@ -185,8 +174,35 @@ int	handle_heredoc_redirect(char *delimiter);
 int	heredoc_parent_process(int pipe_fd[2], pid_t pid);
 int	heredoc_child_process(int pipe_fd[2], char *delimiter);
 
-
 void	print_pipeline(command_t *pipeline_head);
 command_t	*parse_input(char *input);
+int execute_command(command_t *cmd);
+
+extern volatile sig_atomic_t g_signal_flag;
+void    assign_signal_handler(int signal_type, void (*callback)(int));
+void	interrupt_callback_prompt(int signal_num);
+void    configure_prompt_signals(void);
+void	interrupt_callback_execution(int signal_num);
+void	quit_callback_execution(int signal_num);
+void	configure_execution_signals(void);
+void	interrupt_callback_heredoc(int signal_num);
+void	configure_heredoc_signals(void);
+void	validate_signal_state(minishell_t *shell_ctx);
+void	process_interrupt_during_input(minishell_t *shell_ctx, char **user_input);
+void	process_interrupt_after_input(minishell_t *shell_ctx, char *user_input);
+void	process_interrupt_during_parse(minishell_t *shell_ctx);
+void	restore_default_signals(void);
+
+int execute_simple_command(command_t *cmd);
+int execve_command(char **args);
+char *find_command_path(char *cmd);
+int execute_pipeline(command_t *cmd);
+int **create_pipes(int pipe_count);
+void setup_pipe_redirections(int **pipes, int cmd_index, int cmd_count);
+void close_all_pipes(int **pipes, int pipe_count);
+int wait_for_children(pid_t *pids, int cmd_count);
+void cleanup_pipeline(pid_t *pids, int **pipes, int cmd_count);
+int count_commands(command_t *cmd);
+char **env_list_to_envp(t_env **env_list);
 
 #endif 

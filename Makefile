@@ -6,7 +6,7 @@
 #    By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/18 00:10:17 by kikiz             #+#    #+#              #
-#    Updated: 2025/08/06 19:04:24 by kikiz            ###   ########.fr        #
+#    Updated: 2025/08/07 15:25:14 by kikiz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ HEREDOCDIR = heredoc
 SRCS = main.c \
        token.c \
        parser.c \
-       executor.c \
+	   executor.c\
        utils.c \
        free.c \
        check_syntax.c \
@@ -36,10 +36,8 @@ SRCS = main.c \
 	   create_redirect.c\
 	   segment.c\
 	   redirect_operations.c\
-	   debug_print.c\
 	   signal.c\
-	   test.c\
-       print_tokens.c
+	   test.c
 
 # builtins klasöründeki tüm .c dosyalarını ekle
 BUILTINS_SRCS = $(wildcard $(BUILTINSDIR)/*.c)
