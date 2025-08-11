@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/08 17:22:51 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/11 21:03:08 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,17 +89,31 @@ char **env_list_to_envp(t_env **env_list_ptr)
 // Ana executor fonksiyonu
 int execute_command(command_t *cmd)
 {
-    if (!cmd)
-        return (1);
+    int saved_stdin;
+    int saved_stdout;
 
     if (cmd->next) // pipeline varsa her komut child olarak çalışmalı
         return execute_pipeline(cmd);
 
     // pipeline yoksa builtin'i ana proseste çalıştır
-    if (is_builtin(cmd->args[0]))
-        return execute_builtin(cmd);
-
-    return execute_simple_command(cmd);
+    if (cmd->args && is_builtin(cmd->args[0]))
+    {
+        if (cmd->redirects)
+        {
+            saved_stdin = dup(STDIN_FILENO);
+            saved_stdout = dup(STDOUT_FILENO);
+            execute_redirects(cmd);
+        }
+        execute_builtin(cmd);
+        if (cmd->redirects)
+        {
+            dup2(saved_stdin, STDIN_FILENO);
+            dup2(saved_stdout, STDOUT_FILENO);
+        }
+    }
+    else
+        return (execute_simple_command(cmd));
+    return (1);
 }
 
 //Basit komut çalıştırma (pipe olmadan)
@@ -114,17 +128,15 @@ int execute_simple_command(command_t *cmd)
         perror("fork");
         return (1);
     }
-
-
-    
-    if (pid == 0) // Child process
+    if (pid == 0)
     {
-        // Redirectionları ayarla
         if (execute_redirects(cmd) == -1)
             exit(1);
-        // Komutu çalıştır
-        if (execve_command(cmd->args) == -1)
-            exit(127); // Command not found
+        if (cmd->args[0] != NULL)
+        {
+            if (execve_command(cmd->args) == -1)
+                exit(127); // Command not found
+        }    
     }
     else // Parent process
     {
@@ -169,7 +181,6 @@ int execve_command(char **args)
         ft_putstr_fd(": command not found\n", 2);
         return (-1);
     }
-    
     execve(cmd_path, args, envp);
     free(cmd_path);
     
@@ -256,11 +267,11 @@ int execute_pipeline(command_t *cmd)
                 exit(1);
             
             // Builtin mı kontrol et
-            if (is_builtin(cmd->args[0]))
+            if (is_builtin(cmd->args[0]) && cmd->args[0] != NULL)
                 exit(execute_builtin(cmd));
             
             // Normal komut çalıştır
-            if (execve_command(cmd->args) == -1)
+            if (cmd->args[0] != NULL && execve_command(cmd->args) == -1)
                 exit(127);
         }
         

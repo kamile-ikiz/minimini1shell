@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/08 20:53:59 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/11 21:11:07 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,26 @@ static void	init_parser(parser_t *parser, char *input)
 	parser->error_msg = NULL;
 }
 
+char	*process_segment(parser_t *parser, char *final_val)
+{
+	char	*segment;
+	char	c;
+
+	c = parser->inp[parser->pos];
+	if (c == '\'' || c == '"')
+	{
+		segment = parse_quotes(parser, c);
+		if (!segment)
+		{
+			free(final_val);
+			return (NULL);
+		}
+	}
+	else
+		segment = parse_unquoted_segment(parser);
+	return (ft_join_and_free(final_val, segment));
+}
+
 static token_t	*handle_operator_tokens(parser_t *parser)
 {
 	char	c;
@@ -72,28 +92,29 @@ static token_t	*handle_operator_tokens(parser_t *parser)
 	return (NULL);
 }
 
-static token_t	*handle_quoted_or_word(parser_t *parser)
+token_t	*handle_quoted_or_word(parser_t *parser)
 {
-	char	*val;
+	char	*final_val;
 	token_t	*token;
-	char c;
 
-	c = parser->inp[parser->pos];
-
-	if ((c == '\'' || c == '"'))
+	final_val = ft_strdup("");
+	if (!final_val)
+		return (set_parser_error(parser, "malloc error", NULL));
+	while (!is_word_delimiter(parser->inp[parser->pos]))
 	{
-		val = parse_quotes(parser, c);
-		if (!val)
-			return (new_token(TOKEN_ERROR, "quote_error"));
-		token = new_token(TOKEN_WORD, val);
-		free(val);
-		return (token);
+		final_val = process_segment(parser, final_val);
+		if (!final_val)
+			return (NULL);
 	}
-	val = parse_word(parser);
-	if (!val)
+	if (final_val[0] == '\0')
+	{
+		free(final_val);
 		return (NULL);
-	token = new_token(TOKEN_WORD, val);
-	free(val);
+	}
+	token = new_token(TOKEN_WORD, final_val);
+	if (!token)
+		return (set_parser_error(parser, "malloc error", final_val));
+	free(final_val);
 	return (token);
 }
 
@@ -111,6 +132,7 @@ static int	process_token(parser_t *parser, token_t **tokens)
 		token_lst(tokens, token);
 	if (parser->error || !token)
 	{
+		ft_putendl_fd(parser->error_msg, 2);
 		free_tokens(*tokens);
 		return (-1);
 	}

@@ -6,21 +6,11 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:39:33 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/06 19:03:54 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/11 16:48:30 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int	parse_error(command_t **cmd_ptr)
-{
-	if (cmd_ptr && *cmd_ptr)
-	{
-		free_command(*cmd_ptr);
-		*cmd_ptr = NULL;
-	}
-	return (-1);
-}
 
 int count_tokens_until_pipe(token_t *token_list)
 {

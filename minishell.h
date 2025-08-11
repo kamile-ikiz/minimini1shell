@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/11 14:56:20 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/11 21:10:51 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ typedef enum {
     TOKEN_REDIRECT_OUT,   // >
     TOKEN_REDIRECT_APPEND,// >>
     TOKEN_HEREDOC,        // <<
-    TOKEN_ERROR           // Parsing error
 } token_type_t;
 
 //token struct
@@ -179,7 +178,7 @@ int	heredoc_child_process(int pipe_fd[2], char *delimiter);
 void	print_pipeline(command_t *pipeline_head);
 command_t	*parse_input(char *input);
 int execute_command(command_t *cmd);
-
+//--------------------SIGNALS------------------------------------------------
 extern volatile sig_atomic_t g_signal_flag;
 void    assign_signal_handler(int signal_type, void (*callback)(int));
 void	interrupt_callback_prompt(int signal_num);
@@ -206,5 +205,9 @@ int wait_for_children(pid_t *pids, int cmd_count);
 void cleanup_pipeline(pid_t *pids, int **pipes, int cmd_count);
 int count_commands(command_t *cmd);
 char **env_list_to_envp(t_env **env_list);
-
+char	*parse_unquoted_segment(parser_t *parser);
+char	*ft_join_and_free(char *s1, char *s2);
+int	is_word_delimiter(char c);
+void	*set_parser_error(parser_t *parser, char *msg, void *to_free);
+int	parse_error(command_t **cmd_ptr);
 #endif 

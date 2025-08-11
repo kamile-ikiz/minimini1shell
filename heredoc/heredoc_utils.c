@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 14:30:55 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/01 12:47:52 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/11 15:49:33 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ char	*append_normal_char(char *line, int i, char *result)
 	free(temp);
 	return (result);
 }
-
 
 char	*ft_strjoin_free(char *s1, char *s2)
 {

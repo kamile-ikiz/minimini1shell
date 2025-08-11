@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_operations.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 19:00:57 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/08 16:56:09 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/11 20:12:34 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,4 +176,3 @@ int	execute_redirects(command_t *cmd)
 	}
 	return (0);
 }
-

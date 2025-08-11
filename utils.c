@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 19:41:07 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/11 14:55:34 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/11 15:51:05 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,65 +26,26 @@ void	skip_whitespace(parser_t *parser)
 	}
 }
 
-static int	get_clean_len(const char *s)
+char	*ft_join_and_free(char *s1, char *s2)
 {
-	int		len;
-	int		i;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	len = 0;
-	sq = 0;
-	dq = 0;
-	while (s[i])
-	{
-		if (s[i] == '\'' && dq == 0)
-			sq = !sq;
-		else if (s[i] == '\"' && sq == 0)
-			dq = !dq;
-		else
-			len++;
-		i++;
-	}
-	return (len);
-}
-
-static void	copy_without_quotes(char *dst, const char *src)
-{
-	int		i;
-	int		j;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	j = 0;
-	sq = 0;
-	dq = 0;
-	while (src[i])
-	{
-		if (src[i] == '\'' && dq == 0)
-			sq = !sq;
-		else if (src[i] == '\"' && sq == 0)
-			dq = !dq;
-		else
-			dst[j++] = src[i];
-		i++;
-	}
-	dst[j] = '\0';
-}
-
-char	*remove_quotes(const char *input)
-{
-	int		clean_len;
 	char	*result;
 
-	if (!input)
-		return (NULL);
-	clean_len = get_clean_len(input);
-	result = malloc(clean_len + 1);
-	if (!result)
-		return (NULL);
-	copy_without_quotes(result, input);
+	if (!s1)
+		return (s2);
+	if (!s2)
+		return (s1);
+	result = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
 	return (result);
 }
+
+int	is_word_delimiter(char c)
+{
+	if (is_space(c) || c == '|' || c == '<' || c == '>')
+		return (1);
+	if (c == '\0')
+		return (1);
+	return (0);
+}
+
