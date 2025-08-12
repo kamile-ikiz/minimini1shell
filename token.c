@@ -6,69 +6,11 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/11 21:11:07 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/12 16:25:03 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-token_t	*new_token(token_type_t type, char *value)
-{
-	token_t *token = malloc(sizeof(token_t));
-	if(!token)
-		return(NULL);
-	token->type = type;
-	if(value != NULL)
-		token->value = ft_strdup(value);
-	else
-		token->value = NULL;
-	token->next = NULL;
-	return (token);
-}
-
-void	token_lst(token_t **head, token_t *token)
-{
-	if(!*head)
-		*head = token;
-	else
-	{
-		token_t *current = *head;
-		while(current->next)
-			current = current->next;
-		current->next = token;
-	}
-}
-//INPUT TOKENIZE
-
-static void	init_parser(parser_t *parser, char *input)
-{
-	parser->tokens = NULL;
-	parser->current = NULL;
-	parser->inp = input;
-	parser->pos = 0;
-	parser->error = 0;
-	parser->error_msg = NULL;
-}
-
-char	*process_segment(parser_t *parser, char *final_val)
-{
-	char	*segment;
-	char	c;
-
-	c = parser->inp[parser->pos];
-	if (c == '\'' || c == '"')
-	{
-		segment = parse_quotes(parser, c);
-		if (!segment)
-		{
-			free(final_val);
-			return (NULL);
-		}
-	}
-	else
-		segment = parse_unquoted_segment(parser);
-	return (ft_join_and_free(final_val, segment));
-}
 
 static token_t	*handle_operator_tokens(parser_t *parser)
 {
@@ -92,7 +34,35 @@ static token_t	*handle_operator_tokens(parser_t *parser)
 	return (NULL);
 }
 
-token_t	*handle_quoted_or_word(parser_t *parser)
+static int	parse_and_append_segment(parser_t *parser, char **final_word)
+{
+	char	*segment;
+	char	*temp;
+	char	quote_char;
+
+	quote_char = parser->inp[parser->pos];
+	if (quote_char == '\'' || quote_char == '"')
+	{
+		segment = parse_quotes(parser, quote_char);
+		if (!segment)
+			return (0);
+		if (quote_char == '"')
+		{
+			temp = segment;
+			segment = expand_all_variables(temp, init_env(NULL));
+			free(temp);
+		}
+	}
+	else
+	{
+		temp = parse_unquoted_segment(parser);
+		segment = expand_all_variables(temp, init_env(NULL));
+		free(temp);
+	}
+	return (append_segment(final_word, segment));
+}
+
+static	token_t	*handle_quoted_or_word(parser_t *parser)
 {
 	char	*final_val;
 	token_t	*token;
@@ -102,9 +72,11 @@ token_t	*handle_quoted_or_word(parser_t *parser)
 		return (set_parser_error(parser, "malloc error", NULL));
 	while (!is_word_delimiter(parser->inp[parser->pos]))
 	{
-		final_val = process_segment(parser, final_val);
-		if (!final_val)
-			return (NULL);
+		if(!parse_and_append_segment(parser, &final_val))
+		{
+			free(final_val);
+			return (set_parser_error(parser, parser->error_msg, NULL));
+		}
 	}
 	if (final_val[0] == '\0')
 	{

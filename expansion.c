@@ -6,18 +6,11 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 16:19:04 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/03 15:02:45 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/12 16:01:38 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int	should_expand(char status)
-{
-	if (status == '\'')
-		return (0);
-	return (1);
-}
 
 static char	*extract_var_name(char *str, int start, int *end)
 {
@@ -49,52 +42,6 @@ char	*get_env_value(char *var_name, t_env **env_list_ptr)
 	return (NULL);
 }
 
-static void	init_expand_data(t_expand_data *data, char *arg, int dollar_pos)
-{
-	data->before = ft_substr(arg, 0, dollar_pos);
-	data->after = NULL;
-	data->result = NULL;
-	data->new_pos = 0;
-}
-
-static void	set_after_part(t_expand_data *data, char *arg, int var_end)
-{
-	data->after = ft_strdup(&arg[var_end]);
-}
-
-static void	create_result(t_expand_data *data, char *env_value)
-{
-	int	env_len;
-
-	if (!env_value)
-		data->result = ft_strjoin(data->before, data->after);
-	else
-		data->result = ft_strjoin_three(data->before, env_value, data->after);
-	env_len = 0;
-	if (env_value)
-		env_len = ft_strlen(env_value);
-	data->new_pos = ft_strlen(data->before) + env_len;
-}
-
-static void	cleanup_expand_data(t_expand_data *data)
-{
-	if (data->before)
-		free(data->before);
-	if (data->after)
-		free(data->after);
-}
-
-static char	*expand_variable_parts(char *arg, char *env_value, int dollar_pos, int var_end)
-{
-	t_expand_data	data;
-
-	init_expand_data(&data, arg, dollar_pos);
-	set_after_part(&data, arg, var_end);
-	create_result(&data, env_value);
-	cleanup_expand_data(&data);
-	return (data.result);
-}
-
 static char	*expand_single_variable(char *arg, int dollar_pos, t_env **env_list_ptr, int *new_i)
 {
 	char	*var_name;
@@ -120,7 +67,7 @@ static int	is_valid_var_char(char c)
 	return (ft_isalnum(c) || c == '_');
 }
 
-static char	*expand_all_variables(char *arg, t_env **env_list_ptr)
+char	*expand_all_variables(char *arg, t_env **env_list_ptr)
 {
 	char	*result;
 	char	*temp;
@@ -146,24 +93,4 @@ static char	*expand_all_variables(char *arg, t_env **env_list_ptr)
 			i++;
 	}
 	return (result);
-}
-
-char	*expand_or_not(parser_t *parser, char status)
-{
-	char	*current_arg;
-	char	*expanded;
-	t_env	**env_list_ptr;
-
-	env_list_ptr = init_env(NULL);
-	if (!parser || !parser->current || !parser->current->value)
-		return (NULL);
-	current_arg = parser->current->value;
-	if (!should_expand(status))
-		return (ft_strdup(current_arg));
-	if (!env_list_ptr)
-		return (ft_strdup(current_arg));
-	expanded = expand_all_variables(current_arg, env_list_ptr);
-	if (!expanded)
-		return (ft_strdup(current_arg));
-	return (expanded);
 }

@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 19:41:07 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/11 15:51:05 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/12 17:17:21 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,6 @@ void	skip_whitespace(parser_t *parser)
 	}
 }
 
-char	*ft_join_and_free(char *s1, char *s2)
-{
-	char	*result;
-
-	if (!s1)
-		return (s2);
-	if (!s2)
-		return (s1);
-	result = ft_strjoin(s1, s2);
-	free(s1);
-	free(s2);
-	return (result);
-}
-
 int	is_word_delimiter(char c)
 {
 	if (is_space(c) || c == '|' || c == '<' || c == '>')
@@ -49,3 +35,23 @@ int	is_word_delimiter(char c)
 	return (0);
 }
 
+int	append_segment(char **word_ptr, char *segment)
+{
+	char	*temp_word;
+
+	if (!segment)
+		return (1);
+	temp_word = ft_strjoin(*word_ptr, segment);
+	free(*word_ptr);
+	free(segment);
+	*word_ptr = temp_word;
+	if (!*word_ptr)
+		return (0);
+	return (1);
+}
+
+void	print_syntax_error(char *token)
+{
+	ft_putstr_fd("minishell: syntax  near unexpected token ", 2);
+	ft_putendl_fd(token, 2);
+}

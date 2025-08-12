@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:05:03 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/06 16:06:16 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/12 17:23:33 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	is_redirect_token(token_t token)
 		return(0);
 }
 
-redirect_t	*create_redirect(token_type_t type, char *filename)
+static	redirect_t	*create_redirect(token_type_t type, char *filename)
 {
 	redirect_t	*redirect;
 
@@ -41,7 +41,7 @@ redirect_t	*create_redirect(token_type_t type, char *filename)
 	return (redirect);
 }
 
-void	add_redirect(redirect_t **head, redirect_t *new_redirect)
+static	void	add_redirect(redirect_t **head, redirect_t *new_redirect)
 {
 	redirect_t	*current;
 

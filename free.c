@@ -3,28 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 00:09:15 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/08 21:15:31 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/12 17:07:34 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void print_parser_error(parser_t *parser)
-{
-    if (parser && parser->error)
-    {
-        if (parser->error_msg)
-		{
-			ft_putstr_fd(parser->tokens->value, 2);
-			ft_putendl_fd(parser->error_msg, 2);
-		}
-        else
-			ft_putendl_fd("Parser error: Unknown error", 2);
-    }
-}
+// void print_parser_error(parser_t *parser)
+// {
+//     if (parser && parser->error)
+//     {
+//         if (parser->error_msg)
+// 		{
+// 			ft_putstr_fd(parser->tokens->value, 2);
+// 			ft_putendl_fd(parser->error_msg, 2);
+// 		}
+//         else
+// 			ft_putendl_fd("Parser error: Unknown error", 2);
+//     }
+// }
 
 void free_tokens(token_t *tokens)
 {
@@ -38,17 +38,17 @@ void free_tokens(token_t *tokens)
         tokens = next;
     }
 }
-void free_parser(parser_t *parser)
-{
-    if (!parser)
-        return;
-    free_tokens(parser->tokens);
-    if (parser->inp)
-        free(parser->inp);
-    if (parser->error_msg)
-        free(parser->error_msg);
-    free(parser);
-}
+// void free_parser(parser_t *parser)
+// {
+//     if (!parser)
+//         return;
+//     free_tokens(parser->tokens);
+//     if (parser->inp)
+//         free(parser->inp);
+//     if (parser->error_msg)
+//         free(parser->error_msg);
+//     free(parser);
+// }
 
 static void	free_args(char **args, int argc)
 {

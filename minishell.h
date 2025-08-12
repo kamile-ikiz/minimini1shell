@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/11 21:10:51 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/12 17:25:59 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,14 @@ typedef struct redirect
 
 //command struct
 
-typedef enum e_cmd_type
-{
-    CMD_NOT_FOUND,
-    CMD_BUILTIN,
-    CMD_EXTERNAL,
-    PERMISSON_DENIED,
-    NO_PATH,
-}   t_cmd_type;
+// typedef enum e_cmd_type
+// {
+//     CMD_NOT_FOUND,
+//     CMD_BUILTIN,
+//     CMD_EXTERNAL,
+//     PERMISSON_DENIED,
+//     NO_PATH,
+// }   t_cmd_type;
 
 
 typedef struct command {
@@ -82,7 +82,7 @@ typedef struct command {
     int argc;                 // Number of arguments
     redirect_t *redirects;    //redirect list
     struct command *next;     // Next command in pipeline
-    t_cmd_type  type;
+    // t_cmd_type  type;
 } command_t;
 
 //pipeline struct
@@ -104,13 +104,13 @@ typedef struct parser {
 } parser_t;
 
 //data expand edilecekse kullanılıyor
-typedef struct s_expand_data
+typedef struct expand_data
 {
 	char	*before;
 	char	*after;
 	char	*result;
 	int		new_pos;
-}	t_expand_data;
+}	expand_data_t;
 
 typedef struct minishell
 {
@@ -127,24 +127,29 @@ typedef struct minishell
 //func prototypes
 //-----------------free_functions---------------
 char *remove_quotes(const char *input);
-void print_parser_error(parser_t *parser);
-void free_parser(parser_t *parser);
+// void print_parser_error(parser_t *parser);
+// void free_parser(parser_t *parser);
 void free_tokens(token_t *tokens);
 void free_command(command_t *cmd);
 void free_pipeline(command_t *pipeline);
 void free_segments(segment_t *segments);
 void	free_redirects(redirect_t *redirects);
 void	free_array(char **array);
-//---------------------------------------------------------
-command_t	*create_command(void);
+
+//------------------TOKEN------------------------------
 token_t *new_token(token_type_t type, char *value);
 void    token_lst(token_t **head, token_t *token);
+void	init_parser(parser_t *parser, char *input);
+token_t *tokenize(char *input);
+//-----------------SEGMENT----------------------------
+segment_t	*create_single_segment(token_t *start_token, int count);
+int count_tokens_until_pipe(token_t *token_list);
+
 void skip_whitespace(parser_t *parser);
 void print_tokens_fancy(token_t *tokens);
 void print_tokens_simple(token_t *tokens);
 char *parse_quotes(parser_t *parser, char quote);
 char *parse_word(parser_t *parser);
-token_t *tokenize(char *input);
 int is_space(char c);
 int check_all_syntax(token_t *head);
 char *expand_or_not(parser_t *parser, char status);
@@ -158,12 +163,12 @@ int     setup_heredoc_redirect(char *delimiter);
 char	*handle_heredoc_delimiter(char *delimiter);
 char	*get_next_line(int fd);
 //-------------------redirect list or word list-------------------------------------
-redirect_t	*create_redirect(token_type_t type, char *filename);
-void	add_redirect(redirect_t **head, redirect_t *new_redirect);
 int     handle_redirect_pair(token_t *redirect_token, token_t *filename,
 	command_t *cmd);
 int handle_command_pair(token_t *word, command_t *cmd);
 int	is_redirect_token(token_t token);
+command_t	*create_command(void);
+
 segment_t	*split_tokens_by_pipe(token_t *token_list);
 int	parse_command_or_redirect(segment_t *segment, command_t **cmd_ptr);
 int	execute_redirects(command_t *cmd);
@@ -206,8 +211,13 @@ void cleanup_pipeline(pid_t *pids, int **pipes, int cmd_count);
 int count_commands(command_t *cmd);
 char **env_list_to_envp(t_env **env_list);
 char	*parse_unquoted_segment(parser_t *parser);
-char	*ft_join_and_free(char *s1, char *s2);
 int	is_word_delimiter(char c);
 void	*set_parser_error(parser_t *parser, char *msg, void *to_free);
 int	parse_error(command_t **cmd_ptr);
+char	*expand_all_variables(char *arg, t_env **env_list_ptr);
+void	add_segment(segment_t **head, segment_t *new_segment);
+int	append_segment(char **word_ptr, char *segment);
+char	*expand_variable_parts(char *arg, char *env_value, int dollar_pos, int var_end);
+void    print_syntax_error(char *token);
+int	check_pipe_syntax(token_t *tokens, int token_count);
 #endif 
