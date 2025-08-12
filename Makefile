@@ -30,7 +30,8 @@ SRCS =	token_utils.c \
 		segment_utils.c \
 		redirect_operations.c \
 		signal.c \
-		test.c
+		test.c \
+		heredoc.c
 
 # builtins klasöründeki tüm .c dosyalarını ekle
 BUILTINS_SRCS = $(wildcard $(BUILTINSDIR)/*.c)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 16:25:03 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/12 21:58:23 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static int	parse_and_append_segment(parser_t *parser, char **final_word)
 		segment = expand_all_variables(temp, init_env(NULL));
 		free(temp);
 	}
+		
 	return (append_segment(final_word, segment));
 }
 
@@ -78,11 +79,11 @@ static	token_t	*handle_quoted_or_word(parser_t *parser)
 			return (set_parser_error(parser, parser->error_msg, NULL));
 		}
 	}
-	if (final_val[0] == '\0')
-	{
-		free(final_val);
-		return (NULL);
-	}
+	// if (final_val[0] == '\0')
+	// {
+	// 	free(final_val);
+	// 	return (NULL);
+	// }
 	token = new_token(TOKEN_WORD, final_val);
 	if (!token)
 		return (set_parser_error(parser, "malloc error", final_val));

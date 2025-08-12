@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 17:25:59 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/12 19:15:45 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef struct redirect
 {
 	token_type_t		type;
 	char				*filename;
+    int                 heredoc_pipe_fd;
 	struct redirect	*next;
 }	redirect_t;
 
@@ -162,6 +163,8 @@ char	*append_normal_char(char *line, int i, char *result);
 int     setup_heredoc_redirect(char *delimiter);
 char	*handle_heredoc_delimiter(char *delimiter);
 char	*get_next_line(int fd);
+int prepare_heredocs(command_t *cmd_list);
+void cleanup_heredoc_pipes(command_t *cmd_list);
 //-------------------redirect list or word list-------------------------------------
 int     handle_redirect_pair(token_t *redirect_token, token_t *filename,
 	command_t *cmd);

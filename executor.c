@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/11 21:03:08 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/12 19:22:22 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,29 +92,36 @@ int execute_command(command_t *cmd)
     int saved_stdin;
     int saved_stdout;
 
-    if (cmd->next) // pipeline varsa her komut child olarak çalışmalı
+    // heredoclar main'de hazırlanıyor, burada çağırmaya gerek yok.
+
+    if (cmd->next) // pipeline varsa child processlerde çalıştır
         return execute_pipeline(cmd);
 
-    // pipeline yoksa builtin'i ana proseste çalıştır
+    // pipeline yoksa, builtin ise ana proseste çalıştır
     if (cmd->args && is_builtin(cmd->args[0]))
     {
         if (cmd->redirects)
         {
             saved_stdin = dup(STDIN_FILENO);
             saved_stdout = dup(STDOUT_FILENO);
-            execute_redirects(cmd);
+            execute_redirects(cmd); // burada heredoc pipe fd'si dup2 ile stdin yapılıyor
         }
         execute_builtin(cmd);
         if (cmd->redirects)
         {
             dup2(saved_stdin, STDIN_FILENO);
             dup2(saved_stdout, STDOUT_FILENO);
+            close(saved_stdin);
+            close(saved_stdout);
         }
     }
     else
         return (execute_simple_command(cmd));
+
+    cleanup_heredoc_pipes(cmd); // heredoc pipe fd'lerini kapat
     return (1);
 }
+
 
 //Basit komut çalıştırma (pipe olmadan)
 int execute_simple_command(command_t *cmd)

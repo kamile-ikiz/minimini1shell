@@ -24,7 +24,16 @@ int	main(int argc, char **argv, char **envp)
 		pipeline = parse_input(line);
 		if (pipeline)
 		{
+			if (prepare_heredocs(pipeline) == -1)  // heredocları burada hazırla
+			{
+  				perror("heredoc preparation failed");
+        		cleanup_heredoc_pipes(pipeline);  // varsa açık fd'leri kapat
+        		free_pipeline(pipeline);
+        		free(line);
+        		continue; 
+    		}
 			execute_command(pipeline);
+			cleanup_heredoc_pipes(pipeline);
 			free_pipeline(pipeline);
 		}
 		free(line);

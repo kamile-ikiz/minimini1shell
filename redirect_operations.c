@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_operations.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 19:00:57 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/11 20:12:34 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/12 19:08:50 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,20 +159,40 @@ int	handle_single_redirect(redirect_t *redirect)
 	return (-1);
 }
 
-int	execute_redirects(command_t *cmd)
+int execute_redirects(command_t *cmd)
 {
-	redirect_t	*redirects;
-	redirect_t	*current;
+    redirect_t *redir = cmd->redirects;
 
-	redirects = cmd->redirects;
-	if (!redirects)
-		return (0);
-	current = redirects;
-	while (current)
-	{
-		if (handle_single_redirect(current) != 0)
-			return (-1);
-		current = current->next;
-	}
-	return (0);
+    while (redir)
+    {
+        if (redir->type == TOKEN_HEREDOC)
+        {
+            if (dup2(redir->heredoc_pipe_fd, STDIN_FILENO) == -1)
+            {
+                perror("dup2 heredoc");
+                close(redir->heredoc_pipe_fd);
+                return -1;
+            }
+            close(redir->heredoc_pipe_fd); // dup2’den sonra orijinal fd kapatılır
+            redir->heredoc_pipe_fd = -1;   // kapandığını belirt
+        }
+        else if (redir->type == TOKEN_REDIRECT_IN)
+        {
+            if (handle_input_redirect(redir->filename) == -1)
+                return -1;
+        }
+        else if (redir->type == TOKEN_REDIRECT_OUT)
+        {
+            if (handle_output_redirect(redir->filename) == -1)
+                return -1;
+        }
+        else if (redir->type == TOKEN_REDIRECT_APPEND)
+        {
+            if (handle_append_redirect(redir->filename) == -1)
+                return -1;
+        }
+        redir = redir->next;
+    }
+    return 0;
 }
+
