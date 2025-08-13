@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 21:58:23 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/13 20:14:00 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,11 @@ static int	parse_and_append_segment(parser_t *parser, char **final_word)
 	char	*segment;
 	char	*temp;
 	char	quote_char;
+	token_t	*last_token;
 
 	quote_char = parser->inp[parser->pos];
+	if (parser->token_list != NULL)
+		last_token = token_get_last(parser->token_list);
 	if (quote_char == '\'' || quote_char == '"')
 	{
 		segment = parse_quotes(parser, quote_char);
@@ -48,22 +51,30 @@ static int	parse_and_append_segment(parser_t *parser, char **final_word)
 			return (0);
 		if (quote_char == '"')
 		{
-			temp = segment;
-			segment = expand_all_variables(temp, init_env(NULL));
-			free(temp);
+			if (last_token && last_token->expand_mode == 1)
+			{
+				temp = segment;
+				segment = expand_all_variables(temp, init_env(NULL));
+				free(temp);
+			}
 		}
 	}
 	else
 	{
 		temp = parse_unquoted_segment(parser);
-		segment = expand_all_variables(temp, init_env(NULL));
-		free(temp);
+		if (last_token && last_token->expand_mode == 1)
+		{
+			segment = expand_all_variables(temp, init_env(NULL));
+			free(temp);
+		}
+		else
+			segment = temp;
 	}
 		
 	return (append_segment(final_word, segment));
 }
 
-static	token_t	*handle_quoted_or_word(parser_t *parser)
+static	token_t	*handle_word(parser_t *parser)
 {
 	char	*final_val;
 	token_t	*token;
@@ -79,15 +90,10 @@ static	token_t	*handle_quoted_or_word(parser_t *parser)
 			return (set_parser_error(parser, parser->error_msg, NULL));
 		}
 	}
-	// if (final_val[0] == '\0')
-	// {
-	// 	free(final_val);
-	// 	return (NULL);
-	// }
 	token = new_token(TOKEN_WORD, final_val);
 	if (!token)
 		return (set_parser_error(parser, "malloc error", final_val));
-	free(final_val);
+	//free(final_val);
 	return (token);
 }
 
@@ -100,9 +106,9 @@ static int	process_token(parser_t *parser, token_t **tokens)
 		return (0);
 	token = handle_operator_tokens(parser);
 	if (!token)
-		token = handle_quoted_or_word(parser);
+		token = handle_word(parser);
 	if (token)
-		token_lst(tokens, token);
+		parser->token_list = token_lst(tokens, token);
 	if (parser->error || !token)
 	{
 		ft_putendl_fd(parser->error_msg, 2);

@@ -6,7 +6,7 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:21:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 16:34:44 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/13 20:14:50 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,44 @@ token_t	*new_token(token_type_t type, char *value)
 	else
 		token->value = NULL;
 	token->next = NULL;
+	if (type == TOKEN_HEREDOC)
+		token->expand_mode = 0;
+	token->expand_mode = 1;
 	return (token);
 }
 
-void	token_lst(token_t **head, token_t *token)
+token_t	*token_get_last(token_t *head)
 {
-	if(!*head)
+	if (!head)
+		return (NULL);
+	while (head->next)
+		head = head->next;
+	return (head);
+}
+
+token_t	*token_lst(token_t **head, token_t *token)
+{
+	token_t	*last_node;
+
+	if (!head)
+		return (NULL);
+	if (!token)
+		return (*head);
+	if (*head == NULL)
+	{
 		*head = token;
+	}
 	else
 	{
-		token_t *current = *head;
-		while(current->next)
-			current = current->next;
-		current->next = token;
+		last_node = token_get_last(*head);
+		last_node->next = token;
 	}
+	return (*head);
 }
 
 void	init_parser(parser_t *parser, char *input)
 {
-	parser->tokens = NULL;
-	parser->current = NULL;
+	parser->token_list = NULL;
 	parser->inp = input;
 	parser->pos = 0;
 	parser->error = 0;

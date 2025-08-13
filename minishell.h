@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 19:15:45 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/13 19:19:14 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct token {
     token_type_t type;    // What kind of token this is
     char *value;          // The actual text content
     struct token *next;   // Pointer to next token (linked list)
+    int expand_mode;
 } token_t;
 
 //segment struct
@@ -96,8 +97,7 @@ typedef struct pipeline {
 
 //parser state
 typedef struct parser {
-    token_t *tokens;
-    token_t *current;
+    token_t *token_list;
     char *inp;
     int pos;
     int error;
@@ -139,7 +139,7 @@ void	free_array(char **array);
 
 //------------------TOKEN------------------------------
 token_t *new_token(token_type_t type, char *value);
-void    token_lst(token_t **head, token_t *token);
+token_t    *token_lst(token_t **head, token_t *token);
 void	init_parser(parser_t *parser, char *input);
 token_t *tokenize(char *input);
 //-----------------SEGMENT----------------------------
@@ -223,4 +223,8 @@ int	append_segment(char **word_ptr, char *segment);
 char	*expand_variable_parts(char *arg, char *env_value, int dollar_pos, int var_end);
 void    print_syntax_error(char *token);
 int	check_pipe_syntax(token_t *tokens, int token_count);
+token_t	*token_get_last(token_t *head);
+int	read_heredoc_until_delimiter(const char *delimiter,
+		int write_fd, int expand_vars);
+char	*expand(const char *input);
 #endif 
