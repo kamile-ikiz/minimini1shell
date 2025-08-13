@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 19:15:45 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/13 13:59:55 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,10 @@ char	*handle_heredoc_delimiter(char *delimiter);
 char	*get_next_line(int fd);
 int prepare_heredocs(command_t *cmd_list);
 void cleanup_heredoc_pipes(command_t *cmd_list);
+int	read_heredoc_until_delimiter(const char *delimiter,
+		int write_fd, int expand_vars);
+char	*expand(const char *input);
+    
 //-------------------redirect list or word list-------------------------------------
 int     handle_redirect_pair(token_t *redirect_token, token_t *filename,
 	command_t *cmd);
@@ -175,13 +179,9 @@ command_t	*create_command(void);
 segment_t	*split_tokens_by_pipe(token_t *token_list);
 int	parse_command_or_redirect(segment_t *segment, command_t **cmd_ptr);
 int	execute_redirects(command_t *cmd);
-int	handle_single_redirect(redirect_t *redirect);
 int	handle_append_redirect(char *filename);
 int	handle_output_redirect(char *filename);
 int	handle_input_redirect(char *filename);
-int	handle_heredoc_redirect(char *delimiter);
-int	heredoc_parent_process(int pipe_fd[2], pid_t pid);
-int	heredoc_child_process(int pipe_fd[2], char *delimiter);
 
 void	print_pipeline(command_t *pipeline_head);
 command_t	*parse_input(char *input);

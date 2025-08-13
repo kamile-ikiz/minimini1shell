@@ -31,7 +31,9 @@ SRCS =	token_utils.c \
 		redirect_operations.c \
 		signal.c \
 		test.c \
-		heredoc.c
+		heredoc.c \
+		heredoc_process.c \
+		heredoc_expand.c
 
 # builtins klasöründeki tüm .c dosyalarını ekle
 BUILTINS_SRCS = $(wildcard $(BUILTINSDIR)/*.c)
@@ -82,5 +84,8 @@ fclean: clean
 	@make -C $(LIBFTDIR) fclean
 
 re: fclean all
+
+leak:
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=valgrind.supp ./minishell
 
 .PHONY: all clean fclean re
