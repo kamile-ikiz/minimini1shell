@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:21:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/13 20:14:50 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/17 16:59:06 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ token_t	*new_token(token_type_t type, char *value)
 	token->next = NULL;
 	if (type == TOKEN_HEREDOC)
 		token->expand_mode = 0;
-	token->expand_mode = 1;
+	else
+		token->expand_mode = 1;
 	return (token);
 }
 

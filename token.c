@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/13 20:14:00 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/17 18:01:38 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static int	parse_and_append_segment(parser_t *parser, char **final_word)
 	token_t	*last_token;
 
 	quote_char = parser->inp[parser->pos];
+	last_token = NULL;
 	if (parser->token_list != NULL)
 		last_token = token_get_last(parser->token_list);
 	if (quote_char == '\'' || quote_char == '"')

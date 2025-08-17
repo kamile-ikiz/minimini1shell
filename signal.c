@@ -6,13 +6,13 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 17:43:40 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/06 15:45:33 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/17 19:02:33 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile sig_atomic_t g_signal_flag;
+volatile sig_atomic_t g_signal_flag = 0; 
 
 void    assign_signal_handler(int signal_type, void (*callback)(int))
 {
@@ -30,10 +30,18 @@ void	interrupt_callback_prompt(int signal_num)
 	rl_redisplay();
 }
 
-void    configure_prompt_signals(void)
+int    configure_prompt_signals(void)
 {
-    assign_signal_handler(SIGINT, interrupt_callback_prompt);
-    assign_signal_handler(SIGQUIT, SIG_IGN);
+	static int ctl;
+
+	ctl = 0;
+	if (ctl == 0)
+	{
+		assign_signal_handler(SIGINT, interrupt_callback_prompt);
+    	assign_signal_handler(SIGQUIT, SIG_IGN);
+		ctl = 1;
+	}
+	return (ctl);
 }
 
 //EXECUTE
@@ -41,7 +49,7 @@ void    configure_prompt_signals(void)
 void	interrupt_callback_execution(int signal_num)
 {
 	(void)signal_num;
-	g_signal_flag = SIGINT;
+	//g_signal_flag = SIGINT<<;
 	write(STDOUT_FILENO, "\n", 1);
 }
 
@@ -64,59 +72,16 @@ void	interrupt_callback_heredoc(int signal_num)
 	g_signal_flag = SIGINT;
 	close(STDIN_FILENO);
 	write(STDOUT_FILENO, "\n", 1);
+	exit(130);
 }
 
-void	configure_heredoc_signals(void)
+void 	configure_heredoc_signals(void)
 {
-	assign_signal_handler(SIGINT, interrupt_callback_heredoc);
-	assign_signal_handler(SIGQUIT, SIG_IGN);
+		assign_signal_handler(SIGINT, interrupt_callback_heredoc);
+		assign_signal_handler(SIGQUIT, SIG_IGN);
 }
 
 // EXTRA
-
-void	validate_signal_state(minishell_t *shell_ctx)
-{
-	(void)shell_ctx;
-	if (g_signal_flag == SIGINT)
-	{
-		// update_exit_code(shell_ctx, 130);
-		g_signal_flag = 0;
-	}
-	else if (g_signal_flag == SIGQUIT)
-	{
-		// update_exit_code(shell_ctx, 131);
-		g_signal_flag = 0;
-	}
-}
-
-void	process_interrupt_during_input(minishell_t *shell_ctx, char **user_input)
-{
-	(void)shell_ctx;
-	// update_exit_code(shell_ctx, 130);
-	if (user_input && *user_input)
-	{
-		free(*user_input);
-		*user_input = NULL;
-	}
-	// reset_display_lines(shell_ctx);
-}
-
-void	process_interrupt_after_input(minishell_t *shell_ctx, char *user_input)
-{
-	(void)shell_ctx;
-	// update_exit_code(shell_ctx, 130);
-	free(user_input);
-	// reset_display_lines(shell_ctx);
-}
-
-void	process_interrupt_during_parse(minishell_t *shell_ctx)
-{
-	(void)shell_ctx;
-	// update_exit_code(shell_ctx, 130);
-	g_signal_flag = 0;
-	// reset_display_lines(shell_ctx);
-	configure_prompt_signals();
-}
 
 void	restore_default_signals(void)
 {

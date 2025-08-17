@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 19:22:22 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/17 18:45:44 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,6 @@ int execute_command(command_t *cmd)
 int execute_simple_command(command_t *cmd)
 {
     pid_t pid;
-    int status;
 
     pid = fork();
     if (pid == -1)
@@ -135,25 +134,35 @@ int execute_simple_command(command_t *cmd)
         perror("fork");
         return (1);
     }
-    if (pid == 0)
+
+    if (pid == 0) // Child
     {
+        // Çocuk process default sinyal davranışına dönmeli
+        restore_default_signals();
+
         if (execute_redirects(cmd) == -1)
             exit(1);
         if (cmd->args[0] != NULL)
         {
             if (execve_command(cmd->args) == -1)
                 exit(127); // Command not found
-        }    
+        }
+        exit(0); // Exec başarısız olursa buraya düşer
     }
-    else // Parent process
+    else // Parent
     {
-        // Child'ın bitmesini bekle
-        waitpid(pid, &status, 0);
-        return (WEXITSTATUS(status));
+        // Parent özel execution signal handler ile sinyal durumunu izleyebilir
+        configure_execution_signals();
+
+        waitpid(pid, NULL, 0);
+
+        // Tekrar prompt sinyallerine dön
+        configure_prompt_signals();
     }
-    
+
     return (0);
 }
+
 
 // Execve ile komutu çalıştırma
 int execve_command(char **args)
@@ -168,15 +177,18 @@ int execve_command(char **args)
     // Eğer absolute/relative path ise direkt çalıştır
     if (ft_strchr(args[0], '/'))
     {
-        if (access(args[0], X_OK) == 0)
+        //if (access(args[0], X_OK) == 0)
             execve(args[0], args, envp);
-        else
+             perror("execve");
+            
+            exit(0);
+        /*else
         {
             ft_putstr_fd("minishell: ", 2);
             ft_putstr_fd(args[0], 2);
             ft_putstr_fd(": No such file or directory\n", 2);
             return (-1);
-        }
+        }*/
     }
     
     // PATH'de ara
@@ -227,6 +239,7 @@ char *find_command_path(char *cmd)
 }
 
 // Pipeline çalıştırma (birden fazla pipe)
+// Pipeline çalıştırma (birden fazla pipe)
 int execute_pipeline(command_t *cmd)
 {
     int cmd_count;
@@ -255,7 +268,6 @@ int execute_pipeline(command_t *cmd)
     i = 0;
     while (cmd && i < cmd_count)
     {
-        
         pids[i] = fork();
         if (pids[i] == -1)
         {
@@ -266,6 +278,7 @@ int execute_pipeline(command_t *cmd)
         
         if (pids[i] == 0) // Child process
         {
+            restore_default_signals();
             setup_pipe_redirections(pipes, i, cmd_count);
             close_all_pipes(pipes, cmd_count - 1);
             
@@ -273,15 +286,16 @@ int execute_pipeline(command_t *cmd)
             if (execute_redirects(cmd) == -1)
                 exit(1);
             
-            // Builtin mı kontrol et
-            if (is_builtin(cmd->args[0]) && cmd->args[0] != NULL)
+            // Builtin mi kontrol et
+            if (cmd->args[0] && is_builtin(cmd->args[0]))
                 exit(execute_builtin(cmd));
             
             // Normal komut çalıştır
             if (cmd->args[0] != NULL && execve_command(cmd->args) == -1)
                 exit(127);
+            exit(0);
         }
-        
+        // Parent: sadece PID sakla, bekleme burada yapılmayacak!
         cmd = cmd->next;
         i++;
     }
@@ -289,14 +303,17 @@ int execute_pipeline(command_t *cmd)
     // Parent process: tüm pipe'ları kapat
     close_all_pipes(pipes, cmd_count - 1);
     
-    // Tüm child'ların bitmesini bekle
+    // Parent: tüm çocukların bitmesini bekle
+    configure_execution_signals();
     status = wait_for_children(pids, cmd_count);
+    configure_prompt_signals();
     
     // Cleanup
     cleanup_pipeline(pids, pipes, cmd_count);
     
     return (status);
 }
+
 
 // Pipe array'i oluşturma
 int **create_pipes(int pipe_count)

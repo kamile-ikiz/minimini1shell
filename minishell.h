@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/13 19:19:14 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/16 20:39:42 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 
 #define PROMPT          "\001\033[38;5;205m\002minimini1shell$ \001\033[0m\002"
 #define BUFFER_SIZE     1024
+
+extern volatile sig_atomic_t g_signal_flag;
 
 typedef enum {
     TOKEN_WORD,           // Regular words like "ls", "file.txt"
@@ -158,6 +160,7 @@ char    *ft_strjoin_free(char *s1, char *s2);
 char    *get_env_value(char *var_name, t_env **env_list_ptr);
 int	get_token_count(token_t *head);
 //--------------------heredoc------------------------------------
+char	*expand(const char *input);
 char	*append_variable(char *line, int *i, char *result);
 char	*append_normal_char(char *line, int i, char *result);
 int     setup_heredoc_redirect(char *delimiter);
@@ -165,6 +168,7 @@ char	*handle_heredoc_delimiter(char *delimiter);
 char	*get_next_line(int fd);
 int prepare_heredocs(command_t *cmd_list);
 void cleanup_heredoc_pipes(command_t *cmd_list);
+int	read_heredoc(const char *delim, int fd, int expand);
 //-------------------redirect list or word list-------------------------------------
 int     handle_redirect_pair(token_t *redirect_token, token_t *filename,
 	command_t *cmd);
@@ -190,12 +194,12 @@ int execute_command(command_t *cmd);
 extern volatile sig_atomic_t g_signal_flag;
 void    assign_signal_handler(int signal_type, void (*callback)(int));
 void	interrupt_callback_prompt(int signal_num);
-void    configure_prompt_signals(void);
+int    configure_prompt_signals(void);
 void	interrupt_callback_execution(int signal_num);
 void	quit_callback_execution(int signal_num);
 void	configure_execution_signals(void);
 void	interrupt_callback_heredoc(int signal_num);
-void	configure_heredoc_signals(void);
+void    configure_heredoc_signals(void);
 void	validate_signal_state(minishell_t *shell_ctx);
 void	process_interrupt_during_input(minishell_t *shell_ctx, char **user_input);
 void	process_interrupt_after_input(minishell_t *shell_ctx, char *user_input);
@@ -226,5 +230,4 @@ int	check_pipe_syntax(token_t *tokens, int token_count);
 token_t	*token_get_last(token_t *head);
 int	read_heredoc_until_delimiter(const char *delimiter,
 		int write_fd, int expand_vars);
-char	*expand(const char *input);
 #endif 

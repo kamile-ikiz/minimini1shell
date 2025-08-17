@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 01:40:35 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/08 20:50:30 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/17 18:11:30 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,10 @@ int	builtin_export(command_t *cmd)
 	while (cmd->args[++i])
 	{
 		if (!is_valid_identifier(cmd->args[i]))
-			return (print_identifier_error(cmd->args[i]));
+		{
+			print_identifier_error(cmd->args[i]);
+			continue ;
+		}
 		eq_pos = ft_strchr(cmd->args[i], '=');
 		if (eq_pos)
 			handle_var_with_value(list_ptr, cmd->args[i], eq_pos);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 15:31:08 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/01 16:11:11 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/17 18:21:35 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static int	is_numeric(const char *str)
 
 int	builtin_exit(command_t *cmd)
 {
+	ft_putstr_fd("exit\n", 1);
 	if (!cmd->args[1])
 		exit(0);
 	if (!is_numeric(cmd->args[1]))
