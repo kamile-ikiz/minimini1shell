@@ -6,13 +6,13 @@
 /*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:12:10 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 17:20:36 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/17 20:14:54 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static  token_t	*get_token_at_index(token_t *head, int index)
+static token_t	*get_token_at_index(token_t *head, int index)
 {
 	int		i;
 	token_t	*current;
