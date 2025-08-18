@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 16:19:04 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 21:21:53 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/18 19:58:45 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,13 @@ char	*expand_all_variables(char *arg, t_env **env_list_ptr)
 			result = temp;
 			i = new_i;
 		}
+		else if (result[i] == '$' && result[i + 1] == '?')
+			{
+				temp = ft_itoa(get_exit_code());
+				free(result);
+				result = temp;
+				i += 2;
+			}
 		else
 			i++;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 16:58:27 by kikiz             #+#    #+#             */
-/*   Updated: 2025/07/29 18:16:37 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/17 20:12:47 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ void				ft_putnbr_fd(int n, int fd);
 int					ft_strcmp(const char *s1, const char *s2);
 size_t				ft_strspn(const char *str1, const char *str2);
 char				*ft_strjoin_three(char *s1, char *s2, char *s3);
+char				*ft_strcpy(char *dst, const char *src);
+char				*ft_strcat(char *dest, const char *src);
 
 typedef struct s_list
 {

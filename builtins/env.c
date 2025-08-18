@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 13:55:09 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/01 16:11:08 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/17 21:02:09 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,15 @@ int	builtin_env(command_t *cmd)
 	if (cmd->args[1])
 	{
 		ft_putstr_fd("env: too many arguments\n", 2);
+		set_exit_code(1); // Hata durumunda exit code 1
 		return (1);
 	}
 	env = init_env(NULL);
 	if (!env || !*env)
+	{
+		set_exit_code(1); // Hata durumunda exit code 1
 		return (1);
+	}
 	current = *env;
 	while (current)
 	{
@@ -88,5 +92,6 @@ int	builtin_env(command_t *cmd)
 		}
 		current = current->next;
 	}
+	set_exit_code(0); // Başarılı durumda exit code 0
 	return (0);
 }

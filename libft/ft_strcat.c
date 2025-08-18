@@ -1,36 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strcat.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 19:19:41 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/18 19:59:21 by beysonme         ###   ########.fr       */
+/*   Created: 2025/08/17 20:10:55 by beysonme          #+#    #+#             */
+/*   Updated: 2025/08/17 20:11:07 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
-
-int	builtin_pwd(command_t *cmd)
+char *ft_strcat(char *dest, const char *src)
 {
-	char	*cwd;
-
-	if (cmd->args[1])
-	{
-		ft_putstr_fd("pwd: no options allowed\n", 2);
-		set_exit_code(1);
-		return (1);
-	}
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-	{
-		perror("pwd");
-		set_exit_code(1);
-		return (1);
-	}
-	ft_putendl_fd(cwd, 1);
-	free(cwd);
-	set_exit_code(0);
-	return (0);
+	int i = 0;
+	int j = 0;
+	while (dest[i])
+		i++;
+	while (src[j])
+		dest[i++] = src[j++];
+	dest[i] = '\0';
+	return (dest);
 }

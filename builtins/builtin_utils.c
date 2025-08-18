@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 17:41:38 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/08 20:09:08 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/17 21:06:15 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int	print_identifier_error(char *identifier)
 	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
 	ft_putstr_fd(identifier, STDERR_FILENO);
 	ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+	set_exit_code(1);
 	return (1);
 }
 

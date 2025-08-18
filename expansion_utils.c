@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:56:52 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 16:10:25 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/18 21:11:29 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ static void	cleanup_expand_data(expand_data_t *data)
 		free(data->after);
 }
 
-char	*expand_variable_parts(char *arg, char *env_value, int dollar_pos, int var_end)
+char	*expand_variable_parts(char *arg, char *env_value,
+	int dollar_pos, int var_end)
 {
 	expand_data_t	data;
 

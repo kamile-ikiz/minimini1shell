@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_syntax_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:12:10 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/17 20:14:54 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/18 21:01:10 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	get_token_count(token_t *head)
 	return (count);
 }
 
-static  int	check_pipe_start_end(token_t *head, int token_count)
+static int	check_pipe_start_end(token_t *head, int token_count)
 {
 	token_t	*last;
 
@@ -66,7 +66,7 @@ static  int	check_pipe_start_end(token_t *head, int token_count)
 	return (1);
 }
 
-static  int check_consecutive_pipes(token_t *tokens)
+static int	check_consecutive_pipes(token_t *tokens)
 {
 	while (tokens)
 	{
@@ -82,12 +82,12 @@ static  int check_consecutive_pipes(token_t *tokens)
 
 int	check_pipe_syntax(token_t *tokens, int token_count)
 {
-		if (!check_pipe_start_end(tokens, token_count))
-		{
-			return (0);
-		}
-		if (!check_consecutive_pipes(tokens))
-			return (0);
-		tokens = tokens->next;
+	if (!check_pipe_start_end(tokens, token_count))
+	{
+		return (0);
+	}
+	if (!check_consecutive_pipes(tokens))
+		return (0);
+	tokens = tokens->next;
 	return (1);
 }

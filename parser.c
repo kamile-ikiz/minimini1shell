@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 15:52:51 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 16:50:18 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/18 19:28:57 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,23 @@ command_t	*parse_input(char *input)
 
 	tokens = lex_and_validate(input);
 	if (!tokens)
+	{
+		set_exit_code(2);
 		return (NULL);
+	}
 	segments = split_tokens_by_pipe(tokens);
 	free_tokens(tokens);
 	if (!segments)
+	{
+		set_exit_code(2);
 		return (NULL);
+	}
 	pipeline_head = create_pipeline_from_segments(segments);
-	free_segments(segments); 
+	free_segments(segments);
+	if (!pipeline_head)
+	{
+		set_exit_code(2);
+		return (NULL);
+	} 
 	return (pipeline_head);
 }

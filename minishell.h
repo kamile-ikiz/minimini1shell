@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/17 20:14:47 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/17 19:48:46 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,4 +230,8 @@ int	check_pipe_syntax(token_t *tokens, int token_count);
 token_t	*token_get_last(token_t *head);
 int	read_heredoc_until_delimiter(const char *delimiter,
 		int write_fd, int expand_vars);
+
+void set_exit_code(int status);
+int get_exit_code(void);
+
 #endif 

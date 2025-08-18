@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_redirect.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:05:03 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 17:23:33 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/18 21:03:09 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 
 int	is_redirect_token(token_t token)
 {
-	token_type_t type;
+	token_type_t	type;
+
 	type = token.type;
 	if (type == TOKEN_REDIRECT_IN || type == TOKEN_REDIRECT_OUT
 		|| type == TOKEN_REDIRECT_APPEND || type == TOKEN_HEREDOC)
-		return(1);
+		return (1);
 	else
-		return(0);
+		return (0);
 }
 
 static	redirect_t	*create_redirect(token_type_t type, char *filename)
@@ -60,7 +61,7 @@ int	handle_redirect_pair(token_t *redirect_token, token_t *filename,
 	command_t *cmd)
 {
 	redirect_t	*new_redirect;
-	char *file_name;
+	char		*file_name;
 
 	if (!cmd || !redirect_token || !filename)
 		return (-1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segment_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:53:17 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 16:56:32 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/18 19:35:26 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ static  segment_t *create_segment(void)
 
 	segment = malloc(sizeof(segment_t));
 	if (!segment)
+	{
+		set_exit_code(1);
 		return (NULL);
+	}
 	segment->tokens = NULL;
 	segment->token_count = 0;
 	segment->next = NULL;
@@ -45,9 +48,18 @@ static  token_t	*create_token_copy(token_t *src)
 	token_t	*new;
 	new = malloc(sizeof(token_t));
 	if(!new)
+	{
+		set_exit_code(1);
 		return (NULL);
+	}
 	new->type = src->type;
 	new->value = ft_strdup(src->value);
+	if (!new->value && src->value)
+	{
+		free(new);
+		set_exit_code(1);
+		return (NULL);
+	}
 	new->next = NULL;
 	return (new);
 }
@@ -68,7 +80,10 @@ static  token_t *copy_tokens_until_pipe(token_t *start_token, int count)
 	{
 		new_token = create_token_copy(current);
 		if(!new_token)
+		{
+			set_exit_code(1);
 			return (NULL);
+		}
 		if(!new_list)
 			new_list = new_token;
 		else
@@ -92,6 +107,7 @@ segment_t	*create_single_segment(token_t *start_token, int count)
 	if(!segment->tokens && count > 0)
 	{
 		free(segment);
+		set_exit_code(1);
 		return (NULL);
 	}
 	return (segment);

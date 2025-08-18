@@ -1,36 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   exit_code.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 19:19:41 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/18 19:59:21 by beysonme         ###   ########.fr       */
+/*   Created: 2025/08/17 19:43:46 by beysonme          #+#    #+#             */
+/*   Updated: 2025/08/18 21:11:09 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
-int	builtin_pwd(command_t *cmd)
+static int	current_exit_code(int *exit_code)
 {
-	char	*cwd;
+	static int	current;
 
-	if (cmd->args[1])
-	{
-		ft_putstr_fd("pwd: no options allowed\n", 2);
-		set_exit_code(1);
-		return (1);
-	}
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-	{
-		perror("pwd");
-		set_exit_code(1);
-		return (1);
-	}
-	ft_putendl_fd(cwd, 1);
-	free(cwd);
-	set_exit_code(0);
-	return (0);
+	if (!exit_code)
+		return (current);
+	current = *exit_code;
+	return (current);
+}
+
+void	set_exit_code(int status)
+{
+	current_exit_code(&status);
+}
+
+int	get_exit_code(void)
+{
+	return (current_exit_code(NULL));
 }

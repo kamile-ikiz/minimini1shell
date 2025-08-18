@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 01:40:35 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/17 18:11:30 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/17 21:03:18 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ static int	print_exported_vars(t_env *list)
 		current->is_printed = false;
 		current = current->next;
 	}
+	set_exit_code(0); // Başarılı durumda exit code 0
 	return (0);
 }
 
@@ -77,9 +78,11 @@ int	builtin_export(command_t *cmd)
 	t_env	*list;
 	int		i;
 	char	*eq_pos;
+	int		error_flag;
 
 	list_ptr = init_env(NULL);
 	list = *list_ptr;
+	error_flag = 0;
 	if (!cmd->args[1])
 		return (print_exported_vars(list));
 	i = 0;
@@ -88,6 +91,7 @@ int	builtin_export(command_t *cmd)
 		if (!is_valid_identifier(cmd->args[i]))
 		{
 			print_identifier_error(cmd->args[i]);
+			error_flag = 1; // Hatalı identifier bulundu
 			continue ;
 		}
 		eq_pos = ft_strchr(cmd->args[i], '=');
@@ -96,5 +100,9 @@ int	builtin_export(command_t *cmd)
 		else
 			handle_var_only(list_ptr, cmd->args[i]);
 	}
-	return (0);
+	if (error_flag)
+		set_exit_code(1);
+	else
+		set_exit_code(0);
+	return (error_flag);
 }

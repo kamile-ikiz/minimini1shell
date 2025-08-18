@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:44:51 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/01 16:10:48 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/17 21:00:36 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ static int	print_error(char *msg, char *to_free)
 		ft_putstr_fd(msg, 2);
 	if (to_free)
 		free(to_free);
+	set_exit_code(1); // Hata durumunda exit code 1 olarak ayarlanıyor
 	return (1);
 }
 
@@ -54,8 +55,10 @@ int	builtin_cd(command_t *cmd)
 	{
 		free(cwd);
 		perror("cd");
+		set_exit_code(1);
 		return (1);
 	}
 	free(cwd);
+	set_exit_code(0);
 	return (0);
 }

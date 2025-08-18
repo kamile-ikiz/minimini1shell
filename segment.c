@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segment.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:39:33 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 16:53:37 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/18 19:38:42 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ segment_t	*split_tokens_by_pipe(token_t *token_list)
 		if(!new_segment)
 		{
 			free_segments(segments);
+			set_exit_code(1);
 			return(NULL);
 		}
 		add_segment(&segments, new_segment);
@@ -84,24 +85,39 @@ int	parse_command_or_redirect(segment_t *segment, command_t **cmd_ptr)
 	token_t *current;
 
 	if(!segment || !cmd_ptr)
+	{
+		set_exit_code(1);
 		return (-1);
+	}
 	*cmd_ptr = create_command();
 	if (!*cmd_ptr)
+	{
+		set_exit_code(1);
 		return (-1);
+	}
 	current = segment->tokens;
 	while(current)
 	{
 		if (is_redirect_token(*current))
 		{
 			if (!current->next || current->next->type != TOKEN_WORD)
+			{
+				set_exit_code(2);
 				return (parse_error(cmd_ptr));
+			}	
 			if (handle_redirect_pair(current, current->next, *cmd_ptr) != 0)
+			{
+				set_exit_code(1);
 				return (parse_error(cmd_ptr));
+			}
 		}
 		else if (current->type == TOKEN_WORD)
 		{
 			if (handle_command_pair(current, *cmd_ptr) != 0)
+			{
+				set_exit_code(1);
 				return (parse_error(cmd_ptr));
+			}
 		}
 		advance_to_next_token(&current);
 	}

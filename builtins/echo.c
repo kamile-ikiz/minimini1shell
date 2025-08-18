@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:16:42 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/12 21:18:49 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/17 21:01:18 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,6 @@ int	builtin_echo(command_t *cmd)
 	}
 	if (newline)
 		ft_putchar_fd('\n', 1);
+	set_exit_code(0);
 	return (0);
 }

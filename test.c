@@ -19,6 +19,12 @@ int	main(int argc, char **argv, char **envp)
 			printf("exit\n");
 			break;
 		}
+		else if(*line == '\0')
+		{
+			free(line);
+			set_exit_code(0);
+			continue;
+		}
 		if (*line)
 			add_history(line);
 		
@@ -26,8 +32,9 @@ int	main(int argc, char **argv, char **envp)
 		if (pipeline) 
 		{
 			status = prepare_heredocs(pipeline);
-			if (g_signal_flag == 2)
+			if (g_signal_flag == SIGINT)
 			{	
+					set_exit_code(130);
 					cleanup_heredoc_pipes(pipeline);
 					free_pipeline(pipeline);
 					free(line);
@@ -42,5 +49,5 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free(line);
 	}
-	return (0);
+	return (get_exit_code());
 }

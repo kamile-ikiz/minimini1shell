@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/17 20:59:44 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/18 19:49:54 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,49 +34,10 @@ static token_t	*handle_operator_tokens(parser_t *parser)
 	return (NULL);
 }
 
-static char	*process_quoted_segment(parser_t *parser, char quote_char,
-			token_t *last_token)
-{
-	char	*segment;
-	char	*temp;
-
-	segment = parse_quotes(parser, quote_char);
-	if (!segment)
-		return (NULL);
-	temp = segment;
-	if (quote_char == '"' && last_token && last_token->expand_mode == 1)
-	{
-		segment = expand_all_variables(temp, init_env(NULL));
-		free(temp);
-	}
-	else if (!last_token)
-		segment = expand_all_variables(temp, init_env(NULL));
-	return (segment);
-}
-
-static char	*process_unquoted_segment(parser_t *parser, token_t *last_token)
-{
-	char	*segment;
-	char	*temp;
-
-	temp = parse_unquoted_segment(parser);
-	if (!temp)
-		return (NULL);
-	if (last_token && last_token->expand_mode == 1)
-	{
-		segment = expand_all_variables(temp, init_env(NULL));
-		free(temp);
-	}
-	else if (!last_token)
-		segment = expand_all_variables(temp, init_env(NULL));
-	else
-		segment = temp;
-	return (segment);
-}
-
 static int	parse_and_append_segment(parser_t *parser, char **final_word)
 {
 	char	*segment;
+	char	*temp;
 	char	quote_char;
 	token_t	*last_token;
 
@@ -85,11 +46,32 @@ static int	parse_and_append_segment(parser_t *parser, char **final_word)
 	if (parser->token_list != NULL)
 		last_token = token_get_last(parser->token_list);
 	if (quote_char == '\'' || quote_char == '"')
-		segment = process_quoted_segment(parser, quote_char, last_token);
+	{
+		segment = parse_quotes(parser, quote_char);
+		if (!segment)
+			return (0);
+		if (quote_char == '"')
+		{
+			if (last_token && last_token->expand_mode == 1)
+			{
+				temp = segment;
+				segment = expand_all_variables(temp, init_env(NULL));
+				free(temp);
+			}
+		}
+	}
 	else
-		segment = process_unquoted_segment(parser, last_token);
-	if (!segment)
-		return (0);
+	{
+		temp = parse_unquoted_segment(parser);
+		if (last_token && last_token->expand_mode == 1)
+		{
+			segment = expand_all_variables(temp, init_env(NULL));
+			free(temp);
+		}
+		else
+			segment = temp;
+	}
+		
 	return (append_segment(final_word, segment));
 }
 
@@ -97,7 +79,10 @@ static	token_t	*handle_word(parser_t *parser)
 {
 	char	*final_val;
 	token_t	*token;
+	token_t	*first_token;
 
+	first_token = new_token(TOKEN_WORD, "");
+	parser->token_list = first_token;
 	final_val = ft_strdup("");
 	if (!final_val)
 		return (set_parser_error(parser, "malloc error", NULL));
@@ -110,9 +95,9 @@ static	token_t	*handle_word(parser_t *parser)
 		}
 	}
 	token = new_token(TOKEN_WORD, final_val);
+	//free(final_val);
 	if (!token)
 		return (set_parser_error(parser, "malloc error", final_val));
-	//free(final_val);
 	return (token);
 }
 

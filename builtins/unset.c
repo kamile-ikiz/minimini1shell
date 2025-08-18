@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 13:05:29 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/01 16:11:26 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/17 21:05:29 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,10 @@ int	builtin_unset(command_t *cmd)
 {
 	int		i;
 	t_env	**env_list;
+	int		exit_status;
 
 	i = 1;
+	exit_status = 0;
 	env_list = init_env(NULL);
 	while (cmd->args[i])
 	{
@@ -52,10 +54,12 @@ int	builtin_unset(command_t *cmd)
 			ft_putstr_fd("minishell: unset: `", 2);
 			ft_putstr_fd(cmd->args[i], 2);
 			ft_putstr_fd("`: not a valid identifier\n", 2);
+			exit_status = 1;
 		}
 		else
 			remove_env_var(env_list, cmd->args[i]);
 		i++;
 	}
-	return (0);
+	set_exit_code(exit_status);
+	return (exit_status);
 }

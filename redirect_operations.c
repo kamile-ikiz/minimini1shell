@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 19:00:57 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/16 20:23:25 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/18 19:32:46 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,16 @@ int	handle_input_redirect(char *filename)
 		return (-1);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
-	{
+	{		
 		perror(filename);
+		set_exit_code(1);
 		return (-1);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		close(fd);
 		perror("dup2");
+		set_exit_code(1);
 		return (-1);
 	}
 	close(fd);
@@ -45,12 +47,14 @@ int	handle_output_redirect(char *filename)
 	if (fd == -1)
 	{
 		perror(filename);
+		set_exit_code(1);
 		return (-1);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		close(fd);
 		perror("dup2");
+		set_exit_code(1);
 		return (-1);
 	}
 	close(fd);
@@ -67,12 +71,14 @@ int	handle_append_redirect(char *filename)
 	if (fd == -1)
 	{
 		perror(filename);
+		set_exit_code(1);
 		return (-1);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		close(fd);
 		perror("dup2");
+		set_exit_code(1);
 		return (-1);
 	}
 	close(fd);
@@ -90,7 +96,8 @@ int execute_redirects(command_t *cmd)
             {
                 perror("dup2 heredoc");
                 close(redir->heredoc_pipe_fd);
-                return -1;
+				set_exit_code(1);
+                return (-1);
             }
             close(redir->heredoc_pipe_fd); // dup2’den sonra orijinal fd kapatılır
             redir->heredoc_pipe_fd = -1;   // kapandığını belirt
@@ -108,10 +115,10 @@ int execute_redirects(command_t *cmd)
         else if (redir->type == TOKEN_REDIRECT_APPEND)
         {
             if (handle_append_redirect(redir->filename) == -1)
-                return -1;
+                return (-1);
         }
         redir = redir->next;
     }
-    return 0;
+    return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 17:43:40 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/17 19:02:33 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/18 21:36:42 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	interrupt_callback_prompt(int signal_num)
 {
 	(void)signal_num;
 	write(STDOUT_FILENO, "\n", 1);
+	set_exit_code(130);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -51,6 +52,7 @@ void	interrupt_callback_execution(int signal_num)
 	(void)signal_num;
 	//g_signal_flag = SIGINT<<;
 	write(STDOUT_FILENO, "\n", 1);
+	set_exit_code(130);
 }
 
 void	quit_callback_execution(int signal_num)
@@ -58,6 +60,7 @@ void	quit_callback_execution(int signal_num)
 	(void)signal_num;
 	g_signal_flag = SIGQUIT;
 	write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+	set_exit_code(131);
 }
 
 void	configure_execution_signals(void)

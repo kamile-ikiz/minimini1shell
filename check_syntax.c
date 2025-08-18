@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_syntax.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:03:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 17:19:18 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/18 21:01:52 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,9 @@ int	check_heredoc_syntax(token_t *head)
 
 int	check_all_syntax(token_t *head)
 {
-    int token_count;
+	int	token_count;
 
-    token_count = get_token_count(head);
+	token_count = get_token_count(head);
 	if (!check_pipe_syntax(head, token_count))
 		return (0);
 	if (!check_redirect_in_syntax(head))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:46:37 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/01 16:11:17 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/17 21:04:30 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,23 @@ int	is_builtin(char *cmd)
 
 int	execute_builtin(command_t *cmd)
 {
+	int	ret;
+
+	ret = 0;
 	if (ft_strcmp(cmd->args[0], "echo") == 0)
-		return (builtin_echo(cmd));
+		ret = builtin_echo(cmd);
 	else if (ft_strcmp(cmd->args[0], "cd") == 0)
-		return (builtin_cd(cmd));
+		ret = builtin_cd(cmd);
 	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-		return (builtin_pwd(cmd));
+		ret = builtin_pwd(cmd);
 	else if (ft_strcmp(cmd->args[0], "export") == 0)
-		return (builtin_export(cmd));
+		ret = builtin_export(cmd);
 	else if (ft_strcmp(cmd->args[0], "unset") == 0)
-		return (builtin_unset(cmd));
+		ret = builtin_unset(cmd);
 	else if (ft_strcmp(cmd->args[0], "env") == 0)
-		return (builtin_env(cmd));
+		ret = builtin_env(cmd);
 	else if (ft_strcmp(cmd->args[0], "exit") == 0)
-		return (builtin_exit(cmd));
-	return (0);
+		ret = builtin_exit(cmd);
+	set_exit_code(ret); // execute_builtin sonucu ile exit code güncelleniyor
+	return (ret);
 }
