@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:46:37 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/17 21:04:30 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:36:42 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-int	execute_builtin(command_t *cmd)
+int	execute_builtin(t_command *cmd)
 {
 	int	ret;
 

@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   create_command.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 14:13:48 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/02 17:03:57 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/19 22:38:00 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-command_t	*create_command(void)
+t_command	*create_command(void)
 {
-	command_t	*cmd;
+	t_command	*cmd;
 
-	cmd = malloc(sizeof(command_t));
+	cmd = malloc(sizeof(t_command));
 	if (!cmd)
 		return (NULL);
 	cmd->args = NULL;
@@ -46,19 +46,22 @@ static char	**realloc_args(char **args, int new_size)
 	return (new_args);
 }
 
-int	handle_command_pair(token_t *word, command_t *cmd)
+int	handle_command_pair(t_token *word, t_command *cmd)
 {
 	char	**new_args;
 
 	if (!cmd || !word)
 		return (-1);
-	new_args = realloc_args(cmd->args, cmd->argc + 1);
-	if (!new_args)
-		return (-1);
-	new_args[cmd->argc] = strdup(word->value);
-	if (!new_args[cmd->argc])
-		return (-1);
-	cmd->args = new_args;
-	cmd->argc++;
+	if(word->value[0] != '\0')
+	{
+		new_args = realloc_args(cmd->args, cmd->argc + 1);
+		if (!new_args)
+			return (-1);
+		new_args[cmd->argc] = strdup(word->value);
+		if (!new_args[cmd->argc])
+			return (-1);
+		cmd->args = new_args;
+		cmd->argc++;
+	}
 	return (0);
 }

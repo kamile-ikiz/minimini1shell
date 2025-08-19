@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:50:58 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/02 16:30:46 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/19 15:54:40 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,18 @@ typedef struct s_env
 	bool			is_printed;
 }	t_env;
 
-typedef struct command command_t;
+typedef struct s_command t_command;
 
-int		builtin_cd (command_t *cmd);
-int		builtin_echo(command_t *cmd);
-int		builtin_pwd(command_t *cmd);
-int		builtin_env(command_t *cmd);
-int		builtin_export(command_t *cmd);
-int		builtin_exit(command_t *cmd);
-int		builtin_unset(command_t *cmd);
+int		builtin_cd (t_command *cmd);
+int		builtin_echo(t_command *cmd);
+int		builtin_pwd(t_command *cmd);
+int		builtin_env(t_command *cmd);
+int		builtin_export(t_command *cmd);
+int		builtin_exit(t_command *cmd);
+int		builtin_unset(t_command *cmd);
 
 int		is_builtin(char *cmd);
-int		execute_builtin(command_t *cmd);
+int		execute_builtin(t_command *cmd);
 
 int		is_valid_identifier(char *str);
 int		env_list_size(t_env *list);

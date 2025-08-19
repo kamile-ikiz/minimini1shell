@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_operations.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 19:00:57 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/18 19:32:46 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:39:05 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ int	handle_append_redirect(char *filename)
 	close(fd);
 	return (0);
 }
-int execute_redirects(command_t *cmd)
+int execute_redirects(t_command *cmd)
 {
-    redirect_t *redir = cmd->redirects;
+    t_redirect *redir = cmd->redirects;
 
     while (redir)
     {

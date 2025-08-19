@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/18 22:27:07 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 19:51:00 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,14 @@ char **env_list_to_envp(t_env **env_list_ptr)
 }
 
 
-int execute_command(command_t *cmd)
+int execute_command(t_command *cmd)
 {
     int saved_stdin;
     int saved_stdout;
     int exit_status;
 
     exit_status = 0;
+
     if (cmd->next)
         exit_status = execute_pipeline(cmd);
 
@@ -92,13 +93,12 @@ int execute_command(command_t *cmd)
     }
     else
         exit_status = execute_simple_command(cmd);
-
     cleanup_heredoc_pipes(cmd);
     set_exit_code(exit_status);
     return (exit_status);
 }
 
-int execute_simple_command(command_t *cmd)
+int execute_simple_command(t_command *cmd)
 {
     pid_t pid;
     int status;
@@ -171,8 +171,8 @@ int execve_command(char **args)
         exit(127);
     }
     if (execve(cmd_path, args, envp) == -1)
-  {  
-        free(cmd_path);
+	{  
+		free(cmd_path);
         ft_putstr_fd("minishell: ", 2);
         ft_putstr_fd(args[0], 2);
         ft_putstr_fd(": command not found\n", 2);
@@ -210,7 +210,7 @@ char *find_command_path(char *cmd)
     return (NULL);
 }
 
-int execute_pipeline(command_t *cmd)
+int execute_pipeline(t_command *cmd)
 {
     int cmd_count;
     pid_t *pids;
@@ -357,7 +357,7 @@ void cleanup_pipeline(pid_t *pids, int **pipes, int cmd_count)
     free(pids);
 }
 
-int count_commands(command_t *cmd)
+int count_commands(t_command *cmd)
 {
     int count = 0;
     

@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   check_syntax.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:03:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/18 21:01:52 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:22:13 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	check_redirect_in_syntax(token_t *head)
+int	check_redirect_in_syntax(t_token *head)
 {
-	token_t	*current;
+	t_token	*current;
 
 	current = head;
 	while (current)
@@ -37,9 +37,9 @@ int	check_redirect_in_syntax(token_t *head)
 	return (1);
 }
 
-int	check_redirect_out_syntax(token_t *head)
+int	check_redirect_out_syntax(t_token *head)
 {
-	token_t	*current;
+	t_token	*current;
 
 	current = head;
 	while (current)
@@ -62,9 +62,9 @@ int	check_redirect_out_syntax(token_t *head)
 	return (1);
 }
 
-int	check_redirect_append_syntax(token_t *head)
+int	check_redirect_append_syntax(t_token *head)
 {
-	token_t	*current;
+	t_token	*current;
 
 	current = head;
 	while (current)
@@ -87,9 +87,9 @@ int	check_redirect_append_syntax(token_t *head)
 	return (1);
 }
 
-int	check_heredoc_syntax(token_t *head)
+int	check_heredoc_syntax(t_token *head)
 {
-	token_t	*current;
+	t_token	*current;
 
 	current = head;
 	while (current)
@@ -112,7 +112,7 @@ int	check_heredoc_syntax(token_t *head)
 	return (1);
 }
 
-int	check_all_syntax(token_t *head)
+int	check_all_syntax(t_token *head)
 {
 	int	token_count;
 

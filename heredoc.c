@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 14:20:00 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/16 22:33:39 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:38:19 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int process_heredoc_redirect(redirect_t *redir) 
+static int process_heredoc_redirect(t_redirect *redir) 
 {
     int pipe_fd[2];
     int status;
@@ -37,9 +37,9 @@ return 0;
 }
 
 
-static int	process_cmd_heredocs(command_t *cmd)
+static int	process_cmd_heredocs(t_command *cmd)
 {
-	redirect_t	*redir;
+	t_redirect	*redir;
 	int status;
 
 	redir = cmd->redirects;
@@ -59,9 +59,9 @@ static int	process_cmd_heredocs(command_t *cmd)
 	return (0);
 }
 
-int	prepare_heredocs(command_t *cmd_list)
+int	prepare_heredocs(t_command *cmd_list)
 {
-	command_t	*cmd;
+	t_command	*cmd;
 	int			status;
 
 	cmd = cmd_list;
@@ -80,10 +80,10 @@ int	prepare_heredocs(command_t *cmd_list)
 	return (0);
 }
 
-void	cleanup_heredoc_pipes(command_t *cmd_list)
+void	cleanup_heredoc_pipes(t_command *cmd_list)
 {
-	command_t	*cmd;
-	redirect_t	*redir;
+	t_command	*cmd;
+	t_redirect	*redir;
 
 	cmd = cmd_list;
 	while (cmd)

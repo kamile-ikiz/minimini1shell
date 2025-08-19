@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   segment.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:39:33 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/18 19:38:42 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:39:15 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-token_t *skip_to_next_segment(token_t *current)
+t_token *skip_to_next_segment(t_token *current)
 {
 	while(current && current->type != TOKEN_PIPE)
 		current = current->next;
@@ -21,9 +21,9 @@ token_t *skip_to_next_segment(token_t *current)
 	return(current);
 }
 
-void	add_segment(segment_t **head, segment_t *new_segment)
+void	add_segment(t_segment **head, t_segment *new_segment)
 {
-	segment_t *current;
+	t_segment *current;
 
 	if(!*head)
 	{
@@ -36,11 +36,11 @@ void	add_segment(segment_t **head, segment_t *new_segment)
 	current->next = new_segment;
 }
 
-segment_t	*split_tokens_by_pipe(token_t *token_list)
+t_segment	*split_tokens_by_pipe(t_token *token_list)
 {
-	segment_t	*segments;
-	segment_t	*new_segment;
-	token_t		*current;
+	t_segment	*segments;
+	t_segment	*new_segment;
+	t_token		*current;
 	int			seg_token_count;
 
 	segments = NULL;
@@ -66,7 +66,7 @@ segment_t	*split_tokens_by_pipe(token_t *token_list)
 	return(segments);	
 }
 
-static void advance_to_next_token(token_t **current)
+static void advance_to_next_token(t_token **current)
 {
 	if (!current || !*current)
 		return;
@@ -80,9 +80,9 @@ static void advance_to_next_token(token_t **current)
 		*current = (*current)->next;
 }
 
-int	parse_command_or_redirect(segment_t *segment, command_t **cmd_ptr)
+int	parse_command_or_redirect(t_segment *segment, t_command **cmd_ptr)
 {
-	token_t *current;
+	t_token *current;
 
 	if(!segment || !cmd_ptr)
 	{

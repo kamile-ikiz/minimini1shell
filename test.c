@@ -5,7 +5,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
 	int			status;
-	command_t	*pipeline;
+	t_command	*pipeline;
 
 	(void)argc;
 	(void)argv;

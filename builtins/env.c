@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 13:55:09 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/17 21:02:09 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:36:22 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ t_env	**init_env(char **env)
 	return (&list);
 }
 
-int	builtin_env(command_t *cmd)
+int	builtin_env(t_command *cmd)
 {
 	t_env	**env;
 	t_env	*current;

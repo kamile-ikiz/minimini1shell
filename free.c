@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 00:09:15 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 17:07:34 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/19 15:47:22 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// void print_parser_error(parser_t *parser)
+// void print_parser_error(t_parser *parser)
 // {
 //     if (parser && parser->error)
 //     {
@@ -26,9 +26,9 @@
 //     }
 // }
 
-void free_tokens(token_t *tokens)
+void free_tokens(t_token *tokens)
 {
-	token_t	*next;
+	t_token	*next;
 
     while (tokens)
 	{
@@ -38,7 +38,7 @@ void free_tokens(token_t *tokens)
         tokens = next;
     }
 }
-// void free_parser(parser_t *parser)
+// void free_parser(t_parser *parser)
 // {
 //     if (!parser)
 //         return;
@@ -65,9 +65,9 @@ static void	free_args(char **args, int argc)
 	free(args);
 }
 
-void	free_redirects(redirect_t *redirects)
+void	free_redirects(t_redirect *redirects)
 {
-	redirect_t	*temp;
+	t_redirect	*temp;
 
 	while (redirects)
 	{
@@ -78,7 +78,7 @@ void	free_redirects(redirect_t *redirects)
 	}
 }
 
-void	free_command(command_t *cmd)
+void	free_command(t_command *cmd)
 {
 	if (!cmd)
 		return ;
@@ -87,11 +87,11 @@ void	free_command(command_t *cmd)
 	free(cmd);
 }
 
-void free_segments(segment_t *segments)
+void free_segments(t_segment *segments)
 {
-	segment_t	*temp;
-	token_t		*token_temp;
-	token_t		*token_next;
+	t_segment	*temp;
+	t_token		*token_temp;
+	t_token		*token_next;
 
 	while(segments)
 	{
@@ -109,10 +109,10 @@ void free_segments(segment_t *segments)
 	}
 }
 
-void	free_pipeline(command_t *pipeline)
+void	free_pipeline(t_command *pipeline)
 {
-	command_t	*current;
-	command_t	*next;
+	t_command	*current;
+	t_command	*next;
 
 	current = pipeline;
 	while (current)

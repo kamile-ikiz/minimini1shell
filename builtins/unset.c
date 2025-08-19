@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 13:05:29 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/17 21:05:29 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:36:53 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	remove_env_var(t_env **env_list, char *key)
 	}
 }
 
-int	builtin_unset(command_t *cmd)
+int	builtin_unset(t_command *cmd)
 {
 	int		i;
 	t_env	**env_list;

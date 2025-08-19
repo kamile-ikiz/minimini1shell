@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:47:41 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/13 19:54:11 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/19 15:47:47 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	parse_error(command_t **cmd_ptr)
+int	parse_error(t_command **cmd_ptr)
 {
 	if (cmd_ptr && *cmd_ptr)
 	{
@@ -22,7 +22,7 @@ int	parse_error(command_t **cmd_ptr)
 	return (-1);
 }
 
-void	*set_parser_error(parser_t *parser, char *msg, void *to_free)
+void	*set_parser_error(t_parser *parser, char *msg, void *to_free)
 {
 	if (to_free)
 		free(to_free);
@@ -31,7 +31,7 @@ void	*set_parser_error(parser_t *parser, char *msg, void *to_free)
 	return (NULL);
 }
 
-char	*parse_unquoted_segment(parser_t *parser)
+char	*parse_unquoted_segment(t_parser *parser)
 {
 	int	start;
 
@@ -51,7 +51,7 @@ char	*parse_unquoted_segment(parser_t *parser)
 	return (ft_substr(parser->inp, start, parser->pos - start));
 }
 
-char *parse_quotes(parser_t *parser, char quote)
+char *parse_quotes(t_parser *parser, char quote)
 {
 	int	start;
 	char *res;

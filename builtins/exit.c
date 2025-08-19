@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 15:31:08 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/17 21:02:48 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 20:05:35 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	is_numeric(const char *str)
 	return (1);
 }
 
-int	builtin_exit(command_t *cmd)
+int	builtin_exit(t_command *cmd)
 {
 	ft_putstr_fd("exit\n", 1);
 	if (!cmd->args[1])
@@ -40,8 +40,8 @@ int	builtin_exit(command_t *cmd)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(cmd->args[1], STDERR_FILENO);
 		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
-		set_exit_code(255); // Hatalı numeric argument
-		exit(255);
+		set_exit_code(2); // Hatalı numeric argument
+		exit(2);
 	}
 	if (cmd->args[2])
 	{

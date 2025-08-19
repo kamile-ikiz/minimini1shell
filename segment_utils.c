@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   segment_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:53:17 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/18 19:35:26 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:30:28 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int count_tokens_until_pipe(token_t *token_list)
+int count_tokens_until_pipe(t_token *token_list)
 {
 	int count;
-	token_t *current;
+	t_token *current;
 
 	count = 0;
 	current = token_list;
@@ -27,11 +27,11 @@ int count_tokens_until_pipe(token_t *token_list)
 	return (count);
 }
 
-static  segment_t *create_segment(void)
+static  t_segment *create_segment(void)
 {
-	segment_t	*segment;
+	t_segment	*segment;
 
-	segment = malloc(sizeof(segment_t));
+	segment = malloc(sizeof(t_segment));
 	if (!segment)
 	{
 		set_exit_code(1);
@@ -43,10 +43,10 @@ static  segment_t *create_segment(void)
 	return (segment);
 }
 
-static  token_t	*create_token_copy(token_t *src)
+static  t_token	*create_token_copy(t_token *src)
 {
-	token_t	*new;
-	new = malloc(sizeof(token_t));
+	t_token	*new;
+	new = malloc(sizeof(t_token));
 	if(!new)
 	{
 		set_exit_code(1);
@@ -64,12 +64,12 @@ static  token_t	*create_token_copy(token_t *src)
 	return (new);
 }
 
-static  token_t *copy_tokens_until_pipe(token_t *start_token, int count)
+static  t_token *copy_tokens_until_pipe(t_token *start_token, int count)
 {
-	token_t *new_list;
-	token_t *new_token;
-	token_t *current;
-	token_t *last;
+	t_token *new_list;
+	t_token *new_token;
+	t_token *current;
+	t_token *last;
 	int i;
 
 	new_list = NULL;
@@ -95,9 +95,9 @@ static  token_t *copy_tokens_until_pipe(token_t *start_token, int count)
 	return (new_list);
 }
 
-segment_t	*create_single_segment(token_t *start_token, int count)
+t_segment	*create_single_segment(t_token *start_token, int count)
 {
-	segment_t *segment;
+	t_segment *segment;
 
 	segment = create_segment();
 	if(!segment)

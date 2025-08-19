@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 16:19:04 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/18 19:58:45 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 22:37:48 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ char	*get_env_value(char *var_name, t_env **env_list_ptr)
 	}
 	return (NULL);
 }
+
 
 static char	*expand_single_variable(char *arg, int dollar_pos, t_env **env_list_ptr, int *new_i)
 {

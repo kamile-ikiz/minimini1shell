@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 19:41:07 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/17 21:11:29 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 22:05:41 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	is_space(char c)
 		|| c == '\r');
 }
 
-void	skip_whitespace(parser_t *parser)
+void	skip_whitespace(t_parser *parser)
 {
 	while (parser->inp[parser->pos] && is_space(parser->inp[parser->pos]))
 	{
@@ -38,7 +38,6 @@ int	is_word_delimiter(char c)
 int	append_segment(char **word_ptr, char *segment)
 {
 	char	*temp_word;
-
 	if (!segment)
 		return (1);
 	temp_word = ft_strjoin(*word_ptr, segment);
@@ -57,3 +56,21 @@ void	print_syntax_error(char *token)
 	set_exit_code(2);
 }
 
+			// for (int a = 0; a < pipeline->argc; a++)
+			// {
+			// 	printf("-----------------------------%s----------------------\n", pipeline->args[a]);
+			// }
+			// if (pipeline->redirects)
+			// for (int a = 0; a < pipeline->argc; a++)
+			// {
+			// 	printf("-----------------------------%s----------------------\n", pipeline->redirects->filename);
+			// }
+			// if(pipeline->args[0][0] == '\0')
+			// {
+			// 	printf("AAAAAAAAAAAAAAAAAAAAAAA");
+			// 	t_command *temp;
+			// 	temp = pipeline;
+			// 	pipeline = pipeline->next;
+			// 	free_command(temp);
+    		// }
+			// else

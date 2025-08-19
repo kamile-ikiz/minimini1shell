@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:21:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/18 19:45:58 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:48:17 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-token_t	*new_token(token_type_t type, char *value)
+t_token	*new_token(t_token_type type, char *value)
 {
-	token_t *token = malloc(sizeof(token_t));
+	t_token *token = malloc(sizeof(t_token));
 	if(!token)
 		return(NULL);
 	token->type = type;
@@ -30,7 +30,7 @@ token_t	*new_token(token_type_t type, char *value)
 	return (token);
 }
 
-token_t	*token_get_last(token_t *head)
+t_token	*token_get_last(t_token *head)
 {
 	if (!head)
 		return (NULL);
@@ -39,9 +39,9 @@ token_t	*token_get_last(token_t *head)
 	return (head);
 }
 
-token_t	*token_lst(token_t **head, token_t *token)
+t_token	*token_lst(t_token **head, t_token *token)
 {
-	token_t	*last_node;
+	t_token	*last_node;
 
 	if (!head)
 		return (NULL);
@@ -59,7 +59,7 @@ token_t	*token_lst(token_t **head, token_t *token)
 	return (*head);
 }
 
-void	init_parser(parser_t *parser, char *input)
+void	init_parser(t_parser *parser, char *input)
 {
 	parser->token_list = NULL;
 	parser->inp = input;

@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   create_redirect.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:05:03 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/18 21:03:09 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:37:17 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_redirect_token(token_t token)
+int	is_redirect_token(t_token token)
 {
-	token_type_t	type;
+	t_token_type	type;
 
 	type = token.type;
 	if (type == TOKEN_REDIRECT_IN || type == TOKEN_REDIRECT_OUT
@@ -24,11 +24,11 @@ int	is_redirect_token(token_t token)
 		return (0);
 }
 
-static	redirect_t	*create_redirect(token_type_t type, char *filename)
+static	t_redirect	*create_redirect(t_token_type type, char *filename)
 {
-	redirect_t	*redirect;
+	t_redirect	*redirect;
 
-	redirect = malloc(sizeof(redirect_t));
+	redirect = malloc(sizeof(t_redirect));
 	if (!redirect)
 		return (NULL);
 	redirect->type = type;
@@ -42,9 +42,9 @@ static	redirect_t	*create_redirect(token_type_t type, char *filename)
 	return (redirect);
 }
 
-static	void	add_redirect(redirect_t **head, redirect_t *new_redirect)
+static	void	add_redirect(t_redirect **head, t_redirect *new_redirect)
 {
-	redirect_t	*current;
+	t_redirect	*current;
 
 	if (!*head)
 	{
@@ -57,10 +57,10 @@ static	void	add_redirect(redirect_t **head, redirect_t *new_redirect)
 	current->next = new_redirect;
 }
 
-int	handle_redirect_pair(token_t *redirect_token, token_t *filename,
-	command_t *cmd)
+int	handle_redirect_pair(t_token *redirect_token, t_token *filename,
+	t_command *cmd)
 {
-	redirect_t	*new_redirect;
+	t_redirect	*new_redirect;
 	char		*file_name;
 
 	if (!cmd || !redirect_token || !filename)

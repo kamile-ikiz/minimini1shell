@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 15:52:51 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/18 19:28:57 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:38:57 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	add_command_to_pipeline(command_t **pipeline_head, command_t *new_cmd)
+static void	add_command_to_pipeline(t_command **pipeline_head, t_command *new_cmd)
 {
-	command_t	*current;
+	t_command	*current;
 
 	if (!*pipeline_head)
 	{
@@ -27,11 +27,11 @@ static void	add_command_to_pipeline(command_t **pipeline_head, command_t *new_cm
 	current->next = new_cmd;
 }
 
-static command_t	*create_pipeline_from_segments(segment_t *segments)
+static t_command	*create_pipeline_from_segments(t_segment *segments)
 {
-	command_t	*pipeline_head;
-	command_t	*new_command;
-	segment_t	*current_segment;
+	t_command	*pipeline_head;
+	t_command	*new_command;
+	t_segment	*current_segment;
 
 	pipeline_head = NULL;
 	current_segment = segments;
@@ -49,9 +49,9 @@ static command_t	*create_pipeline_from_segments(segment_t *segments)
 	return (pipeline_head);
 }
 
-static token_t	*lex_and_validate(char *input)
+static t_token	*lex_and_validate(char *input)
 {
-	token_t	*tokens;
+	t_token	*tokens;
 
 	tokens = tokenize(input);
 	if (!tokens)
@@ -64,11 +64,11 @@ static token_t	*lex_and_validate(char *input)
 	return (tokens);
 }
 
-command_t	*parse_input(char *input)
+t_command	*parse_input(char *input)
 {
-	token_t		*tokens;
-	segment_t	*segments;
-	command_t	*pipeline_head;
+	t_token		*tokens;
+	t_segment	*segments;
+	t_command	*pipeline_head;
 
 	tokens = lex_and_validate(input);
 	if (!tokens)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 01:40:35 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/17 21:03:18 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:36:35 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static int	print_exported_vars(t_env *list)
 	return (0);
 }
 
-int	builtin_export(command_t *cmd)
+int	builtin_export(t_command *cmd)
 {
 	t_env	**list_ptr;
 	t_env	*list;

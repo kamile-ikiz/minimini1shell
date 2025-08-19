@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/18 19:49:54 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/19 22:11:57 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static token_t	*handle_operator_tokens(parser_t *parser)
+static t_token	*handle_operator_tokens(t_parser *parser)
 {
 	char	c;
 	c = parser->inp[parser->pos];
@@ -34,52 +34,66 @@ static token_t	*handle_operator_tokens(parser_t *parser)
 	return (NULL);
 }
 
-static int	parse_and_append_segment(parser_t *parser, char **final_word)
+static int	handle_quoted_segment(t_parser *parser, char **segment, t_token *last_token)
 {
-	char	*segment;
-	char	*temp;
 	char	quote_char;
-	token_t	*last_token;
+	char	*temp;
 
 	quote_char = parser->inp[parser->pos];
+	*segment = parse_quotes(parser, quote_char);
+	if (!*segment)
+		return (0);
+	if (quote_char == '"' && last_token && last_token->expand_mode == 1)
+	{
+		temp = *segment;
+		*segment = expand_all_variables(temp, init_env(NULL));
+		free(temp);
+	}
+	return (1);
+}
+
+static int	handle_unquoted_segment(t_parser *parser, char **segment, t_token *last_token)
+{
+	char	*temp;
+
+	temp = parse_unquoted_segment(parser);
+	if (last_token && last_token->expand_mode == 1)
+	{
+		*segment = expand_all_variables(temp, init_env(NULL));
+		free(temp);
+	}
+	else
+		*segment = temp;
+	return (1);
+}
+
+static int	parse_and_append_segment(t_parser *parser, char **final_word)
+{
+	char	*segment;
+	t_token	*last_token;
+
+	segment = NULL;
 	last_token = NULL;
 	if (parser->token_list != NULL)
 		last_token = token_get_last(parser->token_list);
-	if (quote_char == '\'' || quote_char == '"')
+	if (parser->inp[parser->pos] == '\'' || parser->inp[parser->pos] == '"')
 	{
-		segment = parse_quotes(parser, quote_char);
-		if (!segment)
+		if (!handle_quoted_segment(parser, &segment, last_token))
 			return (0);
-		if (quote_char == '"')
-		{
-			if (last_token && last_token->expand_mode == 1)
-			{
-				temp = segment;
-				segment = expand_all_variables(temp, init_env(NULL));
-				free(temp);
-			}
-		}
 	}
 	else
 	{
-		temp = parse_unquoted_segment(parser);
-		if (last_token && last_token->expand_mode == 1)
-		{
-			segment = expand_all_variables(temp, init_env(NULL));
-			free(temp);
-		}
-		else
-			segment = temp;
+		if (!handle_unquoted_segment(parser, &segment, last_token))
+			return (0);
 	}
-		
 	return (append_segment(final_word, segment));
 }
 
-static	token_t	*handle_word(parser_t *parser)
+static	t_token	*handle_word(t_parser *parser)
 {
 	char	*final_val;
-	token_t	*token;
-	token_t	*first_token;
+	t_token	*token;
+	t_token	*first_token;
 
 	first_token = new_token(TOKEN_WORD, "");
 	parser->token_list = first_token;
@@ -101,9 +115,9 @@ static	token_t	*handle_word(parser_t *parser)
 	return (token);
 }
 
-static int	process_token(parser_t *parser, token_t **tokens)
+static int	process_token(t_parser *parser, t_token **tokens)
 {
-	token_t *token;
+	t_token *token;
 
 	skip_whitespace(parser);
 	if (!parser->inp[parser->pos])
@@ -122,10 +136,10 @@ static int	process_token(parser_t *parser, token_t **tokens)
 	return (1);
 }
 
-token_t	*tokenize(char *input)
+t_token	*tokenize(char *input)
 {
-	parser_t	parser;
-	token_t		*tokens;
+	t_parser	parser;
+	t_token		*tokens;
 	int			status;
 
 	tokens = (NULL);
