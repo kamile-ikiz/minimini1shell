@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 18:31:25 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 20:18:10 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,11 @@ int execute_command(t_command *cmd)
     int exit_status;
 
     exit_status = 0;
-
+    if (cmd->args == NULL)
+    {
+        set_exit_code(0);
+        return(exit_status);
+    }
     if (cmd->next)
         exit_status = execute_pipeline(cmd);
 

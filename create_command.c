@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 14:13:48 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 17:48:58 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 20:12:07 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,14 @@ int	handle_command_pair(t_token *word, t_command *cmd)
 {
 	char	**new_args;
 
+	new_args = NULL;
 	if (!cmd || !word)
 		return (-1);
 	if(word->value[0] == '\0' && word->was_quoted == 0)
+	{
+		cmd->args = new_args;
 		return (0);
+	}
 	new_args = realloc_args(cmd->args, cmd->argc + 1);
 	if (!new_args)
 		return (-1);
