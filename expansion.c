@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 16:19:04 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 22:37:48 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 00:44:03 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@ static char	*extract_var_name(char *str, int start, int *end)
 	i = start;
 	if (str[i] == '$')
 		i++;
+	if (str[i++] == '?')
+	{
+		*end = i;
+		var_name = ft_substr(str, start + 1, i - start - 1);
+		return (var_name);
+	}
 	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 		i++;
 	*end = i;
@@ -53,6 +59,17 @@ static char	*expand_single_variable(char *arg, int dollar_pos, t_env **env_list_
 	var_name = extract_var_name(arg, dollar_pos, &var_end);
 	if (!var_name)
 		return (ft_strdup(arg));
+	if (var_name[0] == '?')
+	{
+		env_value = ft_itoa(get_exit_code());
+		result = expand_variable_parts(arg, env_value, dollar_pos, var_end);
+		if (env_value)
+			*new_i = dollar_pos + ft_strlen(env_value);
+		else
+			*new_i = dollar_pos;
+		free(var_name);
+		return (result);
+	}
 	env_value = get_env_value(var_name, env_list_ptr);
 	result = expand_variable_parts(arg, env_value, dollar_pos, var_end);
 	if (env_value)
@@ -65,7 +82,7 @@ static char	*expand_single_variable(char *arg, int dollar_pos, t_env **env_list_
 
 static int	is_valid_var_char(char c)
 {
-	return (ft_isalnum(c) || c == '_');
+	return (ft_isalnum(c) || c == '_' || c == '?');
 }
 
 char	*expand_all_variables(char *arg, t_env **env_list_ptr)
@@ -90,13 +107,6 @@ char	*expand_all_variables(char *arg, t_env **env_list_ptr)
 			result = temp;
 			i = new_i;
 		}
-		else if (result[i] == '$' && result[i + 1] == '?')
-			{
-				temp = ft_itoa(get_exit_code());
-				free(result);
-				result = temp;
-				i += 2;
-			}
 		else
 			i++;
 	}
