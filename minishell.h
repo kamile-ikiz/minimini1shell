@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 17:16:35 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 18:29:21 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+# include <sys/stat.h>
 
 #define PROMPT          "\001\033[38;5;205m\002minimini1shell$ \001\033[0m\002"
 #define BUFFER_SIZE     1024

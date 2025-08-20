@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 19:51:00 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 18:31:25 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,15 @@ int execute_simple_command(t_command *cmd)
     }
 }
 
+static int  is_a_directory(char *path)
+{
+	struct stat	statbuf;
+
+	if (stat(path, &statbuf) == 0)
+		return (S_ISDIR(statbuf.st_mode));
+	return (0);
+}
+
 int execve_command(char **args)
 {
     char *cmd_path;
@@ -148,11 +157,11 @@ int execve_command(char **args)
         exit(127);
     if (ft_strchr(args[0], '/'))
     {
-        if (access(args[0], X_OK) == 0)
+        if (is_a_directory(args[0]))
         {
-            execve(args[0], args, envp);
-            perror("execve");
-            exit(127);
+            ft_putstr_fd(args[0], 2);
+            ft_putendl_fd(" : Is a directory", 2);
+            exit(126);
         }
         else
         {
