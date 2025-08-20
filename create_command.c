@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 14:13:48 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 20:58:06 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 00:58:16 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	handle_command_pair(t_token *word, t_command *cmd)
 	new_args = NULL;
 	if (!cmd || !word)
 		return (-1);
-	if(word->value[0] == '\0' && word->was_quoted == 0)
+	if (word->value[0] == '\0' && word->was_quoted == 0)
 	{
 		return (0);
 	}

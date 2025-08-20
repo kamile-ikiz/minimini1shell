@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 15:31:08 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/19 20:05:35 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 00:50:14 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	builtin_exit(t_command *cmd)
 	ft_putstr_fd("exit\n", 1);
 	if (!cmd->args[1])
 	{
-		set_exit_code(0); // Başarılı durumda exit code 0
+		set_exit_code(0);
 		exit(0);
 	}
 	if (!is_numeric(cmd->args[1]))
@@ -40,15 +40,15 @@ int	builtin_exit(t_command *cmd)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(cmd->args[1], STDERR_FILENO);
 		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
-		set_exit_code(2); // Hatalı numeric argument
+		set_exit_code(2);
 		exit(2);
 	}
 	if (cmd->args[2])
 	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
-		set_exit_code(1); // Hata durumunda exit code 1
+		set_exit_code(1);
 		return (1);
 	}
-	set_exit_code(ft_atoi(cmd->args[1])); // Çıkış kodunu ayarlıyoruz
+	set_exit_code(ft_atoi(cmd->args[1]));
 	exit(ft_atoi(cmd->args[1]));
 }

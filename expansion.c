@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 16:19:04 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 00:44:03 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 00:59:49 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ static char	*extract_var_name(char *str, int start, int *end)
 char	*get_env_value(char *var_name, t_env **env_list_ptr)
 {
 	t_env	*current;
+
 	if (!env_list_ptr || !*env_list_ptr || !var_name)
 		return (NULL);
 	current = *env_list_ptr;
@@ -48,8 +49,8 @@ char	*get_env_value(char *var_name, t_env **env_list_ptr)
 	return (NULL);
 }
 
-
-static char	*expand_single_variable(char *arg, int dollar_pos, t_env **env_list_ptr, int *new_i)
+static char	*expand_single_variable(char *arg, int dollar_pos,
+	t_env **env_list_ptr, int *new_i)
 {
 	char	*var_name;
 	char	*env_value;

@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 19:19:41 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/19 19:56:52 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 00:53:57 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,8 @@
 int	builtin_pwd(t_command *cmd)
 {
 	char	*cwd;
+
 	(void)cmd;
-	// if (cmd->args[1])
-	// {
-	// 	ft_putstr_fd("pwd: no options allowed\n", 2);
-	// 	set_exit_code(1);
-	// 	return (1);
-	// }
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{

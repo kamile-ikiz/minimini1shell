@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:50:58 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/19 15:54:40 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 00:53:33 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ typedef struct s_env
 	bool			is_printed;
 }	t_env;
 
-typedef struct s_command t_command;
+typedef struct s_command	t_command;
 
-int		builtin_cd (t_command *cmd);
+int		builtin_cd(t_command *cmd);
 int		builtin_echo(t_command *cmd);
 int		builtin_pwd(t_command *cmd);
 int		builtin_env(t_command *cmd);

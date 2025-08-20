@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:56:20 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/20 18:08:59 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 01:02:58 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,10 @@ int	read_heredoc_until_delimiter(const char *delimiter,
 
 	pid = fork();
 	if (pid == 0)
-    {
-        status = 0;
+	{
+		status = 0;
 		handle_heredoc_child(delimiter, write_fd, expand_vars);
-    }
+	}
 	else
 	{
 		signal(SIGINT, SIG_IGN);

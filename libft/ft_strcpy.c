@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/17 20:11:40 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/17 20:11:52 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/21 00:56:46 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-char *ft_strcpy(char *dst, const char *src)
+char	*ft_strcpy(char *dst, const char *src)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (src[i])
 	{
 		dst[i] = src[i];
