@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:53:17 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 15:30:28 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 17:45:30 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static  t_token	*create_token_copy(t_token *src)
 		return (NULL);
 	}
 	new->type = src->type;
+	new->was_quoted = src->was_quoted;
 	new->value = ft_strdup(src->value);
 	if (!new->value && src->value)
 	{

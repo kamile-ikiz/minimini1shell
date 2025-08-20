@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_expand.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/13 14:20:00 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/16 20:39:00 by beysonme         ###   ########.fr       */
+/*   Created: 2025/08/19 20:57:26 by beysonme          #+#    #+#             */
+/*   Updated: 2025/08/20 17:54:36 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ static char	*expand_var(const char *input, size_t *i)
 	char	*varname;
 	char	*env_val;
 	char	*value;
+	size_t	start;
 
-	varname = ft_substr(input, *i, 0);
+	start = *i;
 	while (ft_isalnum(input[*i]) || input[*i] == '_')
 		(*i)++;
-	free(varname);
-	varname = ft_substr(input, *i - ft_strlen(varname), ft_strlen(varname));
+	varname = ft_substr(input, start, *i - start);
 	env_val = get_env_value(varname, init_env(NULL));
 	if (env_val)
 		value = ft_strdup(env_val);
@@ -44,33 +44,41 @@ static char	*append_char(char *result, char c)
 	return (tmp);
 }
 
+static char	*handle_dollar(const char *input, size_t *i, char *result)
+{
+	char	*tmp;
+	char	*value;
+
+	(*i)++;
+	if (ft_isalpha(input[*i]) || input[*i] == '_')
+	{
+		value = expand_var(input, i);
+		tmp = ft_strjoin(result, value);
+		free(value);
+		free(result);
+		result = tmp;
+	}
+	else
+		result = append_char(result, '$');
+	return (result);
+}
+
 char	*expand(const char *input)
 {
 	size_t	i;
 	char	*result;
-	char	*tmp;
-	char	*value;
 
 	i = 0;
 	result = ft_strdup("");
 	while (input[i])
 	{
 		if (input[i] == '$')
-		{
-			i++;
-			if (ft_isalpha(input[i]) || input[i] == '_')
-			{
-				value = expand_var(input, &i);
-				tmp = ft_strjoin(result, value);
-				free(value);
-				free(result);
-				result = tmp;
-			}
-			else
-				result = append_char(result, '$');
-		}
+			result = handle_dollar(input, &i, result);
 		else
-			result = append_char(result, input[i++]);
+		{
+			result = append_char(result, input[i]);
+			i++;
+		}
 	}
 	return (result);
 }

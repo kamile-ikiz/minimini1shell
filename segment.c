@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:39:33 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 15:39:15 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 17:49:07 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ t_segment	*split_tokens_by_pipe(t_token *token_list)
 
 	segments = NULL;
 	current = token_list;
+	
 	while(current)
 	{
 		seg_token_count = count_tokens_until_pipe(current);

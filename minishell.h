@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 22:38:14 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 17:16:35 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ typedef struct s_token {
     char *value;          // The actual text content
     struct s_token *next;   // Pointer to next token (linked list)
     int expand_mode;
-    int is_expand;
+    int was_quoted;
 } t_token;
 
 //segment struct

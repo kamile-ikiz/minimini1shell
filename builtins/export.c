@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 01:40:35 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/19 15:36:35 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 17:59:16 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,25 @@ static int	print_exported_vars(t_env *list)
 		current->is_printed = false;
 		current = current->next;
 	}
-	set_exit_code(0); // Başarılı durumda exit code 0
+	set_exit_code(0);
 	return (0);
+}
+
+static void	process_export_arg(t_env **list_ptr, char *arg, int *error_flag)
+{
+	char	*eq_pos;
+
+	if (!is_valid_identifier(arg))
+	{
+		print_identifier_error(arg);
+		*error_flag = 1;
+		return ;
+	}
+	eq_pos = ft_strchr(arg, '=');
+	if (eq_pos)
+		handle_var_with_value(list_ptr, arg, eq_pos);
+	else
+		handle_var_only(list_ptr, arg);
 }
 
 int	builtin_export(t_command *cmd)
@@ -77,7 +94,6 @@ int	builtin_export(t_command *cmd)
 	t_env	**list_ptr;
 	t_env	*list;
 	int		i;
-	char	*eq_pos;
 	int		error_flag;
 
 	list_ptr = init_env(NULL);
@@ -87,19 +103,7 @@ int	builtin_export(t_command *cmd)
 		return (print_exported_vars(list));
 	i = 0;
 	while (cmd->args[++i])
-	{
-		if (!is_valid_identifier(cmd->args[i]))
-		{
-			print_identifier_error(cmd->args[i]);
-			error_flag = 1; // Hatalı identifier bulundu
-			continue ;
-		}
-		eq_pos = ft_strchr(cmd->args[i], '=');
-		if (eq_pos)
-			handle_var_with_value(list_ptr, cmd->args[i], eq_pos);
-		else
-			handle_var_only(list_ptr, cmd->args[i]);
-	}
+		process_export_arg(list_ptr, cmd->args[i], &error_flag);
 	if (error_flag)
 		set_exit_code(1);
 	else

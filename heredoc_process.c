@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_process.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/13 14:20:00 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/18 20:36:40 by beysonme         ###   ########.fr       */
+/*   Created: 2025/08/19 20:56:20 by beysonme          #+#    #+#             */
+/*   Updated: 2025/08/20 18:02:34 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,62 +40,53 @@ static int	process_line(char **line, int expand_vars, int fd)
 	return (write_heredoc_line(*line, fd));
 }
 
-static int read_loop(const char *delimiter, int fd, int expand_vars)
+static void	handle_heredoc_child(const char *delimiter, int write_fd,
+		int expand_vars)
 {
-    char *line;
-    size_t len;
-    pid_t pid;
-    int status;
+	char	*line;
+	size_t	len;
 
-    pid = fork();
-    if (pid == 0) // child
-    {
-        configure_heredoc_signals(); // SIGINT default değil, kendi handler
-        while (1)
-        {
-            write(STDOUT_FILENO, "> ", 2);
-            line = get_next_line(STDIN_FILENO);
-            if (!line)
-            {
-                write(1,"\n",1);
-                exit(0); // Ctrl+D veya EOF
-            }
-
-            len = ft_strlen(line);
-            if (len > 0 && line[len - 1] == '\n')
-                line[len - 1] = '\0';
-
-            if (ft_strcmp(line, delimiter) == 0)
-            {
-                free(line);
-                exit(0);
-            }
-            if (process_line(&line, expand_vars, fd) == -1)
-                exit(1);
-        }
-    }
-    else // parent
-    {
-        signal(SIGINT, SIG_IGN);
-        waitpid(pid, &status, 0);
-
-        // >>> SIGINT tespitini parent’a taşı
-        if ((WIFSIGNALED(status) && WTERMSIG(status) == SIGINT) ||
-            (WIFEXITED(status) && WEXITSTATUS(status) == 130))
-        {
-            g_signal_flag = SIGINT;
-        }
-
-        configure_prompt_signals();
-        return (status); // raw status dönmeye devam et
-    }
+	configure_heredoc_signals();
+	while (1)
+	{
+		write(STDOUT_FILENO, "> ", 2);
+		line = get_next_line(STDIN_FILENO);
+		if (!line)
+		{
+			write(1, "\n", 1);
+			exit(0);
+		}
+		len = ft_strlen(line);
+		if (len > 0 && line[len - 1] == '\n')
+			line[len - 1] = '\0';
+		if (ft_strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			exit(0);
+		}
+		if (process_line(&line, expand_vars, write_fd) == -1)
+			exit(1);
+	}
 }
-
-
-
 
 int	read_heredoc_until_delimiter(const char *delimiter,
 		int write_fd, int expand_vars)
 {
-	return (read_loop(delimiter, write_fd, expand_vars));
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid == 0)
+    {
+        status = 0;
+		handle_heredoc_child(delimiter, write_fd, expand_vars);
+    }
+	else
+	{
+		signal(SIGINT, SIG_IGN);
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+			g_signal_flag = SIGINT;
+	}
+	return (status);
 }

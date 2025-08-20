@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:44:51 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/19 15:36:13 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 17:59:34 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	print_error(char *msg, char *to_free)
 		ft_putstr_fd(msg, 2);
 	if (to_free)
 		free(to_free);
-	set_exit_code(1); // Hata durumunda exit code 1 olarak ayarlanıyor
+	set_exit_code(1);
 	return (1);
 }
 

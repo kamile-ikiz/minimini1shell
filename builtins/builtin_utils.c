@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 17:41:38 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/17 21:06:15 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/20 17:57:01 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 
 int	is_valid_identifier(char *str)
 {
-
 	int	i;
 
-	if (!str || !*str || ft_isdigit(*str))
+	if (!str || !*str)
 		return (0);
-	i = 0;
+	if (ft_isdigit(*str) || *str == '=')
+		return (0);
+	if (!ft_isalpha(*str) && *str != '_')
+		return (0);
+	i = 1;
 	while (str[i] && str[i] != '=')
 	{
 		if (!ft_isalnum(str[i]) && str[i] != '_')

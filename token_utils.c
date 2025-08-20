@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:21:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 15:48:17 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 17:24:37 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ t_token	*new_token(t_token_type type, char *value)
 	else
 		token->value = NULL;
 	token->next = NULL;
+	token->was_quoted = 0;
 	if (type == TOKEN_HEREDOC)
 		token->expand_mode = 0;
 	else

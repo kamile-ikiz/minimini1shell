@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 19:41:07 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 22:05:41 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/20 17:49:24 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,22 +55,3 @@ void	print_syntax_error(char *token)
 	ft_putendl_fd(token, 2);
 	set_exit_code(2);
 }
-
-			// for (int a = 0; a < pipeline->argc; a++)
-			// {
-			// 	printf("-----------------------------%s----------------------\n", pipeline->args[a]);
-			// }
-			// if (pipeline->redirects)
-			// for (int a = 0; a < pipeline->argc; a++)
-			// {
-			// 	printf("-----------------------------%s----------------------\n", pipeline->redirects->filename);
-			// }
-			// if(pipeline->args[0][0] == '\0')
-			// {
-			// 	printf("AAAAAAAAAAAAAAAAAAAAAAA");
-			// 	t_command *temp;
-			// 	temp = pipeline;
-			// 	pipeline = pipeline->next;
-			// 	free_command(temp);
-    		// }
-			// else
