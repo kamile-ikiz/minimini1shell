@@ -6,13 +6,13 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:56:52 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 15:51:21 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 02:25:56 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	init_expand_data(t_expand_data *data, char *arg, int dollar_pos)
+static void	init_expand_data(t_expanded_part *data, char *arg, int dollar_pos)
 {
 	data->before = ft_substr(arg, 0, dollar_pos);
 	data->after = NULL;
@@ -20,12 +20,12 @@ static void	init_expand_data(t_expand_data *data, char *arg, int dollar_pos)
 	data->new_pos = 0;
 }
 
-static void	set_after_part(t_expand_data *data, char *arg, int var_end)
+static void	set_after_part(t_expanded_part *data, char *arg, int var_end)
 {
 	data->after = ft_strdup(&arg[var_end]);
 }
 
-static void	create_result(t_expand_data *data, char *env_value)
+static void	create_result(t_expanded_part *data, char *env_value)
 {
 	int	env_len;
 
@@ -39,7 +39,7 @@ static void	create_result(t_expand_data *data, char *env_value)
 	data->new_pos = ft_strlen(data->before) + env_len;
 }
 
-static void	cleanup_expand_data(t_expand_data *data)
+static void	cleanup_expand_data(t_expanded_part *data)
 {
 	if (data->before)
 		free(data->before);
@@ -50,7 +50,7 @@ static void	cleanup_expand_data(t_expand_data *data)
 char	*expand_variable_parts(char *arg, char *env_value,
 	int dollar_pos, int var_end)
 {
-	t_expand_data	data;
+	t_expanded_part	data;
 
 	init_expand_data(&data, arg, dollar_pos);
 	set_after_part(&data, arg, var_end);

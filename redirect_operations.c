@@ -6,119 +6,64 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 19:00:57 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 15:39:05 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 02:57:30 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-int	handle_input_redirect(char *filename)
+static int	apply_heredoc_redirect(t_redirect *redir)
 {
-	int	fd;
-
-	if (!filename)
-		return (-1);
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-	{		
-		perror(filename);
-		set_exit_code(1);
-		return (-1);
-	}
-	if (dup2(fd, STDIN_FILENO) == -1)
+	if (dup2(redir->heredoc_pipe_fd, STDIN_FILENO) == -1)
 	{
-		close(fd);
-		perror("dup2");
+		perror("dup2 heredoc");
+		close(redir->heredoc_pipe_fd);
 		set_exit_code(1);
 		return (-1);
 	}
-	close(fd);
+	close(redir->heredoc_pipe_fd);
+	redir->heredoc_pipe_fd = -1;
 	return (0);
 }
 
-int	handle_output_redirect(char *filename)
+static int	apply_file_redirect(t_redirect *redir)
 {
-	int	fd;
-
-	if (!filename)
-		return (-1);
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd == -1)
+	if (redir->type == TOKEN_REDIRECT_IN)
 	{
-		perror(filename);
-		set_exit_code(1);
-		return (-1);
+		if (handle_input_redirect(redir->filename) == -1)
+			return (-1);
 	}
-	if (dup2(fd, STDOUT_FILENO) == -1)
+	else if (redir->type == TOKEN_REDIRECT_OUT)
 	{
-		close(fd);
-		perror("dup2");
-		set_exit_code(1);
-		return (-1);
+		if (handle_output_redirect(redir->filename) == -1)
+			return (-1);
 	}
-	close(fd);
+	else if (redir->type == TOKEN_REDIRECT_APPEND)
+	{
+		if (handle_append_redirect(redir->filename) == -1)
+			return (-1);
+	}
 	return (0);
 }
 
-int	handle_append_redirect(char *filename)
+static int	process_single_redirect(t_redirect *redir)
 {
-	int	fd;
+	if (redir->type == TOKEN_HEREDOC)
+		return (apply_heredoc_redirect(redir));
+	else
+		return (apply_file_redirect(redir));
+}
 
-	if (!filename)
-		return (-1);
-	fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (fd == -1)
+int	execute_redirects(t_command *cmd)
+{
+	t_redirect	*redir;
+
+	redir = cmd->redirects;
+	while (redir)
 	{
-		perror(filename);
-		set_exit_code(1);
-		return (-1);
+		if (process_single_redirect(redir) == -1)
+			return (-1);
+		redir = redir->next;
 	}
-	if (dup2(fd, STDOUT_FILENO) == -1)
-	{
-		close(fd);
-		perror("dup2");
-		set_exit_code(1);
-		return (-1);
-	}
-	close(fd);
 	return (0);
 }
-int execute_redirects(t_command *cmd)
-{
-    t_redirect *redir = cmd->redirects;
-
-    while (redir)
-    {
-        if (redir->type == TOKEN_HEREDOC)
-        {
-            if (dup2(redir->heredoc_pipe_fd, STDIN_FILENO) == -1)
-            {
-                perror("dup2 heredoc");
-                close(redir->heredoc_pipe_fd);
-				set_exit_code(1);
-                return (-1);
-            }
-            close(redir->heredoc_pipe_fd); // dup2’den sonra orijinal fd kapatılır
-            redir->heredoc_pipe_fd = -1;   // kapandığını belirt
-        }
-        else if (redir->type == TOKEN_REDIRECT_IN)
-        {
-            if (handle_input_redirect(redir->filename) == -1)
-                return -1;
-        }
-        else if (redir->type == TOKEN_REDIRECT_OUT)
-        {
-            if (handle_output_redirect(redir->filename) == -1)
-                return -1;
-        }
-        else if (redir->type == TOKEN_REDIRECT_APPEND)
-        {
-            if (handle_append_redirect(redir->filename) == -1)
-                return (-1);
-        }
-        redir = redir->next;
-    }
-    return (0);
-}
-

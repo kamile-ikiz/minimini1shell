@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 18:29:21 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 04:32:14 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,14 +108,23 @@ typedef struct s_parser {
     char *error_msg;
 } t_parser;
 
-//data expand edilecekse kullanılıyor
 typedef struct s_expand_data
+{
+	char	*arg;
+	t_env	**env_list_ptr;
+	int		dollar_pos;
+	int		var_end;
+	int		*new_i;
+}	t_expand_data;
+
+//data expand edilecekse kullanılıyor
+typedef struct s_expanded_part
 {
 	char	*before;
 	char	*after;
 	char	*result;
 	int		new_pos;
-}	t_expand_data;
+}	t_expanded_part;
 
 // typedef struct s_minishell
 // {
@@ -195,30 +204,23 @@ int execute_command(t_command *cmd);
 //--------------------SIGNALS------------------------------------------------
 extern volatile sig_atomic_t g_signal_flag;
 void    assign_signal_handler(int signal_type, void (*callback)(int));
-void	interrupt_callback_prompt(int signal_num);
 int    configure_prompt_signals(void);
-void	interrupt_callback_execution(int signal_num);
-void	quit_callback_execution(int signal_num);
 void	configure_execution_signals(void);
-void	interrupt_callback_heredoc(int signal_num);
 void    configure_heredoc_signals(void);
-// void	validate_signal_state(t_minishell *shell_ctx);
-// void	process_interrupt_during_input(t_minishell *shell_ctx, char **user_input);
-// void	process_interrupt_after_input(t_minishell *shell_ctx, char *user_input);
-// void	process_interrupt_during_parse(t_minishell *shell_ctx);
 void	restore_default_signals(void);
 
 int execute_simple_command(t_command *cmd);
 int execve_command(char **args);
-char *find_command_path(char *cmd);
+char	**env_list_to_envp(t_env **env_list_ptr);
+int	execute_command(t_command *cmd);
+int	execute_pipeline(t_command *cmd);
+int	**create_pipes(int pipe_count);
+int	execute_simple_command(t_command *cmd);
 int execute_pipeline(t_command *cmd);
 int **create_pipes(int pipe_count);
 void setup_pipe_redirections(int **pipes, int cmd_index, int cmd_count);
 void close_all_pipes(int **pipes, int pipe_count);
 int wait_for_children(pid_t *pids, int cmd_count);
-void cleanup_pipeline(pid_t *pids, int **pipes, int cmd_count);
-int count_commands(t_command *cmd);
-char **env_list_to_envp(t_env **env_list);
 char	*parse_unquoted_segment(t_parser *parser);
 int	is_word_delimiter(char c);
 void	*set_parser_error(t_parser *parser, char *msg, void *to_free);
@@ -235,5 +237,6 @@ int	read_heredoc_until_delimiter(const char *delimiter,
 
 void set_exit_code(int status);
 int get_exit_code(void);
-
+int	is_valid_var_char(char c);
+t_token	*skip_to_next_segment(t_token *current);
 #endif 

@@ -6,121 +6,75 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:39:33 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 17:49:07 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 04:09:05 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token *skip_to_next_segment(t_token *current)
+static int	process_redirect(t_token *redirect_token, t_command *cmd)
 {
-	while(current && current->type != TOKEN_PIPE)
-		current = current->next;
-	if(current && current->type == TOKEN_PIPE)
-		current = current->next;
-	return(current);
-}
-
-void	add_segment(t_segment **head, t_segment *new_segment)
-{
-	t_segment *current;
-
-	if(!*head)
+	if (!redirect_token->next || redirect_token->next->type != TOKEN_WORD)
 	{
-		*head = new_segment;
-		return;
+		set_exit_code(2);
+		return (-1);
 	}
-	current = *head;
-	while(current->next)
-		current = current->next;
-	current->next = new_segment;
-}
-
-t_segment	*split_tokens_by_pipe(t_token *token_list)
-{
-	t_segment	*segments;
-	t_segment	*new_segment;
-	t_token		*current;
-	int			seg_token_count;
-
-	segments = NULL;
-	current = token_list;
-	
-	while(current)
+	if (handle_redirect_pair(redirect_token, redirect_token->next, cmd) != 0)
 	{
-		seg_token_count = count_tokens_until_pipe(current);
-		if(seg_token_count == 0)
-		{
-			current = current->next;
-			continue;
-		}
-		new_segment = create_single_segment(current, seg_token_count);
-		if(!new_segment)
-		{
-			free_segments(segments);
-			set_exit_code(1);
-			return(NULL);
-		}
-		add_segment(&segments, new_segment);
-		current = skip_to_next_segment(current);
+		set_exit_code(1);
+		return (-1);
 	}
-	return(segments);	
+	return (0);
 }
 
-static void advance_to_next_token(t_token **current)
+static int	process_word(t_token *word_token, t_command *cmd)
 {
-	if (!current || !*current)
-		return;
-	if (is_redirect_token(**current))
+	if (handle_command_pair(word_token, cmd) != 0)
 	{
-		*current = (*current)->next;
-		if (*current)
-			*current = (*current)->next;
+		set_exit_code(1);
+		return (-1);
+	}
+	return (0);
+}
+
+static int	process_and_advance(t_token **current_ptr, t_command *cmd)
+{
+	t_token	*current;
+
+	current = *current_ptr;
+	if (is_redirect_token(*current))
+	{
+		if (process_redirect(current, cmd) == -1)
+			return (-1);
+		*current_ptr = current->next->next;
+	}
+	else if (current->type == TOKEN_WORD)
+	{
+		if (process_word(current, cmd) == -1)
+			return (-1);
+		*current_ptr = current->next;
 	}
 	else
-		*current = (*current)->next;
+	{
+		*current_ptr = current->next;
+	}
+	return (0);
 }
 
 int	parse_command_or_redirect(t_segment *segment, t_command **cmd_ptr)
 {
-	t_token *current;
+	t_token	*current;
 
-	if(!segment || !cmd_ptr)
-	{
-		set_exit_code(1);
-		return (-1);
-	}
+	if (!segment || !cmd_ptr)
+		return (set_exit_code(1), -1);
 	*cmd_ptr = create_command();
 	if (!*cmd_ptr)
-	{
-		set_exit_code(1);
-		return (-1);
-	}
+		return (set_exit_code(1), -1);
 	current = segment->tokens;
-	while(current)
+	while (current)
 	{
-		if (is_redirect_token(*current))
-		{
-			if (!current->next || current->next->type != TOKEN_WORD)
-			{
-				set_exit_code(2);
-				return (parse_error(cmd_ptr));
-			}	
-			if (handle_redirect_pair(current, current->next, *cmd_ptr) != 0)
-			{
-				set_exit_code(1);
-				return (parse_error(cmd_ptr));
-			}
-		}
-		else if (current->type == TOKEN_WORD)
-		{
-			if (handle_command_pair(current, *cmd_ptr) != 0)
-			{
-				set_exit_code(1);
-				return (parse_error(cmd_ptr));
-			}
-		}
-		advance_to_next_token(&current);
+		if (process_and_advance(&current, *cmd_ptr) == -1)
+			return (parse_error(cmd_ptr));
 	}
 	return (0);
 }

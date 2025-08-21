@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 16:19:04 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 00:59:49 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 02:31:07 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,57 +33,59 @@ static char	*extract_var_name(char *str, int start, int *end)
 	return (var_name);
 }
 
-char	*get_env_value(char *var_name, t_env **env_list_ptr)
+static char	*handle_exit_code_var(t_expand_data *data)
 {
-	t_env	*current;
-
-	if (!env_list_ptr || !*env_list_ptr || !var_name)
-		return (NULL);
-	current = *env_list_ptr;
-	while (current)
-	{
-		if (ft_strcmp(current->key, var_name) == 0)
-			return (current->value);
-		current = current->next;
-	}
-	return (NULL);
-}
-
-static char	*expand_single_variable(char *arg, int dollar_pos,
-	t_env **env_list_ptr, int *new_i)
-{
-	char	*var_name;
-	char	*env_value;
+	char	*exit_code_str;
 	char	*result;
-	int		var_end;
 
-	var_name = extract_var_name(arg, dollar_pos, &var_end);
-	if (!var_name)
-		return (ft_strdup(arg));
-	if (var_name[0] == '?')
+	exit_code_str = ft_itoa(get_exit_code());
+	result = expand_variable_parts(data->arg, exit_code_str,
+			data->dollar_pos, data->var_end);
+	if (exit_code_str)
 	{
-		env_value = ft_itoa(get_exit_code());
-		result = expand_variable_parts(arg, env_value, dollar_pos, var_end);
-		if (env_value)
-			*new_i = dollar_pos + ft_strlen(env_value);
-		else
-			*new_i = dollar_pos;
-		free(var_name);
-		return (result);
+		*(data->new_i) = data->dollar_pos + ft_strlen(exit_code_str);
+		free(exit_code_str);
 	}
-	env_value = get_env_value(var_name, env_list_ptr);
-	result = expand_variable_parts(arg, env_value, dollar_pos, var_end);
-	if (env_value)
-		*new_i = dollar_pos + ft_strlen(env_value);
 	else
-		*new_i = dollar_pos;
-	free(var_name);
+		*(data->new_i) = data->dollar_pos;
 	return (result);
 }
 
-static int	is_valid_var_char(char c)
+static char	*handle_regular_var(char *var_name, t_expand_data *data)
 {
-	return (ft_isalnum(c) || c == '_' || c == '?');
+	char	*env_value;
+	char	*result;
+
+	env_value = get_env_value(var_name, data->env_list_ptr);
+	result = expand_variable_parts(data->arg, env_value,
+			data->dollar_pos, data->var_end);
+	if (env_value)
+		*(data->new_i) = data->dollar_pos + ft_strlen(env_value);
+	else
+		*(data->new_i) = data->dollar_pos;
+	return (result);
+}
+
+char	*expand_single_variable(char *arg, int dollar_pos,
+	t_env **env_list_ptr, int *new_i)
+{
+	t_expand_data	data;
+	char			*var_name;
+	char			*result;
+
+	var_name = extract_var_name(arg, dollar_pos, &data.var_end);
+	if (!var_name)
+		return (ft_strdup(arg));
+	data.arg = arg;
+	data.env_list_ptr = env_list_ptr;
+	data.dollar_pos = dollar_pos;
+	data.new_i = new_i;
+	if (var_name[0] == '?')
+		result = handle_exit_code_var(&data);
+	else
+		result = handle_regular_var(var_name, &data);
+	free(var_name);
+	return (result);
 }
 
 char	*expand_all_variables(char *arg, t_env **env_list_ptr)

@@ -17,19 +17,30 @@ SRCS =	token_utils.c \
 		parser.c \
 		parser_utils.c \
 		executor.c \
+		execve_utils.c \
+		pipeline.c \
+		pipes.c \
+		simple_command.c \
+		env_utils.c \
     	utils.c \
     	free.c \
+		free1.c \
 		get_next_line.c \
     	check_syntax.c \
 		check_syntax_utils.c \
 		expansion.c \
 		expansion_utils.c \
+		expansion_utils1.c \
 		create_command.c \
 		create_redirect.c \
 		segment.c \
 		segment_utils.c \
+		segment_utils1.c \
 		redirect_operations.c \
-		signal.c \
+		redirect_handle.c \
+		signal_execution.c \
+		signal_prompt.c \
+		signal_heredoc.c \
 		test.c \
 		heredoc.c \
 		heredoc_expand.c \

@@ -6,28 +6,13 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:53:17 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 17:45:30 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 03:11:31 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int count_tokens_until_pipe(t_token *token_list)
-{
-	int count;
-	t_token *current;
-
-	count = 0;
-	current = token_list;
-	while(current && current->type != TOKEN_PIPE)
-	{
-		count++;
-		current = current->next;
-	}
-	return (count);
-}
-
-static  t_segment *create_segment(void)
+static	t_segment	*create_segment(void)
 {
 	t_segment	*segment;
 
@@ -43,11 +28,12 @@ static  t_segment *create_segment(void)
 	return (segment);
 }
 
-static  t_token	*create_token_copy(t_token *src)
+static	t_token	*create_token_copy(t_token *src)
 {
 	t_token	*new;
+
 	new = malloc(sizeof(t_token));
-	if(!new)
+	if (!new)
 	{
 		set_exit_code(1);
 		return (NULL);
@@ -65,31 +51,40 @@ static  t_token	*create_token_copy(t_token *src)
 	return (new);
 }
 
-static  t_token *copy_tokens_until_pipe(t_token *start_token, int count)
+static int	copy_and_append_token(t_token **new_list_ptr, t_token **last_ptr,
+	t_token *src_token)
 {
-	t_token *new_list;
-	t_token *new_token;
-	t_token *current;
-	t_token *last;
-	int i;
+	t_token	*new_token;
+
+	new_token = create_token_copy(src_token);
+	if (!new_token)
+		return (-1);
+	if (*new_list_ptr == NULL)
+		*new_list_ptr = new_token;
+	else
+		(*last_ptr)->next = new_token;
+	*last_ptr = new_token;
+	return (0);
+}
+
+t_token	*copy_tokens_until_pipe(t_token *start_token, int count)
+{
+	t_token	*new_list;
+	t_token	*last;
+	t_token	*current;
+	int		i;
 
 	new_list = NULL;
 	last = NULL;
 	current = start_token;
 	i = 0;
-	while(i < count && current)
+	while (i < count && current)
 	{
-		new_token = create_token_copy(current);
-		if(!new_token)
+		if (copy_and_append_token(&new_list, &last, current) == -1)
 		{
-			set_exit_code(1);
+			free_tokens(new_list);
 			return (NULL);
 		}
-		if(!new_list)
-			new_list = new_token;
-		else
-			last->next =new_token;
-		last = new_token;
 		current = current->next;
 		i++;
 	}
@@ -98,14 +93,14 @@ static  t_token *copy_tokens_until_pipe(t_token *start_token, int count)
 
 t_segment	*create_single_segment(t_token *start_token, int count)
 {
-	t_segment *segment;
+	t_segment	*segment;
 
 	segment = create_segment();
-	if(!segment)
-		return(NULL);
+	if (!segment)
+		return (NULL);
 	segment->token_count = count;
 	segment->tokens = copy_tokens_until_pipe(start_token, count);
-	if(!segment->tokens && count > 0)
+	if (!segment->tokens && count > 0)
 	{
 		free(segment);
 		set_exit_code(1);

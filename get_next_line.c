@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <kikiz@student.42istanbul.com.tr>    +#+  +:+       +#+        */
+/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:29:25 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/12 16:30:48 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 02:37:08 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,11 @@ static int	read_to_buffer(int fd, char *buffer, int *buffer_pos)
 
 static int	fill_line(int fd, char *line, char *buffer, int *pos_size[2])
 {
-	int	*pos = pos_size[0];
-	int	*size = pos_size[1];
+	int	*pos;
+	int	*size;
 
+	pos = pos_size[0];
+	size = pos_size[1];
 	while (1)
 	{
 		if (*pos >= *size)

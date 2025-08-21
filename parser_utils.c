@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:47:41 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 15:47:47 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 02:41:23 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,15 @@ char	*parse_unquoted_segment(t_parser *parser)
 	return (ft_substr(parser->inp, start, parser->pos - start));
 }
 
-char *parse_quotes(t_parser *parser, char quote)
+char	*parse_quotes(t_parser *parser, char quote)
 {
-	int	start;
-	char *res;
+	int		start;
+	char	*res;
 
 	start = ++parser->pos;
-	while(parser->inp[parser->pos] && parser->inp[parser->pos] != quote)
+	while (parser->inp[parser->pos] && parser->inp[parser->pos] != quote)
 		parser->pos++;
-	if(!parser->inp[parser->pos])
+	if (!parser->inp[parser->pos])
 	{
 		ft_putstr_fd(parser->inp, 1);
 		set_parser_error(parser, "unclosed quote!", NULL);
@@ -67,5 +67,5 @@ char *parse_quotes(t_parser *parser, char quote)
 	}
 	res = (ft_substr(parser->inp, start, parser->pos - start));
 	parser->pos++;
-	return(res);
+	return (res);
 }

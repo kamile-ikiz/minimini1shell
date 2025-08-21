@@ -6,13 +6,14 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 15:52:51 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 17:34:51 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 02:41:55 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	add_command_to_pipeline(t_command **pipeline_head, t_command *new_cmd)
+static void	add_command_to_pipeline(t_command **pipeline_head,
+	t_command *new_cmd)
 {
 	t_command	*current;
 
@@ -89,6 +90,6 @@ t_command	*parse_input(char *input)
 	{
 		set_exit_code(2);
 		return (NULL);
-	} 
+	}
 	return (pipeline_head);
 }
