@@ -2,6 +2,7 @@
     "files.associations": {
         "minishell.h": "c",
         "span": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "wait.h": "c"
     }
 }

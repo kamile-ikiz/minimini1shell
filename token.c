@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 17:49:16 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 05:04:09 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 static t_token	*handle_operator_tokens(t_parser *parser)
 {
 	char	c;
-	c = parser->inp[parser->pos];
 
+	c = parser->inp[parser->pos];
 	if (c == '|')
 		return (parser->pos++, new_token(TOKEN_PIPE, "|"));
 	if (c == '<')
@@ -34,7 +34,8 @@ static t_token	*handle_operator_tokens(t_parser *parser)
 	return (NULL);
 }
 
-static int	handle_quoted_segment(t_parser *parser, char **segment, t_token *last_token)
+int	handle_quoted_segment(t_parser *parser, char **segment,
+	t_token *last_token)
 {
 	char	quote_char;
 	char	*temp;
@@ -52,7 +53,8 @@ static int	handle_quoted_segment(t_parser *parser, char **segment, t_token *last
 	return (1);
 }
 
-static int	handle_unquoted_segment(t_parser *parser, char **segment, t_token *last_token)
+int	handle_unquoted_segment(t_parser *parser, char **segment,
+	t_token *last_token)
 {
 	char	*temp;
 
@@ -67,62 +69,9 @@ static int	handle_unquoted_segment(t_parser *parser, char **segment, t_token *la
 	return (1);
 }
 
-static int	parse_and_append_segment(t_parser *parser, char **final_word)
-{
-	char	*segment;
-	t_token	*last_token;
-
-	segment = NULL;
-	last_token = NULL;
-	if (parser->token_list != NULL)
-		last_token = token_get_last(parser->token_list);
-	if (parser->inp[parser->pos] == '\'' || parser->inp[parser->pos] == '"')
-	{
-		if (!handle_quoted_segment(parser, &segment, last_token))
-			return (0);
-	}
-	else
-	{
-		if (!handle_unquoted_segment(parser, &segment, last_token))
-			return (0);
-	}
-	return (append_segment(final_word, segment));
-}
-
-static	t_token	*handle_word(t_parser *parser)
-{
-	char	*final_val;
-	int has_quotes;
-	t_token	*token;
-	t_token	*first_token;
-
-	has_quotes = 0;
-	first_token = new_token(TOKEN_WORD, "");
-	parser->token_list = first_token;
-	final_val = ft_strdup("");
-	if (!final_val)
-		return (set_parser_error(parser, "malloc error", NULL));
-	while (!is_word_delimiter(parser->inp[parser->pos]))
-	{
-		if(parser->inp[parser->pos] == '\"' || parser->inp[parser->pos] == '\'')
-			has_quotes = 1;
-		if(!parse_and_append_segment(parser, &final_val))
-		{
-			free(final_val);
-			return (set_parser_error(parser, parser->error_msg, NULL));
-		}
-	}
-	token = new_token(TOKEN_WORD, final_val);
-	//free(final_val);
-	token->was_quoted = has_quotes;
-	if (!token)
-		return (set_parser_error(parser, "malloc error", final_val));
-	return (token);
-}
-
 static int	process_token(t_parser *parser, t_token **tokens)
 {
-	t_token *token;
+	t_token	*token;
 
 	skip_whitespace(parser);
 	if (!parser->inp[parser->pos])
@@ -148,7 +97,6 @@ t_token	*tokenize(char *input)
 	int			status;
 
 	tokens = (NULL);
-
 	init_parser(&parser, input);
 	while (parser.inp[parser.pos])
 	{

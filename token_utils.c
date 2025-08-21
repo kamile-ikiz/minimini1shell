@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:21:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 17:24:37 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 04:42:19 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 t_token	*new_token(t_token_type type, char *value)
 {
-	t_token *token = malloc(sizeof(t_token));
-	if(!token)
-		return(NULL);
+	t_token	*token;
+
+	token = malloc(sizeof(t_token));
+	if (!token)
+		return (NULL);
 	token->type = type;
-	if(value != NULL)
+	if (value != NULL)
 		token->value = ft_strdup(value);
 	else
 		token->value = NULL;

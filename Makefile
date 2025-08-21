@@ -13,15 +13,11 @@ HEREDOCDIR = heredoc
 
 # Ana kaynak dosyalar
 SRCS =	token_utils.c \
+		token_utils1.c \
 		token.c \
 		parser.c \
 		parser_utils.c \
 		executor.c \
-		execve_utils.c \
-		pipeline.c \
-		pipes.c \
-		simple_command.c \
-		env_utils.c \
     	utils.c \
     	free.c \
 		free1.c \

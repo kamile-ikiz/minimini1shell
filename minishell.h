@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 04:32:14 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 05:24:51 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,13 @@ typedef struct s_expanded_part
 	int		new_pos;
 }	t_expanded_part;
 
+typedef struct s_gnl_state
+{
+	char	buffer[BUFFER_SIZE + 1];
+	int		pos;
+	int		size;
+}	t_gnl_state;
+
 // typedef struct s_minishell
 // {
 //     t_segment   *segment;
@@ -210,6 +217,9 @@ void    configure_heredoc_signals(void);
 void	restore_default_signals(void);
 
 int execute_simple_command(t_command *cmd);
+char *find_command_path(char *cmd);
+int count_commands(t_command *cmd);
+void cleanup_pipeline(pid_t *pids, int **pipes, int cmd_count);
 int execve_command(char **args);
 char	**env_list_to_envp(t_env **env_list_ptr);
 int	execute_command(t_command *cmd);
@@ -239,4 +249,9 @@ void set_exit_code(int status);
 int get_exit_code(void);
 int	is_valid_var_char(char c);
 t_token	*skip_to_next_segment(t_token *current);
+t_token	*handle_word(t_parser *parser);
+int	handle_unquoted_segment(t_parser *parser, char **segment,
+	t_token *last_token);
+    int	handle_quoted_segment(t_parser *parser, char **segment,
+	t_token *last_token);
 #endif 

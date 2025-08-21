@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:29:25 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 02:37:08 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 05:27:41 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,55 +20,42 @@ static int	append_char(char *line, int *line_len, char c)
 	return (1);
 }
 
-static int	read_to_buffer(int fd, char *buffer, int *buffer_pos)
+static int	read_to_buffer(int fd, t_gnl_state *state)
 {
-	int	read_size;
-
-	read_size = read(fd, buffer, BUFFER_SIZE);
-	*buffer_pos = 0;
-	return (read_size);
+	state->size = read(fd, state->buffer, BUFFER_SIZE);
+	state->pos = 0;
+	return (state->size);
 }
 
-static int	fill_line(int fd, char *line, char *buffer, int *pos_size[2])
+static int	fill_line(int fd, char *line, int *line_len, t_gnl_state *state)
 {
-	int	*pos;
-	int	*size;
-
-	pos = pos_size[0];
-	size = pos_size[1];
 	while (1)
 	{
-		if (*pos >= *size)
+		if (state->pos >= state->size)
 		{
-			*size = read_to_buffer(fd, buffer, pos);
-			if (*size <= 0)
+			if (read_to_buffer(fd, state) <= 0)
 				break ;
 		}
-		if (!append_char(line, &pos_size[2][0], buffer[(*pos)++]))
+		if (!append_char(line, line_len, state->buffer[state->pos]))
 			break ;
-		if (line[pos_size[2][0] - 1] == '\n')
+		state->pos++;
+		if (line[*line_len - 1] == '\n')
 			break ;
 	}
-	return (pos_size[2][0]);
+	return (*line_len);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1];
-	static int	buffer_pos = 0;
-	static int	buffer_size = 0;
-	char		*line;
-	int			line_len;
-	int			*pos_size[3];
+	static t_gnl_state	state = {.pos = 0, .size = 0};
+	char				*line;
+	int					line_len;
 
 	line = malloc(1024);
 	if (!line)
 		return (NULL);
 	line_len = 0;
-	pos_size[0] = &buffer_pos;
-	pos_size[1] = &buffer_size;
-	pos_size[2] = &line_len;
-	if (fill_line(fd, line, buffer, pos_size) == 0)
+	if (fill_line(fd, line, &line_len, &state) == 0)
 	{
 		free(line);
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 19:41:07 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 17:49:24 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 05:09:00 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int	is_word_delimiter(char c)
 int	append_segment(char **word_ptr, char *segment)
 {
 	char	*temp_word;
+
 	if (!segment)
 		return (1);
 	temp_word = ft_strjoin(*word_ptr, segment);
