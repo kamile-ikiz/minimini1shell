@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 04:06:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/22 08:28:57 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 22:16:55 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ static int	process_input_line(char *line)
 	if (pipeline)
 	{
 		if (handle_heredocs_and_signals(pipeline) == 1)
+		{
 			return (1);
+		}
 		execute_and_cleanup(pipeline);
 	}
 	return (0);
@@ -57,6 +59,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
 	t_env	**env_list;
+
 	(void)argc;
 	(void)argv;
 	env_list = init_env(envp);

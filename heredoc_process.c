@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:56:20 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/21 01:02:58 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 21:56:19 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,12 @@ static void	handle_heredoc_child(const char *delimiter, int write_fd,
 	configure_heredoc_signals();
 	while (1)
 	{
-		write(STDOUT_FILENO, "> ", 2);
-		line = get_next_line(STDIN_FILENO);
+		// write(STDOUT_FILENO, "> ", 2);
+		// line = get_next_line(STDIN_FILENO);
+		line = readline("> ");
 		if (!line)
 		{
+			free_heredoc(NULL);
 			write(1, "\n", 1);
 			exit(0);
 		}
@@ -61,7 +63,8 @@ static void	handle_heredoc_child(const char *delimiter, int write_fd,
 			line[len - 1] = '\0';
 		if (ft_strcmp(line, delimiter) == 0)
 		{
-			free(line);
+			free_heredoc(NULL);
+			// free(line);
 			exit(0);
 		}
 		if (process_line(&line, expand_vars, write_fd) == -1)
@@ -83,6 +86,7 @@ int	read_heredoc_until_delimiter(const char *delimiter,
 	}
 	else
 	{
+		configure_prompt_signals();
 		signal(SIGINT, SIG_IGN);
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status) && WEXITSTATUS(status) == 130)

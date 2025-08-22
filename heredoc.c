@@ -6,11 +6,25 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:54:08 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/22 13:11:45 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 22:11:05 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
+void free_heredoc(t_command *cmd)
+{
+	static t_command *tmp;
+
+	if (cmd)
+		tmp = cmd;
+	if (!cmd && tmp)
+	{
+		free_environment(init_env(NULL));
+		free_commands(tmp);
+	}
+}
 
 static int	process_heredoc_redirect(t_redirect *redir)
 {
@@ -58,11 +72,14 @@ int	prepare_heredocs(t_command *cmd_list)
 	int			status;
 
 	cmd = cmd_list;
+	free_heredoc(cmd_list);
 	while (cmd)
 	{
 		status = process_cmd_heredocs(cmd);
 		if (status == -1 || (WIFEXITED(status) && WEXITSTATUS(status) == 130))
+		{
 			return (-1);
+		}
 		cmd = cmd->next;
 	}
 	return (0);
@@ -72,6 +89,7 @@ void	cleanup_heredoc_pipes(t_command *cmd_list)
 {
 	t_command	*cmd;
 	t_redirect	*redir;
+
 
 	cmd = cmd_list;
 	while (cmd)

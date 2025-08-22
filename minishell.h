@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/22 10:33:08 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 20:24:10 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ void free_environment(t_env **env_list);
 void	free_parser(t_parser *parser);
 void	free_commands(t_command *cmd);
 void	free_args(char **args);
+void free_heredoc(t_command *cmd);
 //------------------TOKEN------------------------------
 t_token *new_token(t_token_type type, char *value);
 t_token    *token_lst(t_token **head, t_token *token);

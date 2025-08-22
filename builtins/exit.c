@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 15:31:08 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/21 00:50:14 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 20:45:27 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	builtin_exit(t_command *cmd)
 	if (!cmd->args[1])
 	{
 		set_exit_code(0);
-		exit(0);
+		return (0);
 	}
 	if (!is_numeric(cmd->args[1]))
 	{
@@ -41,7 +41,7 @@ int	builtin_exit(t_command *cmd)
 		ft_putstr_fd(cmd->args[1], STDERR_FILENO);
 		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 		set_exit_code(2);
-		exit(2);
+		return (2);
 	}
 	if (cmd->args[2])
 	{
@@ -50,5 +50,5 @@ int	builtin_exit(t_command *cmd)
 		return (1);
 	}
 	set_exit_code(ft_atoi(cmd->args[1]));
-	exit(ft_atoi(cmd->args[1]));
+	return (ft_atoi(cmd->args[1]));
 }

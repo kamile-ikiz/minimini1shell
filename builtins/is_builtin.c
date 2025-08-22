@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:46:37 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/20 17:59:12 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 20:59:37 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,12 @@ int	execute_builtin(t_command *cmd)
 	else if (ft_strcmp(cmd->args[0], "env") == 0)
 		ret = builtin_env(cmd);
 	else if (ft_strcmp(cmd->args[0], "exit") == 0)
+	{
 		ret = builtin_exit(cmd);
+		// free_commands(cmd->head_command);
+		// free_environment(init_env(NULL));
+		return(ret);
+	}
 	set_exit_code(ret);
 	return (ret);
 }

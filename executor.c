@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/22 14:43:14 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 21:03:22 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,13 @@ int execute_command(t_command *cmd)
             dup2(saved_stdout, STDOUT_FILENO);
             close(saved_stdin);
             close(saved_stdout);
+        }
+        if (ft_strcmp(cmd->args[0], "exit") == 0)
+        {
+            free_commands(cmd);
+            free_environment(init_env(NULL));
+            exit(exit_status);
+
         }
     }
     else
