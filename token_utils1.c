@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 04:57:26 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 05:03:27 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/21 20:31:00 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,39 @@ static int	parse_and_append_segment(t_parser *parser, char **final_word)
 {
 	char	*segment;
 	t_token	*last_token;
+	bool is_new_token;
 
 	segment = NULL;
-	last_token = NULL;
+	is_new_token = false;
 	if (parser->token_list != NULL)
 		last_token = token_get_last(parser->token_list);
+	else
+	{
+		last_token = new_token(TOKEN_WORD, "");
+		is_new_token = true;  // ← İŞARETLE
+	}
 	if (parser->inp[parser->pos] == '\'' || parser->inp[parser->pos] == '"')
 	{
 		if (!handle_quoted_segment(parser, &segment, last_token))
+		{
+			free(last_token->value);
+			free(last_token);
 			return (0);
+		}
 	}
 	else
 	{
 		if (!handle_unquoted_segment(parser, &segment, last_token))
+		{
+			free(last_token->value);
+			free(last_token);
 			return (0);
+		}
+	}
+	if (is_new_token)
+	{
+		free(last_token->value);
+		free(last_token);
 	}
 	return (append_segment(final_word, segment));
 }
@@ -55,9 +74,9 @@ t_token	*handle_word(t_parser *parser)
 	t_token	*token;
 
 	has_quotes = 0;
-	parser->token_list = new_token(TOKEN_WORD, "");
+	// parser->token_list = new_token(TOKEN_WORD, "");
 	final_val = ft_strdup("");
-	if (!final_val || !parser->token_list)
+	if (!final_val)
 		return (set_parser_error(parser, "malloc error", final_val));
 	if (build_final_word(parser, &final_val, &has_quotes) == -1)
 	{

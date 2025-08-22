@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:39:33 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 04:09:05 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 08:21:13 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static int	process_and_advance(t_token **current_ptr, t_command *cmd)
 	return (0);
 }
 
-int	parse_command_or_redirect(t_segment *segment, t_command **cmd_ptr)
+int	parse_word_or_redirect(t_segment *segment, t_command **cmd_ptr)
 {
 	t_token	*current;
 
@@ -69,7 +69,10 @@ int	parse_command_or_redirect(t_segment *segment, t_command **cmd_ptr)
 		return (set_exit_code(1), -1);
 	*cmd_ptr = create_command();
 	if (!*cmd_ptr)
+	{
+		
 		return (set_exit_code(1), -1);
+	}
 	current = segment->tokens;
 	while (current)
 	{

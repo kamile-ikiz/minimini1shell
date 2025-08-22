@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 05:24:51 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 10:33:08 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,8 @@ typedef struct s_redirect
 typedef struct s_command {
     char **args;              // Array of command arguments ["ls", "-la", NULL]
     int argc;                 // Number of arguments
-    t_redirect *redirects;    //redirect list
+    t_redirect *redirects;   //redirect list
+    struct s_command *head_command;
     struct s_command *next;     // Next command in pipeline
     // t_cmd_type  type;
 } t_command;
@@ -156,7 +157,10 @@ void free_pipeline(t_command *pipeline);
 void free_segments(t_segment *segments);
 void	free_redirects(t_redirect *redirects);
 void	free_array(char **array);
-
+void free_environment(t_env **env_list);
+void	free_parser(t_parser *parser);
+void	free_commands(t_command *cmd);
+void	free_args(char **args);
 //------------------TOKEN------------------------------
 t_token *new_token(t_token_type type, char *value);
 t_token    *token_lst(t_token **head, t_token *token);
@@ -195,7 +199,7 @@ int	is_redirect_token(t_token token);
 t_command	*create_command(void);
 
 t_segment	*split_tokens_by_pipe(t_token *token_list);
-int	parse_command_or_redirect(t_segment *segment, t_command **cmd_ptr);
+int	parse_word_or_redirect(t_segment *segment, t_command **cmd_ptr);
 int	execute_redirects(t_command *cmd);
 int	handle_single_redirect(t_redirect *redirect);
 int	handle_append_redirect(char *filename);
@@ -225,7 +229,6 @@ char	**env_list_to_envp(t_env **env_list_ptr);
 int	execute_command(t_command *cmd);
 int	execute_pipeline(t_command *cmd);
 int	**create_pipes(int pipe_count);
-int	execute_simple_command(t_command *cmd);
 int execute_pipeline(t_command *cmd);
 int **create_pipes(int pipe_count);
 void setup_pipe_redirections(int **pipes, int cmd_index, int cmd_count);

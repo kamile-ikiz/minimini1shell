@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 15:52:51 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 02:41:55 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 08:29:12 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ static t_command	*create_pipeline_from_segments(t_segment *segments)
 	while (current_segment)
 	{
 		new_command = NULL;
-		if (parse_command_or_redirect(current_segment, &new_command) == -1)
+		if (parse_word_or_redirect(current_segment, &new_command) == -1)
 		{
-			free_pipeline(pipeline_head);
+			free_commands(pipeline_head);
 			return (NULL);
 		}
 		add_command_to_pipeline(&pipeline_head, new_command);

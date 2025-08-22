@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/20 20:55:42 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 14:43:14 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ char **env_list_to_envp(t_env **env_list_ptr)
 	return (envp);
 }
 
-
 int execute_command(t_command *cmd)
 {
     int saved_stdin;
@@ -70,7 +69,7 @@ int execute_command(t_command *cmd)
     int exit_status;
 
     exit_status = 0;
-    if (cmd->args == NULL)
+    if (cmd == NULL)
     {
         set_exit_code(0);
         return(exit_status);
@@ -96,7 +95,9 @@ int execute_command(t_command *cmd)
         }
     }
     else
+    {
         exit_status = execute_simple_command(cmd);
+    }
     cleanup_heredoc_pipes(cmd);
     set_exit_code(exit_status);
     return (exit_status);
@@ -106,6 +107,7 @@ int execute_simple_command(t_command *cmd)
 {
     pid_t pid;
     int status;
+	int a;
 
     pid = fork();
     if (pid == -1)
@@ -113,13 +115,31 @@ int execute_simple_command(t_command *cmd)
         perror("fork");
         return (1);
     }
-    if (pid == 0)
+    else if (pid == 0)
     {
         restore_default_signals();
-        if (execute_redirects(cmd) == -1)
-            exit(1);
-        if (cmd->args[0] != NULL)
-            execve_command(cmd->args);
+        if(cmd->redirects)
+        {
+            if (execute_redirects(cmd) == -1)
+                exit(1);
+        }
+		if (cmd->args && cmd->args[0] != NULL)
+        {
+			a = 0;
+            a = execve_command(cmd->args);
+            if (a != 0)
+            {
+                    
+                free_commands(cmd);
+            	free_environment(init_env(NULL)); 
+                exit(a);
+            }
+        }
+		else
+		{
+			free_commands(cmd);
+            free_environment(init_env(NULL)); 
+		}
         exit(0);
     }
     else
@@ -127,8 +147,6 @@ int execute_simple_command(t_command *cmd)
         configure_execution_signals();
         waitpid(pid, &status, 0);
         configure_prompt_signals();
-
-
         if (WIFEXITED(status))
         {
             return (WEXITSTATUS(status));
@@ -158,41 +176,70 @@ int execve_command(char **args)
 
     envp = env_list_to_envp(init_env(NULL));
     if (!args || !args[0])
-        exit(127);
-    if (ft_strchr(args[0], '/'))
+	{
+        return(127);
+	}
+	if (ft_strchr(args[0],'/'))
+	{
+		if (execve(args[0], args, envp) == -1)
+		{
+			ft_putstr_fd(args[0], 2);
+			ft_putendl_fd(" : Is a directory", 2);
+			free_environment(init_env(NULL));
+			free_args(envp);
+			if (is_a_directory(args[0]))
+				return (127);
+			else
+				return (126);
+			
+			
+		}
+	}
+	cmd_path = find_command_path(args[0]);
+	if (!cmd_path)
     {
-        if (is_a_directory(args[0]))
-        {
-            ft_putstr_fd(args[0], 2);
-            ft_putendl_fd(" : Is a directory", 2);
-            exit(126);
-        }
-        else
-        {
-            ft_putstr_fd("minishell: ", 2);
-            ft_putstr_fd(args[0], 2);
-            ft_putstr_fd(": No such file or directory\n", 2);
-            exit(127);
-        }
+		if (ft_strchr(args[0], '/'))
+    	{
+        	if (is_a_directory(args[0]))
+        	{
+            	ft_putstr_fd(args[0], 2);
+            	ft_putendl_fd(" : Is a directory", 2);
+				free_environment(init_env(NULL));
+				free_args(envp);
+            	return(126);
+        	}
+        	else
+        	{
+            	ft_putstr_fd("minishell: ", 2);
+            	ft_putstr_fd(args[0], 2);
+            	ft_putstr_fd(": No such file or directory\n", 2);
+				free_environment(init_env(NULL));
+				free_args(envp);
+            	return(127);
+        	}
+		}
+		else
+		{
+			free_args(envp);
+			free(cmd_path);
+        	ft_putstr_fd("minishell: ", 2);
+        	ft_putstr_fd(args[0], 2);
+       		ft_putstr_fd(": command not found\n", 2);
+        	return(127);
+		}
     }
-    cmd_path = find_command_path(args[0]);
-    if (!cmd_path)
-    {
-        ft_putstr_fd("minishell: ", 2);
-        ft_putstr_fd(args[0], 2);
-        ft_putstr_fd(": command not found\n", 2);
-        exit(127);
-    }
-    if (execve(cmd_path, args, envp) == -1)
-	{  
+	if (execve(cmd_path, args, envp) == -1)
+	{
+		free_args(envp);
 		free(cmd_path);
         ft_putstr_fd("minishell: ", 2);
         ft_putstr_fd(args[0], 2);
         ft_putstr_fd(": command not found\n", 2);
-        exit(127);
+        return(127);
     }
     return (0);
 }
+
 
 char *find_command_path(char *cmd)
 {
@@ -230,8 +277,11 @@ int execute_pipeline(t_command *cmd)
     int **pipes;
     int exit_status;
     int i;
-    
+    int a;
+    t_command *head;
+
     cmd_count = count_commands(cmd);
+    head = cmd;
     pids = malloc(sizeof(pid_t) * cmd_count);
     if (!pids)
         return (1);
@@ -262,9 +312,26 @@ int execute_pipeline(t_command *cmd)
             if (execute_redirects(cmd) == -1)
                 exit(1);
             if (cmd->args[0] && is_builtin(cmd->args[0]))
-                exit(execute_builtin(cmd));
+            {
+                exit_status = execute_builtin(cmd);
+                free_commands(head);
+                cleanup_pipeline(pids, pipes, cmd_count);
+                free_environment(init_env(NULL));
+                exit(exit_status);
+            }
             if (cmd->args[0] != NULL)
-                execve_command(cmd->args);
+            {
+                a = execve_command(cmd->args);
+                if (a != 0)
+                  {
+                    
+                    free_commands(head);
+                    free_environment(init_env(NULL));  
+                    
+                    cleanup_pipeline(pids, pipes, cmd_count);
+                    exit(a);
+                  }
+            }
             exit(0);
         }
         cmd = cmd->next;

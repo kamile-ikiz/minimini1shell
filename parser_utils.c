@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:47:41 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 02:41:23 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 08:27:19 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	parse_error(t_command **cmd_ptr)
 {
 	if (cmd_ptr && *cmd_ptr)
 	{
-		free_command(*cmd_ptr);
+		free_commands(*cmd_ptr); //fre_command idi güncellendi sıkıntı çıkarıyor mu bilmiyorum.
 		*cmd_ptr = NULL;
 	}
 	return (-1);

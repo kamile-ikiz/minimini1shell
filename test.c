@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 04:06:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 04:39:38 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 08:28:57 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	handle_heredocs_and_signals(t_command *pipeline)
 	{
 		set_exit_code(130);
 		cleanup_heredoc_pipes(pipeline);
-		free_pipeline(pipeline);
+		free_commands(pipeline);
 		g_signal_flag = 0;
 		return (1);
 	}
@@ -30,7 +30,7 @@ static void	execute_and_cleanup(t_command *pipeline)
 {
 	execute_command(pipeline);
 	cleanup_heredoc_pipes(pipeline);
-	free_pipeline(pipeline);
+	free_commands(pipeline);
 }
 
 static int	process_input_line(char *line)
@@ -56,10 +56,10 @@ static int	process_input_line(char *line)
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
-
+	t_env	**env_list;
 	(void)argc;
 	(void)argv;
-	init_env(envp);
+	env_list = init_env(envp);
 	while (1)
 	{
 		configure_prompt_signals();
@@ -76,5 +76,6 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free(line);
 	}
+	free_environment(env_list);
 	return (get_exit_code());
 }

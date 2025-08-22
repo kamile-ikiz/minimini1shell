@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 17:56:11 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/20 17:57:15 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 05:41:54 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,10 @@ void	handle_var_only(t_env **list, char *key)
 	if (existing)
 		existing->is_exported = true;
 	else
-		add_new_var(list, ft_strdup(key), NULL, true);
+	{
+		add_new_var(list, key, NULL, true);
+		free(key);
+	}
 }
 
 void	handle_var_with_value(t_env **list, char *arg, char *eq_pos)

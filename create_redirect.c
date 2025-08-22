@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:05:03 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 15:37:17 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 13:15:51 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@ static	t_redirect	*create_redirect(t_token_type type, char *filename)
 		return (NULL);
 	redirect->type = type;
 	redirect->filename = ft_strdup(filename);
-	if (!redirect->filename)
-	{
-		free(redirect);
-		return (NULL);
-	}
+	redirect->heredoc_pipe_fd = 0;
+	// if (!redirect->filename)
+	// {
+	// 	free(redirect);
+	// 	return (NULL);
+	// }
 	redirect->next = NULL;
 	return (redirect);
 }
