@@ -6,7 +6,7 @@
 /*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 00:09:15 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/22 13:06:56 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/22 16:50:06 by kikiz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,16 @@ void free_args(char **args)
 	int i;
 
 	i = 0;
-	if(ft_strcmp(args[0], "export") == 0)
-		free(args[0]);
-	else
-	{
+	// if(ft_strcmp(args[0], "export") == 0)
+	// 	free(args[0]);
+	// else
+	// {
 		while (args[i])
 		{
 			free(args[i]);
 			i++;
 		}
-	}
+	// }
 	free(args);
 }
 
