@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils1.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 04:57:26 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 20:31:00 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/24 15:45:25 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,7 @@ static int	parse_and_append_segment(t_parser *parser, char **final_word)
 	{
 		if (!handle_quoted_segment(parser, &segment, last_token))
 		{
-			free(last_token->value);
-			free(last_token);
+			free_tokens(parser->token_list);
 			return (0);
 		}
 	}
@@ -40,8 +39,7 @@ static int	parse_and_append_segment(t_parser *parser, char **final_word)
 	{
 		if (!handle_unquoted_segment(parser, &segment, last_token))
 		{
-			free(last_token->value);
-			free(last_token);
+			free_tokens(parser->token_list);
 			return (0);
 		}
 	}
@@ -81,6 +79,8 @@ t_token	*handle_word(t_parser *parser)
 	if (build_final_word(parser, &final_val, &has_quotes) == -1)
 	{
 		free(final_val);
+		if (parser->error)
+			return(NULL);
 		return (set_parser_error(parser, parser->error_msg, NULL));
 	}
 	token = new_token(TOKEN_WORD, final_val);

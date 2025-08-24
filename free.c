@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 00:09:15 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/22 16:50:06 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/24 15:49:01 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ void	free_redirects(t_redirect *redirects)
 void free_commands(t_command *cmd)
 {
     t_command *tmp;
-    
     while (cmd != NULL)
     {
         tmp = cmd;          // Mevcut node'u sakla

@@ -9,7 +9,6 @@ SRCDIR = .
 OBJDIR = obj
 LIBFTDIR = libft
 BUILTINSDIR = builtins
-HEREDOCDIR = heredoc
 
 # Ana kaynak dosyalar
 SRCS =	token_utils.c \
@@ -21,7 +20,6 @@ SRCS =	token_utils.c \
     	utils.c \
     	free.c \
 		free1.c \
-		get_next_line.c \
     	check_syntax.c \
 		check_syntax_utils.c \
 		expansion.c \
@@ -44,10 +42,9 @@ SRCS =	token_utils.c \
 		exit_code.c
 
 # builtins klasöründeki tüm .c dosyalarını ekle
-BUILTINS_SRCS = $(wildcard $(BUILTINSDIR)/*.c)
-HEREDOC_SRCS = $(wildcard $(HEREDOCDIR)/*.c)
+BUILTINS_SRCS = ./builtins/builtin_utils2.c ./builtins/builtin_utils.c ./builtins/cd.c ./builtins/echo.c ./builtins/env.c ./builtins/exit.c ./builtins/export.c ./builtins/is_builtin.c ./builtins/pwd.c ./builtins/unset.c
 
-ALL_SRCS = $(SRCS) $(BUILTINS_SRCS) $(HEREDOC_SRCS)
+ALL_SRCS = $(SRCS) $(BUILTINS_SRCS)
 OBJS = $(ALL_SRCS:%.c=$(OBJDIR)/%.o)
 
 LIBFT = $(LIBFTDIR)/libft.a

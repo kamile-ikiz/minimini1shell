@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_redirect.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:05:03 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/22 13:15:51 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/24 06:04:25 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,6 @@ static	t_redirect	*create_redirect(t_token_type type, char *filename)
 	redirect->type = type;
 	redirect->filename = ft_strdup(filename);
 	redirect->heredoc_pipe_fd = 0;
-	// if (!redirect->filename)
-	// {
-	// 	free(redirect);
-	// 	return (NULL);
-	// }
 	redirect->next = NULL;
 	return (redirect);
 }

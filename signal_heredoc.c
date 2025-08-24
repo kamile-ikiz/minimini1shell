@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 03:10:00 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/22 21:40:42 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/24 04:04:52 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void	interrupt_callback_heredoc(int signal_num)
 {
 	(void)signal_num;
-	g_signal_flag = SIGINT;
+	//g_signal_flag = SIGINT;
 	free_heredoc(NULL);
 	// close(STDIN_FILENO);
 	write(STDOUT_FILENO, "\n", 1);

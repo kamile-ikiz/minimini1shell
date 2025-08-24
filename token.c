@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:58:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 17:57:47 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/24 15:44:37 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,10 +81,17 @@ static int	process_token(t_parser *parser, t_token **tokens)
 		token = handle_word(parser);
 	if (token)
 		parser->token_list = token_lst(tokens, token);
-	if (parser->error || !token)
+	if (parser->error || !token || !parser->token_list)
 	{
-		ft_putendl_fd(parser->error_msg, 2);
-		free_tokens(*tokens);
+		if (parser->error_msg)
+		{
+			ft_putendl_fd(parser->error_msg, 2);
+			free(parser->error_msg);
+		}
+		if (!token)
+			free_tokens(token);
+		if (!parser->token_list)
+			free_tokens(parser->token_list);
 		return (-1);
 	}
 	return (1);

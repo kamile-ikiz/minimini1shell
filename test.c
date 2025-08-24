@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 04:06:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/22 22:16:55 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/24 17:01:37 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	handle_heredocs_and_signals(t_command *pipeline)
 {
 	prepare_heredocs(pipeline);
-	if (g_signal_flag == SIGINT)
+	if (g_signal_flag == 2)
 	{
 		set_exit_code(130);
 		cleanup_heredoc_pipes(pipeline);
@@ -59,12 +59,18 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
 	t_env	**env_list;
+	int		std_in;
+	int		std_out;
 
 	(void)argc;
 	(void)argv;
+	std_in = dup(STDIN_FILENO);
+	std_out = dup(STDOUT_FILENO);
 	env_list = init_env(envp);
 	while (1)
 	{
+		dup2(std_in, STDIN_FILENO);
+		dup2(std_out, STDOUT_FILENO);
 		configure_prompt_signals();
 		line = readline(PROMPT);
 		if (!line)

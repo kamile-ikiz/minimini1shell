@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 03:10:00 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/21 03:24:17 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/24 17:01:42 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,9 @@ static void	interrupt_callback_prompt(int signal_num)
 	rl_redisplay();
 }
 
-int	configure_prompt_signals(void)
+void	configure_prompt_signals(void)
 {
-	static int	ctl;
-
-	ctl = 0;
-	if (ctl == 0)
-	{
-		assign_signal_handler(SIGINT, interrupt_callback_prompt);
-		assign_signal_handler(SIGQUIT, SIG_IGN);
-		ctl = 1;
-	}
-	return (ctl);
+	assign_signal_handler(SIGQUIT, SIG_IGN);
+	assign_signal_handler(SIGINT, interrupt_callback_prompt);
 }
+		

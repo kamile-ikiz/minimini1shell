@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/22 20:24:10 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/24 15:40:52 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,13 @@ typedef struct s_gnl_state
 //     int         pipe_count;
 // }   t_minishell;
 
+typedef struct s_pipeline_data
+{
+	int			cmd_count;
+	pid_t		*pids;
+	int			**pipes;
+	t_command	*head;
+}	t_pipeline_data;
 
 //func prototypes
 //-----------------free_functions---------------
@@ -188,7 +195,6 @@ char	*append_variable(char *line, int *i, char *result);
 char	*append_normal_char(char *line, int i, char *result);
 int     setup_heredoc_redirect(char *delimiter);
 char	*handle_heredoc_delimiter(char *delimiter);
-char	*get_next_line(int fd);
 int prepare_heredocs(t_command *cmd_list);
 void cleanup_heredoc_pipes(t_command *cmd_list);
 int	read_heredoc(const char *delim, int fd, int expand);
@@ -216,7 +222,7 @@ int execute_command(t_command *cmd);
 //--------------------SIGNALS------------------------------------------------
 extern volatile sig_atomic_t g_signal_flag;
 void    assign_signal_handler(int signal_type, void (*callback)(int));
-int    configure_prompt_signals(void);
+void   configure_prompt_signals(void);
 void	configure_execution_signals(void);
 void    configure_heredoc_signals(void);
 void	restore_default_signals(void);

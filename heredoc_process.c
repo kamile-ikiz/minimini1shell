@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_process.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:56:20 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/22 21:56:19 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/24 04:05:00 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	read_heredoc_until_delimiter(const char *delimiter,
 		signal(SIGINT, SIG_IGN);
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
-			g_signal_flag = SIGINT;
+			g_signal_flag = 2;
 	}
 	return (status);
 }
