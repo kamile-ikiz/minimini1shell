@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 00:09:15 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/24 15:49:01 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/24 19:28:42 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,36 +25,18 @@ void	free_tokens(t_token *tokens)
 	}
 }
 
-void free_args(char **args)
+void	free_args(char **args)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	// if(ft_strcmp(args[0], "export") == 0)
-	// 	free(args[0]);
-	// else
-	// {
-		while (args[i])
-		{
-			free(args[i]);
-			i++;
-		}
-	// }
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
 	free(args);
 }
-
-// void	free_redirects(t_redirect *redirects)
-// {
-// 	t_redirect	*temp;
-
-// 	while (redirects)
-// 	{
-// 		temp = redirects;
-// 		redirects = redirects->next;
-// 		free(temp->filename);
-// 		free(temp);
-// 	}
-// }
 
 void	free_redirects(t_redirect *redirects)
 {
@@ -71,46 +53,22 @@ void	free_redirects(t_redirect *redirects)
 		redirects = tmp;
 	}
 }
-void free_commands(t_command *cmd)
-{
-    t_command *tmp;
-    while (cmd != NULL)
-    {
-        tmp = cmd;          // Mevcut node'u sakla
-        cmd = cmd->next;    // Sonraki node'a geç
-        
-        // İçeriği temizle
-		if(tmp->args)
-        	free_args(tmp->args);
-		if(tmp->redirects)
-        	free_redirects(tmp->redirects);
-        
-        // Node'u serbest bırak
-        free(tmp);
-    }
-}
 
-// void	free_command(t_command *cmd)
-// {
-// 	// while (cmd)
-// 	// {
-// 	// 	free_args(cmd->args, cmd->argc);
-// 	// 	free_redirects(cmd->redirects);
-// 	// 	cmd = cmd->next;
-// 	// }
-// 	// // free(cmd);
-// 	// int i = 0;
-// 	// while(cmd->args)
-// 	// {
-// 	// 	printf("burada : %s\n", cmd->args[i]);
-// 	// 	i++;
-// 	// }
-// 	if (!cmd)
-// 		return ;
-// 	free_args(cmd->args);
-// 	free_redirects(cmd->redirects);
-// 	free(cmd);
-// }
+void	free_commands(t_command *cmd)
+{
+	t_command	*tmp;
+
+	while (cmd != NULL)
+	{
+		tmp = cmd;
+		cmd = cmd->next;
+		if (tmp->args)
+			free_args(tmp->args);
+		if (tmp->redirects)
+			free_redirects(tmp->redirects);
+		free(tmp);
+	}
+}
 
 void	free_segments(t_segment *segments)
 {

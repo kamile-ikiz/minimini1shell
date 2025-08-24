@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 04:57:26 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/24 15:45:25 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/24 22:38:34 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	parse_and_append_segment(t_parser *parser, char **final_word)
 {
 	char	*segment;
 	t_token	*last_token;
-	bool is_new_token;
+	bool	is_new_token;
 
 	segment = NULL;
 	is_new_token = false;
@@ -25,13 +25,20 @@ static int	parse_and_append_segment(t_parser *parser, char **final_word)
 	else
 	{
 		last_token = new_token(TOKEN_WORD, "");
-		is_new_token = true;  // ← İŞARETLE
+		is_new_token = true;
 	}
 	if (parser->inp[parser->pos] == '\'' || parser->inp[parser->pos] == '"')
 	{
 		if (!handle_quoted_segment(parser, &segment, last_token))
 		{
+			
 			free_tokens(parser->token_list);
+			// if (last_token)
+			// {
+			// 	if (last_token->value)
+			// 		free(last_token->value);
+			// 	free(last_token);
+			// }
 			return (0);
 		}
 	}
@@ -72,7 +79,6 @@ t_token	*handle_word(t_parser *parser)
 	t_token	*token;
 
 	has_quotes = 0;
-	// parser->token_list = new_token(TOKEN_WORD, "");
 	final_val = ft_strdup("");
 	if (!final_val)
 		return (set_parser_error(parser, "malloc error", final_val));
@@ -80,7 +86,7 @@ t_token	*handle_word(t_parser *parser)
 	{
 		free(final_val);
 		if (parser->error)
-			return(NULL);
+			return (NULL);
 		return (set_parser_error(parser, parser->error_msg, NULL));
 	}
 	token = new_token(TOKEN_WORD, final_val);

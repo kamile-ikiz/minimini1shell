@@ -3,19 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:54:08 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/22 22:11:05 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/24 19:21:29 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-void free_heredoc(t_command *cmd)
+void	free_heredoc(t_command *cmd)
 {
-	static t_command *tmp;
+	static t_command	*tmp;
 
 	if (cmd)
 		tmp = cmd;
@@ -89,7 +88,6 @@ void	cleanup_heredoc_pipes(t_command *cmd_list)
 {
 	t_command	*cmd;
 	t_redirect	*redir;
-
 
 	cmd = cmd_list;
 	while (cmd)

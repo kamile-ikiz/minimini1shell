@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 15:44:53 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/24 15:27:53 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/24 18:38:24 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,10 +181,13 @@ static int	parent_process_routine(pid_t child_pid)
 	configure_execution_signals();
 	waitpid(child_pid, &status, 0);
 	configure_prompt_signals();
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
+	if (WIFSIGNALED(status))
+	{
+		status = 130;
 		return (status);
+	}
+	else
+		return (WEXITSTATUS(status));
 	return (1);
 }
 
@@ -493,10 +496,14 @@ int wait_for_children(pid_t *pids, int cmd_count)
     {
         waitpid(pids[i], &status, 0);
         if (i == cmd_count - 1)
-            exit_status = WEXITSTATUS(status);
+		{
+			if (WIFSIGNALED(status))
+				exit_status = 130;
+			else
+            	exit_status = WEXITSTATUS(status);
+		}
         i++;
     }
-    
     return (exit_status);
 }
 

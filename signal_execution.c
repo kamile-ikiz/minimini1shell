@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 03:10:00 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/21 03:22:57 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/24 18:22:09 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,6 @@ static void	quit_callback_execution(int signal_num)
 
 void	configure_execution_signals(void)
 {
-	assign_signal_handler(SIGINT, interrupt_callback_execution);
-	assign_signal_handler(SIGQUIT, quit_callback_execution);
+	signal(SIGINT, interrupt_callback_execution);
+	signal(SIGQUIT, quit_callback_execution);
 }

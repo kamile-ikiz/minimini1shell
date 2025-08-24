@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:47:41 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/24 15:43:51 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/24 19:17:55 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	parse_error(t_command **cmd_ptr)
 {
 	if (cmd_ptr && *cmd_ptr)
 	{
-		free_commands(*cmd_ptr); //fre_command idi güncellendi sıkıntı çıkarıyor mu bilmiyorum.
+		free_commands(*cmd_ptr);
 		*cmd_ptr = NULL;
 	}
 	return (-1);

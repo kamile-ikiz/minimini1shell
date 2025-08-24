@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 16:34:40 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/24 15:40:52 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/24 18:24:29 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,6 @@ t_command	*parse_input(char *input);
 int execute_command(t_command *cmd);
 //--------------------SIGNALS------------------------------------------------
 extern volatile sig_atomic_t g_signal_flag;
-void    assign_signal_handler(int signal_type, void (*callback)(int));
 void   configure_prompt_signals(void);
 void	configure_execution_signals(void);
 void    configure_heredoc_signals(void);

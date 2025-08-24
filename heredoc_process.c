@@ -6,7 +6,7 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:56:20 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/24 04:05:00 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/24 19:19:48 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ static void	handle_heredoc_child(const char *delimiter, int write_fd,
 	configure_heredoc_signals();
 	while (1)
 	{
-		// write(STDOUT_FILENO, "> ", 2);
-		// line = get_next_line(STDIN_FILENO);
 		line = readline("> ");
 		if (!line)
 		{
@@ -64,7 +62,6 @@ static void	handle_heredoc_child(const char *delimiter, int write_fd,
 		if (ft_strcmp(line, delimiter) == 0)
 		{
 			free_heredoc(NULL);
-			// free(line);
 			exit(0);
 		}
 		if (process_line(&line, expand_vars, write_fd) == -1)
