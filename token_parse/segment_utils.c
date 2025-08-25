@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segment_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:53:17 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 03:11:31 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/25 13:18:21 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static int	copy_and_append_token(t_token **new_list_ptr, t_token **last_ptr,
 	return (0);
 }
 
-t_token	*copy_tokens_until_pipe(t_token *start_token, int count)
+static t_token	*copy_tokens_until_pipe(t_token *start_token, int count)
 {
 	t_token	*new_list;
 	t_token	*last;

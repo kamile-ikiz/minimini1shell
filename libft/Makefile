@@ -37,4 +37,6 @@ re:				fclean $(NAME)
 bonus:			$(OBJS) $(BONUS_OBJS)
 				ar rcs $(NAME) $(OBJS) $(BONUS_OBJS)
 
-.PHONY:			all clean fclean re bonus
+.PHONY:			all clean fclean re bonu
+
+.SILENT:

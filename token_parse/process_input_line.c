@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   process_input_line.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/21 04:06:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/24 17:01:37 by beysonme         ###   ########.fr       */
+/*   Created: 2025/08/25 01:44:28 by beysonme          #+#    #+#             */
+/*   Updated: 2025/08/25 01:47:35 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	execute_and_cleanup(t_command *pipeline)
 	free_commands(pipeline);
 }
 
-static int	process_input_line(char *line)
+int	process_input_line(char *line)
 {
 	t_command	*pipeline;
 
@@ -53,38 +53,4 @@ static int	process_input_line(char *line)
 		execute_and_cleanup(pipeline);
 	}
 	return (0);
-}
-
-int	main(int argc, char **argv, char **envp)
-{
-	char	*line;
-	t_env	**env_list;
-	int		std_in;
-	int		std_out;
-
-	(void)argc;
-	(void)argv;
-	std_in = dup(STDIN_FILENO);
-	std_out = dup(STDOUT_FILENO);
-	env_list = init_env(envp);
-	while (1)
-	{
-		dup2(std_in, STDIN_FILENO);
-		dup2(std_out, STDOUT_FILENO);
-		configure_prompt_signals();
-		line = readline(PROMPT);
-		if (!line)
-		{
-			printf("exit\n");
-			break ;
-		}
-		if (process_input_line(line) == 1)
-		{
-			free(line);
-			continue ;
-		}
-		free(line);
-	}
-	free_environment(env_list);
-	return (get_exit_code());
 }

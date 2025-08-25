@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 16:21:21 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 18:04:15 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/25 13:20:12 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ t_token	*new_token(t_token_type type, char *value)
 	return (token);
 }
 
-t_token	*token_get_last(t_token *head)
+static t_token	*token_get_last(t_token *head)
 {
 	if (!head)
 		return (NULL);
@@ -69,4 +69,13 @@ void	init_parser(t_parser *parser, char *input)
 	parser->pos = 0;
 	parser->error = 0;
 	parser->error_msg = NULL;
+}
+
+t_token	*get_context_token(t_parser *parser, bool *is_new)
+{
+	*is_new = false;
+	if (parser->token_list)
+		return (token_get_last(parser->token_list));
+	*is_new = true;
+	return (new_token(TOKEN_WORD, ""));
 }

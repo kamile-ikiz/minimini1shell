@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_utils2.c                                   :+:      :+:    :+:   */
+/*   builtin_utils_ex.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 17:56:11 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/22 16:54:02 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/25 12:48:09 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	add_new_var(t_env **list, char *key, char *value, bool is_exported)
+static void	add_new_var(t_env **list, char *key, char *value, bool is_exported)
 {
 	t_env	*new;
 	t_env	*last;

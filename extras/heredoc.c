@@ -6,24 +6,11 @@
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:54:08 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/24 19:21:29 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/25 13:03:27 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	free_heredoc(t_command *cmd)
-{
-	static t_command	*tmp;
-
-	if (cmd)
-		tmp = cmd;
-	if (!cmd && tmp)
-	{
-		free_environment(init_env(NULL));
-		free_commands(tmp);
-	}
-}
 
 static int	process_heredoc_redirect(t_redirect *redir)
 {

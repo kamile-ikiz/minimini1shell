@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   check_syntax.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 21:03:39 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/19 15:22:13 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/25 13:10:12 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	check_redirect_in_syntax(t_token *head)
+static int	check_redirect_in_syntax(t_token *head)
 {
 	t_token	*current;
 
@@ -37,7 +37,7 @@ int	check_redirect_in_syntax(t_token *head)
 	return (1);
 }
 
-int	check_redirect_out_syntax(t_token *head)
+static int	check_redirect_out_syntax(t_token *head)
 {
 	t_token	*current;
 
@@ -62,7 +62,7 @@ int	check_redirect_out_syntax(t_token *head)
 	return (1);
 }
 
-int	check_redirect_append_syntax(t_token *head)
+static int	check_redirect_append_syntax(t_token *head)
 {
 	t_token	*current;
 
@@ -87,7 +87,7 @@ int	check_redirect_append_syntax(t_token *head)
 	return (1);
 }
 
-int	check_heredoc_syntax(t_token *head)
+static int	check_heredoc_syntax(t_token *head)
 {
 	t_token	*current;
 

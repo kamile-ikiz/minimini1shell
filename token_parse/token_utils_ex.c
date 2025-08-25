@@ -1,16 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_utils1.c                                     :+:      :+:    :+:   */
+/*   token_utils_ex.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 04:57:26 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/24 22:38:34 by beysonme         ###   ########.fr       */
+/*   Updated: 2025/08/25 13:19:25 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	dispatch_segment_parser(t_parser *parser, char **segment,
+	t_token *last_token)
+{
+	if (parser->inp[parser->pos] == '\'' || parser->inp[parser->pos] == '\"')
+		return (handle_quoted_segment(parser, segment, last_token));
+	else
+		return (handle_unquoted_segment(parser, segment, last_token));
+}
+
+static void	free_temp_token(t_token *token)
+{
+	if (token)
+	{
+		free(token->value);
+		free(token);
+	}
+}
 
 static int	parse_and_append_segment(t_parser *parser, char **final_word)
 {
@@ -19,42 +37,18 @@ static int	parse_and_append_segment(t_parser *parser, char **final_word)
 	bool	is_new_token;
 
 	segment = NULL;
-	is_new_token = false;
-	if (parser->token_list != NULL)
-		last_token = token_get_last(parser->token_list);
-	else
+	last_token = get_context_token(parser, &is_new_token);
+	if (!last_token)
+		return (0);
+	if (dispatch_segment_parser(parser, &segment, last_token) == 0)
 	{
-		last_token = new_token(TOKEN_WORD, "");
-		is_new_token = true;
-	}
-	if (parser->inp[parser->pos] == '\'' || parser->inp[parser->pos] == '"')
-	{
-		if (!handle_quoted_segment(parser, &segment, last_token))
-		{
-			
-			free_tokens(parser->token_list);
-			// if (last_token)
-			// {
-			// 	if (last_token->value)
-			// 		free(last_token->value);
-			// 	free(last_token);
-			// }
-			return (0);
-		}
-	}
-	else
-	{
-		if (!handle_unquoted_segment(parser, &segment, last_token))
-		{
-			free_tokens(parser->token_list);
-			return (0);
-		}
+		if (is_new_token)
+			free_temp_token(last_token);
+		free_tokens(parser->token_list);
+		return (0);
 	}
 	if (is_new_token)
-	{
-		free(last_token->value);
-		free(last_token);
-	}
+		free_temp_token(last_token);
 	return (append_segment(final_word, segment));
 }
 

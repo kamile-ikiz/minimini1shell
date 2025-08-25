@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   segment_utils1.c                                   :+:      :+:    :+:   */
+/*   segment_utils_ex.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 03:10:17 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 04:09:12 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/25 13:17:29 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	count_tokens_until_pipe(t_token *token_list)
+static int	count_tokens_until_pipe(t_token *token_list)
 {
 	int		count;
 	t_token	*current;
@@ -27,7 +27,7 @@ int	count_tokens_until_pipe(t_token *token_list)
 	return (count);
 }
 
-void	add_segment(t_segment **head, t_segment *new_segment)
+static void	add_segment(t_segment **head, t_segment *new_segment)
 {
 	t_segment	*current;
 
@@ -42,7 +42,7 @@ void	add_segment(t_segment **head, t_segment *new_segment)
 	current->next = new_segment;
 }
 
-t_token	*skip_to_next_segment(t_token *current)
+static t_token	*skip_to_next_segment(t_token *current)
 {
 	while (current && current->type != TOKEN_PIPE)
 		current = current->next;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_operations.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 19:00:57 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/22 12:59:11 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/25 07:32:31 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,5 @@ int	execute_redirects(t_command *cmd)
 			return (-1);
 		redir = redir->next;
 	}
-	return (0);
+	return (1);
 }

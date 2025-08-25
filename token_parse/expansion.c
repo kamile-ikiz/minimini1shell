@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 16:19:04 by kikiz             #+#    #+#             */
-/*   Updated: 2025/08/21 02:31:07 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/25 13:13:25 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static char	*handle_regular_var(char *var_name, t_expand_data *data)
 	return (result);
 }
 
-char	*expand_single_variable(char *arg, int dollar_pos,
+static char	*expand_single_variable(char *arg, int dollar_pos,
 	t_env **env_list_ptr, int *new_i)
 {
 	t_expand_data	data;

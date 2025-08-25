@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 18:20:29 by kikiz             #+#    #+#             */
-/*   Updated: 2024/10/30 19:34:59 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/25 02:54:45 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ char	*ft_strdup(const char *s1)
 
 	i = 0;
 	j = 0;
+	if (!s1)
+		return (NULL);
 	while (s1[i] != '\0')
 	{
 		i++;

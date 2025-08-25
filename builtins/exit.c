@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 15:31:08 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/22 20:45:27 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/25 01:18:48 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	is_numeric(const char *str)
+int	is_numeric(const char *str)
 {
 	if (!str || *str == '\0')
 		return (0);

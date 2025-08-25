@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kikiz <ikizkamile26@gmail.com>             +#+  +:+       +#+        */
+/*   By: beysonme <beysonme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:50:58 by beysonme          #+#    #+#             */
-/*   Updated: 2025/08/21 00:53:33 by kikiz            ###   ########.fr       */
+/*   Updated: 2025/08/25 12:50:13 by beysonme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ int		builtin_unset(t_command *cmd);
 
 int		is_builtin(char *cmd);
 int		execute_builtin(t_command *cmd);
+int		is_numeric(const char *str);
 
 int		is_valid_identifier(char *str);
 int		env_list_size(t_env *list);
 int		print_identifier_error(char *identifier);
 int		ft_strcmp(const char *s1, const char *s2);
 
-void	add_new_var(t_env **list, char *key, char *value, bool is_exported);
 void	reset_print_flags(t_env *list);
 void	handle_var_with_value(t_env **list, char *arg, char *eq_pos);
 void	handle_var_only(t_env **list, char *key);
